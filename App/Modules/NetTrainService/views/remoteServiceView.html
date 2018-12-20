@@ -1,0 +1,507 @@
+<include file="Public:header_uncompatible" />
+
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.combo.select.js" charset="UTF-8"></script>
+<link type="text/css" href="__PUBLIC__/css/combo.select.css" rel="stylesheet">
+<link href="https://cdn.bootcss.com/element-ui/2.2.1/theme-chalk/index.css" rel="stylesheet">
+
+<style>
+    .screenshot{
+        width:110px;
+        height:110px;
+        background-color:red;
+        float:left;
+        border:1px solid #ccc;
+        border-radius:5px;
+        margin:10px 10px;
+    }
+    
+    .notFloat{
+        text-align:center;
+        clear:both;
+    }
+    
+    .onTheLeft{
+        float:left;
+    }
+</style>
+<include file="Public:nav" />
+<div class="container">
+	<div class="page-header">
+        <h4>{:L('Check_the_door_chance')}</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <include file="Public:alert" />
+            <!--  <input type="hidden" name="refer_url" value="{$refer_url}"> -->
+            <!-- <input class="btn btn-primary check"  type="button" id="save_and_next" value="{:L('SAVE_AND_NEXT')}"/> -->
+            <form id="form1" class="form-horizontal" action="{:U('teacherxiede')}" method="post">
+            <div style="box-shadow: 0 2px 12px 0 rgba(0,0,0,.1); padding: 15px; overflow: hidden;margin-bottom: 15px"> <!-- 遮罩开始 -->
+                <input type="hidden" name="id" id="onsiteservice_id" value="{$vo.id}">
+                <!-- 客户信息 -->
+                <h4>{:L('client_information')}</h4>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">{:L('The_name_of_the_studio')}:</label>
+                    <div class="col-sm-8">
+                        <input type="text"  name="customer_name" id="customer_name" class="form-control" disabled value="{$vo.customer_name}">
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">{:L('First_name')}:</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="contacts_name" class="form-control" id="contacts_name" disabled value="{$vo.customer_name}">
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">{:L('First_number')}:</label>
+                    <div class="col-sm-8">
+                        <input type="text"  name="contacts_telephone" id="contacts_telephone" class="form-control" disabled value="{$vo.contacts_telephone}" readonly>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">{:L('Customer_need')}:</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="client_need" class="form-control" id="client_need" disabled value="{$vo.client_need}" readonly>
+                    </div>
+                </div>
+                <div style="width: 100%">
+                    <div class="form-group col-md-6">
+                        <label class="col-sm-4 control-label">{:L('Studio_contact_address')}:</label>
+                        <div class="col-sm-8">
+                            <input type="text"  name="address" id="address" class="form-control" disabled value="{$vo.address}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">{:L('The_door_type')}:</label>
+                    <div class="col-sm-8">
+                        <div class="form-control" disabled>
+                            <switch name="vo['type']">
+                                <case value="1">{:L('first_the_door')}</case>
+                                <case value="2">{:L('second_the_door')}</case>
+                                <case value="3">{:L('third_the_door')}</case>
+                                <case value="4">{:L('more_the_door')}</case>
+                            </switch>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">{:L('SALESMAN')}:</label>
+                    <div class="col-sm-8">
+                        <input type="text"  name="saleman" id="saleman" class="form-control" disabled value="{$vo.saleman}" readonly>
+                    </div>
+                </div>
+                <if condition="$vo['type'] neq 1">
+                    <div class="form-group col-md-6"  id="last_tr">
+                        <label class="col-sm-4 control-label">{:L('LAST_TIME_MAN')}:</label>
+                        <div class="col-sm-8">
+                            <input type="hidden" name="last_id" id="last_id" class="form-control" value="{$vo.last_id}">
+                            <input type="text"  name="last_man" id="last_man" class="form-control" value="{$vo.last_man}" readonly>
+                        </div>
+                    </div>
+                    <!--<tr  id="last_tr">-->
+                    <!--<td class="tdleft" >{:L('LAST_TIME_MAN')}:</td>-->
+                    <!--<td>-->
+                    <!--<input type="hidden" name="last_id" id="last_id" value="{$vo.last_id}" />-->
+                    <!--<input type="text" name="last_man" id="last_man" value="{$vo.last_man}" readonly>-->
+                    <!--</td>-->
+                    <!--</tr>-->
+                </if>
+                <!-- 分配客服 -->
+                <h4 style="width: 100%; float: left">{:L('Scheduling')}</h4>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">{:L('training_teacher')}:</label>
+                    <div class="col-sm-8">
+                        <input type="text"  name="operator_name" id="operator_name" class="form-control" disabled value="{$vo.operator_name}" readonly>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">{:L('Training_status')}:</label>
+                    <div class="col-sm-8">
+                        <select name='status' class="form-control" disabled>
+                            <option value="1" <if condition="$vo['status'] eq 1">selected</if>>{:L('I_arrangements')}</option>
+                            <option value="2" <if condition="$vo['status'] eq 2">selected</if>>{:L('teacher_has_contact')}</option>
+                            <option value="3" <if condition="$vo['status'] eq 3">selected</if>>{:L('in_training')}</option>
+                            <option value="4" <if condition="$vo['status'] eq 4">selected</if>>{:L('training_over')}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-4 control-label">{:L('Dispatch_note')}:</label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" name="desc" id="desc" rows="3" readonly>{$vo.desc}</textarea>
+                    </div>
+                </div>
+            </div>
+                <!-- 遮罩结束 -->
+                <div class="form-group col-md-12" id="app">
+                        <serving-form />
+                </div>
+            <!-- 回访调查 -->
+        <div style="box-shadow: 0 2px 12px 0 rgba(0,0,0,.1); padding: 15px; overflow: hidden; width: 100%; margin-bottom: 15px"> <!-- 遮罩开始 -->
+            <h4 style="width: 100%; float: left">{:L('Return_visit')}</h4>
+            <div class="form-group col-md-6">
+                <label class="col-sm-4 control-label">{:L('Return_time')}:</label>
+                <div class="col-sm-8">
+                    <input disabled type="text" onclick="WdatePicker()" name="return_time" class="form-control"  value="{$vo.return_time|default=date('Y-m-d H:i')}" >
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label class="col-sm-4 control-label">{:L('Return_man')}:</label>
+                <div class="col-sm-8">
+                    <input disabled type="text" name="return_man" id="return_man" class="form-control"  value="{$vo.return_man|default=session('name')}" >
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label class="col-sm-4 control-label">{:L('Return_status')}:</label>
+                <div class="col-sm-8">
+                    <select name='return_status' class="form-control" disabled>
+                        <option value='1' <if condition="$vo['return_status'] eq 1">selected</if>>{:L('estranged')}</option>
+                        <option value='2' <if condition="$vo['return_status'] eq 2">selected</if>>{:L('lose_contact')}</option>
+                        <option value='3' <if condition="$vo['return_status'] eq 3">selected</if>>{:L('OK')}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label class="col-sm-4 control-label">{:L('Return_result')}:</label>
+                <div class="col-sm-8">
+                    <select name="manyidu" class="form-control" disabled>
+                        <option value="1" <if condition="$vo['manyidu'] eq 1">selected</if>>{:L('great_satisfaction')}</option>
+                        <option value="2" <if condition="$vo['manyidu'] eq 2">selected</if>>{:L('satisfaction')}</option>
+                        <option value="3" <if condition="$vo['manyidu'] eq 3">selected</if>>{:L('ordinary')}</option>
+                        <option value="4" <if condition="$vo['manyidu'] eq 4">selected</if>>{:L('complain')}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label class="col-sm-4 control-label">{:L('evaluate')}：</label>
+                <div class="col-sm-8">
+                    <textarea disabled class="form-control" name="eva" id="desc" rows="3">{$vo.eva}</textarea>
+                </div>
+            </div>
+            <!-- 回访审批 -->
+            <h4 style="width: 100%; float: left">{:L('RETURN_VERIFY')}</h4>
+            <div class="form-group col-md-6">
+                <label class="col-sm-4 control-label">{:L('VERIFY_TIME')}:</label>
+                <div class="col-sm-8">
+                    <input disabled type="text" name="verifier_time" class="form-control"  value="{$vo.verifier_time}" >
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label class="col-sm-4 control-label">{:L('VERIFIER')}:</label>
+                <div class="col-sm-8">
+                    <input disabled type="text" name="verifier" class="form-control" id="verifier" value="{$vo.verifier}" >
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label class="col-sm-4 control-label">{:L('SEND_MONEY')}:</label>
+                <div class="col-sm-8">
+                    <input disabled type="text" name="send_money" class="form-control"  value="{$vo.send_money}" >
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label class="col-sm-4 control-label">{:L('SEND_STATUS')}:</label>
+                <div class="col-sm-8">
+                    <switch name="vo['send_status']">
+                        <case value="1"><input disabled type="text" name="send_money" class="form-control"  value="{:L('ISSUED')}}" ></case>
+                        <case value="2"><input disabled type="text" name="send_money" class="form-control"  value="{:L('NOT_ISSUE')}" ></case>
+                        <default/><input disabled type="text" name="send_money" class="form-control"  value="{:L('not_available')}" >
+                    </switch>
+                </div>
+            </div>
+        </div>
+            <!-- 遮罩结束 -->
+                <div class="form-group col-md-12 text-center">
+                    <input class="btn btn-primary" id="check" type="submit" value="{:L('Save')}"/>
+                    <input class="btn btn-primary check"  type="button" id="save_and_next" value="{:L('SAVE_AND_NEXT')}"/>
+                    <input class="btn" type="reset" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
+                </div>
+                <if condition="$leads['leads_id']"><input type="hidden" name="leads_id" value="{$leads['leads_id']}"/></if>
+            </form>
+        </div>
+    </div>
+
+    {:javascript('vue:2.5.16', 'element-ui:2.2.2', 'axios:0.18.0', 'jquery-cookie:1.4.1', 'lodash:4.17.5')}
+<script>
+    var store = {
+        state: {
+            user: {
+                token: $.cookie('token')
+            },
+            service: {
+                id: '{$vo.id}',
+                status: '6'
+            }
+        }
+    }
+    var API_BASE = 'http://erp.lyfz.net'
+    // var API_BASE = 'http://192.168.0.117:8000'
+    // var API_BASE = 'http://127.0.0.1:8082'
+
+    const http = axios.create({
+        baseURL: API_BASE,
+        timeout: 5000,
+    })
+
+    http.interceptors.response.use(
+        function (response) {
+            return new Promise(function (resolve, reject) {
+                if (!response.data.errcode) {
+                    resolve(response.data)
+                } else {
+                    vue_app.$message.error(response.data.errmsg)
+                    reject(new Error('error'))
+                }
+            })
+        }
+    )
+
+    http.interceptors.request.use(function(config) {
+        if (store.state.user.token) {
+            config.headers['Authorization'] = 'Bearer ' + store.state.user.token
+        }
+        return config
+    }, function(error) {
+        Promise.reject(error)
+    })
+</script>
+<include file="servingForm"/>
+
+<script>
+    var vue_app = new Vue({
+        el: '#app'
+    })
+</script>
+<!--
+	<div class="row">
+		<div class="span12">
+			<include file="Public:alert" />
+            <table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
+                    <tbody>
+                    <tr><th colspan="4">{:L('client_information')}</th></tr>
+                    <tr>
+                        <td class="tdleft" >{:L('The_name_of_the_studio')}:</td>
+                        <td>
+                            <input type="text" name="customer_name" id="customer_name" value="{$vo.customer_name}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('First_name')}:</td>
+                        <td>
+                            <input type="hidden" name="contacts_id" id="contacts_id">
+                            <input type="text" name="contacts_name" id="contacts_name" value="{$vo.contacts_name}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('First_number')}:</td>
+                        <td>
+                            <input type="text" name="contacts_telephone" id="contacts_telephone" value="{$vo.contacts_telephone}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('Customer_need')}:</td>
+                        <td>
+                            <input type="text" name="client_need" id="client_need" value="{$vo.client_need}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" width="15%">{:L('Studio_contact_address')}:</td>
+                        <td colspan="3">
+                            <input type="text" style="width: 950px" name="address" id="address" value="{$vo.address}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" width="15%">{:L('The_door_type')}:</td>
+                        <td >
+                            <switch name="vo['type']">
+                                <case value="1">{:L('first_the_door')}</case>
+                                <case value="2">{:L('second_the_door')}</case>
+                                <case value="3">{:L('third_the_door')}</case>
+                                <case value="4">{:L('more_the_door')}</case>
+                            </switch>
+                        </td>
+                        <td class="tdleft" >{:L('SALESMAN')}:</td>
+                        <td>
+                            <input type="text" name="saleman" value="{$vo.saleman}" id="saleman" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('Saleman')}:</td>
+                        <td>
+                            <input type="text" name="submitter" value="{$vo.submitter}"  readonly>
+                        </td>
+                        <if condition="$vo['type'] neq 1">
+                            <td class="tdleft" >{:L('LAST_TIME_MAN')}:</td>
+                            <td>
+                                <input type="hidden" name="last_id" id="last_id" value="{$vo.last_id}" />
+                                <input type="text" name="last_man" id="last_man" value="{$vo.last_man}" readonly>
+                            </td>
+                        </if>
+                    </tr>
+                    <tr>
+                        <th colspan="4">{:L('Scheduling')}</th>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('training_teacher')}:</td>
+                        <td>
+                            <input type="hidden" name="tid" value="{$vo.tid}">
+                            <input class="user_input" type="text" value="{$vo.operator_name}" id="operator_name" name="operator_name" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('Training_status')}:</td>
+                        <td>
+                            <switch name="vo['status']">
+                                <case value="1">{:L('I_arrangements')}</case>
+                                <case value="2">{:L('teacher_has_contact')}</case>
+                                <case value="3">{:L('in_training')}</case>
+                                <case value="4">{:L('training_over')}</case>
+                                <case value="5">{:L('nonprogrammable')}</case>
+                                <default/>{:L('not_available')}
+                            </switch>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('Dispatch_note')}:</td>
+                        <td colspan="3">
+                            <textarea class="span8" rows="3"  name="desc"  readonly>{$vo.desc}</textarea>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th colspan="4">{:L('Details_of_the_door')}</th>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('visiting_time')}:</td>
+                        <td>
+                            <input type="text" name="remote_time" value="{$vo.remote_time}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('Departure_Time')}:</td>
+                        <td>
+                            <input type="text" name="remore_time" value="{$vo.remore_time}" readonly>
+                        </td>
+                    </tr>
+                    <notempty name="customerFile">
+                    <tr>
+                        <td  class="tdleft" style="width: 120px;">
+                            合同：
+                        </td>
+                        <td colspan="3">
+                            <volist name="customerFile" id="file">
+                                <div class="onTheLeft">
+                                    <a href="{$file.file_path}" target="_blank">
+                                        <div class="screenshot" style="background:url({$file.file_path}); background-size:cover;"></div>
+                                    </a>
+                                </div>
+                            </volist>
+                        </td>
+                    </tr>
+                    </notempty>
+                    <notempty name="groupPhoto">
+                    <tr>
+                        <td  class="tdleft" style="width: 120px;">
+                            合影：
+                        </td>
+                        <td colspan="3">
+                            <volist name="groupPhoto" id="photo">
+                                <div class="onTheLeft">
+                                    <a href="{$photo.file_path}" target="_blank">
+                                        <div class="screenshot" style="background:url({$photo.file_path}); background-size:cover;"></div>
+                                    </a>
+                                </div>
+                            </volist>
+                        </td>
+                    </tr>
+                    </notempty>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input name="bargain" disabled type="checkbox"  {:($vo['bargain']=='on')?'checked="checked"':''} >{:L('bargain')}&nbsp&nbsp&nbsp&nbsp
+                            <input name="group_photo" disabled type="checkbox" {:($vo['group_photo']=='on')?'checked="checked"':''} >{:L('group_photo')}&nbsp&nbsp&nbsp&nbsp
+                            <input name="whether_group" disabled type="checkbox" {:($vo['whether_group']=='on')?'checked="checked"':''} >{:L('whether_group')}&nbsp&nbsp&nbsp&nbsp
+                            <input name="final_payment" disabled type="checkbox" {:($vo['final_payment']=='on')?'checked="checked"':''} >{:L('final_payment')}&nbsp&nbsp&nbsp&nbsp
+                            <input name="note" disabled type="checkbox" {:($vo['note']=='on')?'checked="checked"':''} >{:L('note')}&nbsp&nbsp&nbsp&nbsp
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">{:L('Return_visit')}</th>
+                    </tr>
+                    <tr>
+                        <input type="hidden" name="id" value="{$vo.id}" id="customer_id"/>
+                        <td class="tdleft" >{:L('Return_time')}:</td>
+                        <td>
+                            <input type="text" name="return_time" value="{$vo.return_time}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('Return_man')}:</td>
+                        <td>
+                            <input type="text" name="return_man" value="{$vo.return_man}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft">{:L('Return_status')}:</td>
+                        <td>
+                            <switch name="vo['return_status']">
+                                <case value="1">{:L('estranged')}</case>
+                                <case value="2">{:L('lose_contact')}</case>
+                                <case value="3">{:L('OK')}</case>
+                                <default/>{:L('not_available')}
+                            </switch>
+                        </td>
+                        <td class="tdleft">{:L('Return_result')}:</td>
+                        <td>
+                            <switch name="vo['manyidu']">
+                                <case value="1">{:L('great_satisfaction')}</case>
+                                <case value="2">{:L('satisfaction')}</case>
+                                <case value="3">{:L('ordinary')}</case>
+                                <case value="4">{:L('complain')}</case>
+                                <default/>{:L('not_available')}
+                            </switch>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('evaluate')}：</td>
+                        <td colspan="3">
+                            <textarea class="span8" rows="3" name="eva" id="eva" readonly>{$vo.eva}</textarea>
+                            <a class="btn btn-default btn-lg" href="{:U('getCustomerAnswer',['id'=>$vo['id']])}" role="button">查看客户答题情况</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th colspan="4">{:L('RETURN_VERIFY')}</th>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('VERIFY_TIME')}:</td>
+                        <td>
+                            <input type="text" name="verifier_time" value="{$vo.verifier_time}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('VERIFIER')}:</td>
+                        <td>
+                            <input type="text" name="verifier" value="{$vo.verifier}" id="verifier" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('SEND_MONEY')}:</td>
+                        <td>
+                            <input type="text" name="send_money" value="{$vo.send_money}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('SEND_STATUS')}:</td>
+                        <td>
+                            <switch name="vo['send_status']">
+                                <case value="1">{:L('ISSUED')}</case>
+                                <case value="2">{:L('NOT_ISSUE')}</case>
+                                <default/>{:L('not_available')}
+                            </switch>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                <tfoot>
+                    <tr>
+                        <td style="text-align:center;" colspan="4">
+                            <input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+		</div>
+    </div>
+-->
+</div>
+
+<include file="Public:footer" />

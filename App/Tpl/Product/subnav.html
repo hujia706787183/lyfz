@@ -1,0 +1,14 @@
+
+
+
+<ul class="nav nav-tabs">
+    <li><a href="{:U('product_list')}">{:L('PRODUCT_LIST')} </a></li>
+
+    <volist name="extra_actions" id="actions">
+        <li>
+            <a href="{:U($key)}">{$actions.label}</a>
+        </li>
+    </volist>
+
+    <li><a href="{:U('index')}">产品管理</a></li>
+</ul>

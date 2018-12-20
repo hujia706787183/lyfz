@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>绑定</title>
+    <!-- <link rel="stylesheet" href="https://weui.io/weui.css"/> -->
+    <link href="https://cdn.bootcss.com/mint-ui/2.2.13/style.css" rel="stylesheet">
+    
+    {:stylesheet('common.css')}
+</head>
+<body>
+    <div id="main">
+        <transition name="fade">
+            <router-view class="page"></router-view>
+            <div class="copyright">利亚方舟技术支持</div>
+        </transition>
+    </div>
+
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/mint-ui/2.2.13/index.js"></script>
+    <script src="https://cdn.bootcss.com/vue-router/3.0.1/vue-router.min.js"></script>
+    <script>
+        var store = {
+            tel: '',
+            code: '',
+            info: {},
+            timer: 60
+        }
+
+        var routers = [{
+            path: '/', redirect: 'page-1'
+        }];
+    </script>
+
+    <script type="text/x-template" id="template-1">
+        <div>
+            <div class="page-header">
+                <div class="page-header-title">尊敬的利亚方舟客户</div>
+                <div class="page-header-desc">请输入您的手机号完成绑定</div>
+            </div>
+            <mt-field style="width: 100%;" placeholder="请输入手机号" v-model="tel"></mt-field>
+            <mt-button style="margin: 20px 10px;" @click="getVarifyCode" type="primary">开始绑定</mt-button>
+            <div class="copyright">利亚方舟技术支持</div>
+        </div>
+    </script>
+
+    <script>
+        (function(){
+            var MessageBox = MINT.MessageBox;
+
+            var page1 = Vue.component('page-1', {
+                template: '#template-1',
+                data: function(){
+                    return store
+                },
+                methods: {
+                    getVarifyCode: function(){
+                        http.get('/index.php/CustomerCenter/binding?op=getBindingVarifyCode', {params: { tel: this.tel }}).then(function(response){
+                            MessageBox.alert('感谢您的支持!我们已找到您的资料.<br>为了保证您的资料安全请填写验证码后继续操作!').then(function(){
+                                this.$router.push('/page-2')
+                            }.bind(this))
+                        }.bind(this))
+                    }
+                }
+            })
+
+            routers.push({ path: '/page-1', component: page1 });
+        })();
+    </script>
+
+    <script type="text/x-template" id="template-2">
+        <div class="page">
+            <div class="page-header">
+                <div class="page-header-title">尊敬的利亚方舟客户</div>
+                <div class="page-header-desc">请输入您的验证码后继续操作</div>
+            </div>
+            <mt-field style="width: 100%;" placeholder="请输入验证码" v-model="code"></mt-field>
+            <mt-button style="margin: 20px 10px;" @click="getCustomerInfo" type="primary">查看我的信息</mt-button>
+            <mt-button style="margin: 0px 10px;" v-if="!timer" @click="resendVarifyCode" type="primary">重新发送</mt-button>
+            <mt-button style="margin: 0px 10px;" v-else disabled type="primary">{{ timer }}</mt-button>
+            <div style="margin-top: 20px;" class="copyright">利亚方舟技术支持</div>
+        </div>
+    </script>
+
+    <script>
+
+        (function(){
+            var page2 = Vue.component('page-2', {
+                template: '#template-2',
+                data: function(){
+                    return store
+                },
+                methods: {
+                    getCustomerInfo: function(){
+                        http.get('/index.php/CustomerCenter/binding?op=getCustomerInfo', { params: { tel: this.tel, code: this.code } }).then(function (response) {
+                            this.info = response
+                            this.$router.push('/page-3')
+                        }.bind(this))
+                    },
+                    resendVarifyCode: function(){
+                        http.get('/index.php/CustomerCenter/binding?op=getBindingVarifyCode', {params: { tel: this.tel }}).then(function(response){
+                            this.timer = 60;
+                        }.bind(this))
+                    }
+                },
+                created: function () {
+                    if (!this.tel){
+                        this.$router.replace('/page-1')
+                    }
+                }, 
+                mounted: function(){
+                    var interval = setInterval(function(){
+                        if (this.timer <= 0) {
+                            timer = 0
+                        } else {
+                            this.timer --;
+                        }
+                    }.bind(this), 1000)
+                }
+            })
+
+            routers.push({ path: '/page-2', component: page2 });
+        })()
+    </script>
+    <script type="text/x-template" id="template-3">
+        <div class="page">
+            <div class="page-header">
+                <div class="page-header-title">尊敬的利亚方舟客户</div>
+                <div class="page-header-desc">感谢您的支持与信赖, 以下您的基本信息<br>请确认是否与您一致, 如不一致请尽快联系利亚方舟</div>
+            </div>
+            <mt-cell title="姓名" :value="info.contacts_name"></mt-cell>
+            <mt-cell title="企业名称" :value="info.customer_name"></mt-cell>
+            <mt-button style="margin: 20px 10px;" @click="confirm" type="primary">确定, 这是我的信息</mt-button>
+            <mt-button style="margin: 0px 10px;" @click="cancel" type="primary">取消, 这不是我的信息</mt-button>
+            <div style="margin-top: 20px;" class="copyright">利亚方舟技术支持</div>
+        </div>
+    </script>
+
+    <script>
+
+        (function(){
+            
+            var MessageBox = MINT.MessageBox;
+
+            var page3 = Vue.component('page-3', {
+                template: '#template-3',
+                data: function(){
+                    return store
+                },
+                methods: {
+                    confirm: function(){
+                        http.get('/index.php/CustomerCenter/binding?op=confirm', { params: { contacts_id: this.info.contacts_id } }).then(function (response) {
+                            this.$router.replace('/page-4')
+                        }.bind(this))
+                    },
+                    cancel: function(){
+                        http.get('/index.php/CustomerCenter/binding?op=cancel', { params: { contacts_id: this.info.contacts_id } }).then(function (response) {
+                            MessageBox.alert('已记录您的情况。我们将尽快核实并完善您的资料, 给宁造成不便, 十分抱歉')
+                            if (typeof WeixinJSBridge !== 'undefined') {
+                                WeixinJSBridge.call('closeWindow')
+                            } else {
+                                window.close();
+                            }
+                        }.bind(this))
+                    }
+                },
+                created: function () {
+                    if (!this.tel){
+                        this.$router.replace('/page-1')
+                    }
+                }
+            })
+
+            routers.push({ path: '/page-3', component: page3 });
+        })()
+    </script>
+
+<script type="text/x-template" id="template-4">
+    <div class="page">
+        <div class="page-header">
+            <div class="page-header-title">尊敬的利亚方舟客户</div>
+            <div class="page-header-desc">感谢您的支持与信赖, 已完成绑定。您可关闭本页面继续操作了</div>
+        </div>
+        <mt-button style="margin: 20px 10px;" @click="backHome" type="primary">返回</mt-button>
+        <div style="margin-top: 20px;" class="copyright">利亚方舟技术支持</div>
+    </div>
+</script>
+
+
+<script>
+    (function(){
+        var page4 = Vue.component('page-4', {
+            template: '#template-4',
+            methods: {
+                backHome: function () {
+                    // this.$router.replace('/');
+                    window.location.href = "/index.php/CustomerCenter";
+                }
+            }
+        })
+
+        routers.push({ path: '/page-4', component: page4 });
+    })()
+</script>
+
+    <script>
+        
+        var MessageBox = MINT.MessageBox;
+        
+        var http = axios.create({
+            // baseURL: window.location.origin,
+            timeout: 1000
+        })
+        
+        http.interceptors.response.use(
+            function (response) {
+                return new Promise(function (resolve, reject) {
+                    if (!response.data.status) {
+                        resolve(response.data)
+                    } else {
+                        MessageBox.alert(response.data.info).then(function(){
+                            reject(response.data)
+                        })
+                    }
+                })
+            }
+        )
+
+        var router = new VueRouter({
+            routes: routers
+        })
+
+        var vue_app = new Vue({
+            el: '#main',
+            router
+        })
+    </script>
+</body>
+</html>

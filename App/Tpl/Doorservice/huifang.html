@@ -1,0 +1,293 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.combo.select.js" charset="UTF-8"></script>
+<link type="text/css" href="__PUBLIC__/css/combo.select.css" rel="stylesheet">
+
+<style>
+    .screenshot{
+        width:210px;
+        height:210px;
+        background-color:red;
+        float:left;
+        border:1px solid #ccc;
+        border-radius:5px;
+        margin:10px 10px;
+    }
+    
+    .notFloat{
+        text-align:center;
+        clear:both;
+    }
+    
+    .onTheLeft{
+        float:left;
+    }
+</style>
+
+<div class="container">
+    <div class="page-header">
+        <h4>{:L('Add_the_door_needs')}</h4>
+    </div>
+    <div class="row">
+        <div class="span12">
+            <include file="Public:alert" />
+            <form id="form1" action="{:U('huifangbianxie')}" method="post">
+                <input type="hidden" name="id" value="{$vo.id}">
+            <!--  <input type="hidden" name="refer_url" value="{$refer_url}"> -->
+                <table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
+                    <tbody>
+
+                    <tr><th colspan="4">{:L('client_information')}</th></tr>
+                    <tr>
+                        <td class="tdleft" >{:L('The_name_of_the_studio')}:</td>
+                        <td>
+                            <input type="text" name="customer_name" id="customer_name" value="{$vo.customer_name}" disabled>
+                        </td>
+                        <td class="tdleft" >{:L('First_name')}:</td>
+                        <td>
+                            <input type="hidden" name="contacts_id" id="contacts_id">
+                            <input type="text" name="contacts_name" id="contacts_name" value="{$vo.contacts_name}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('First_number')}:</td>
+                        <td>
+                            <input type="text" name="contacts_telephone" id="contacts_telephone" value="{$vo.contacts_telephone}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('Customer_need')}:</td>
+                        <td>
+                            <input type="text" name="client_need" id="client_need" value="{$vo.client_need}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" width="15%">{:L('Studio_contact_address')}:</td>
+                        <td colspan="3">
+                            <input type="text" style="width: 950px" name="address" id="address" value="{$vo.address}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" width="15%">{:L('The_door_type')}:</td>
+                        <td >
+                            <switch name="vo['type']">
+                                <case value="1">{:L('first_the_door')}</case>
+                                <case value="2">{:L('second_the_door')}</case>
+                                <case value="3">{:L('third_the_door')}</case>
+                                <case value="4">{:L('more_the_door')}</case>
+                                <case value="5">更换铂金版</case>
+                            </switch>
+                        </td>
+                        <td class="tdleft" >{:L('SALESMAN')}:</td>
+                        <td>
+                            <input type="text" name="saleman" value="{$vo.saleman}" id="saleman" readonly>
+                        </td>
+                    </tr>
+                    <if condition="$vo['type'] neq 1">
+                        <tr  id="last_tr">
+                            <td class="tdleft" >{:L('LAST_TIME_MAN')}:</td>
+                            <td>
+                                <input type="hidden" name="last_id" id="last_id" value="{$vo.last_id}" />
+                                <input type="text" name="last_man" id="last_man" value="{$vo.last_man}" readonly>
+                            </td>
+                        </tr>
+                    </if>
+                    <tr>
+                        <th colspan="4">{:L('Scheduling')}</th>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('training_teacher')}:</td>
+                        <td>
+                            <input type="hidden" name="tid" value="{$vo.tid}">
+                            <input class="user_input" type="text" value="{$vo.operator_name}" id="operator_name" name="operator_name" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('Training_status')}:</td>
+                        <td>
+                            <select name='status' disabled>
+                                <option value="1" <if condition="$vo['status'] eq 1">selected</if>>{:L('I_arrangements')}</option>
+                                <option value="2" <if condition="$vo['status'] eq 2">selected</if>>{:L('teacher_has_contact')}</option>
+                                <option value="3" <if condition="$vo['status'] eq 3">selected</if>>{:L('in_training')}</option>
+                                <option value="4" <if condition="$vo['status'] eq 4">selected</if>>{:L('training_over')}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('Dispatch_note')}:</td>
+                        <td colspan="3">
+                            <textarea class="span8" rows="3"  name="desc"  readonly>{$vo.desc}</textarea>
+                        </td>
+                    </tr>
+
+                        <tr>
+                            <th colspan="4">{:L('Details_of_the_door')}</th>
+                        </tr>
+                        <tr>
+                            <td class="tdleft" >{:L('visiting_time')}:</td>
+                            <td>
+                                <input type="text" onclick="WdatePicker()" name="remote_time" value="{$vo.remote_time}" readonly>
+                            </td>
+                            <td class="tdleft" >{:L('Departure_Time')}:</td>
+                            <td>
+                                <input type="text" onclick="WdatePicker()" name="remore_time" value="{$vo.remore_time}" readonly>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input name="bargain" type="checkbox" disabled="true" {:($vo['bargain']=='on')?'checked="checked"':''} readonly>{:L('bargain')}&nbsp&nbsp&nbsp&nbsp
+                                <input name="group_photo" type="checkbox" disabled="true" {:($vo['group_photo']=='on')?'checked="checked"':''} readonly>{:L('group_photo')}&nbsp&nbsp&nbsp&nbsp
+                                <input name="final_payment" type="checkbox" disabled="true" {:($vo['final_payment']=='on')?'checked="checked"':''} readonly>{:L('final_payment')}&nbsp&nbsp&nbsp&nbsp
+                                <input name="note" type="checkbox" disabled="true" {:($vo['note']=='on')?'checked="checked"':''} readonly>{:L('note')}&nbsp&nbsp&nbsp&nbsp
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th colspan="4">{:L('Return_visit')}</th>
+                        </tr>
+                        <tr>
+                            <input type="hidden" name="id" value="{$vo.id}" id="customer_id"/>
+                            <td class="tdleft" >{:L('Return_time')}:</td>
+                            <td>
+                                <input type="text" onclick="WdatePicker()" name="return_time" value="{$vo.return_time|default=date('Y-m-d H:i')}">
+                            </td>
+                            <td class="tdleft" >{:L('Return_man')}:</td>
+                            <td>
+                                <input type="text" name="return_man" id="return_man" value="{$vo.return_man|default=session('name')}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft">{:L('Return_status')}:</td>
+                            <td>
+                                <select name="return_status">
+                                    <option value='1' <if condition="$vo['return_status'] eq 1">selected</if>>{:L('estranged')}</option>
+                                    <option value='2' <if condition="$vo['return_status'] eq 2">selected</if>>{:L('lose_contact')}</option>
+                                    <option value='3' <if condition="$vo['return_status'] eq 3">selected</if>>{:L('OK')}</option>
+                                </select>
+                            </td>
+                            <td class="tdleft">{:L('Return_result')}:</td>
+                            <td>
+                                <select name="manyidu">
+                                    <option value="1" <if condition="$vo['manyidu'] eq 1">selected</if>>{:L('great_satisfaction')}</option>
+                                    <option value="2" <if condition="$vo['manyidu'] eq 2">selected</if>>{:L('satisfaction')}</option>
+                                    <option value="3" <if condition="$vo['manyidu'] eq 3">selected</if>>{:L('ordinary')}</option>
+                                    <option value="4" <if condition="$vo['manyidu'] eq 4">selected</if>>{:L('complain')}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft" >{:L('evaluate')}：</td>
+                            <td colspan="3">
+                                <textarea class="span8" rows="3" name="eva" id="desc">{$vo.eva}</textarea>
+                            </td>
+                        </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('SEND_MONEY')}:</td>
+                        <td>
+                            <input type="text" name="send_money" value="{$vo.send_money}">
+                        </td>
+                    </tr>
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td style="text-align:center;" colspan="4">
+                                <input class="btn btn-primary" id="check" type="submit" value="{:L('Save')}"/>
+                                <input class="btn btn-primary check"  type="button" id="save_and_next" value="{:L('SAVE_AND_NEXT')}"/>
+                                <input class="btn" type="reset" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <if condition="$leads['leads_id']"><input type="hidden" name="leads_id" value="{$leads['leads_id']}"/></if>
+            </form> 
+        </div>
+    </div>
+</div>
+
+<div class="hide" id="dialog-message" title="影楼名称">loading...</div>
+<div class="hide" id="dialog-role-list" title="人员选择">loading...</div>
+
+<script type="text/javascript">
+    var identification
+    
+    $(function() {
+        $('#remote_type').comboSelect();
+    });
+    $('#save_and_next').click(function () {
+        $('#form1').attr('action', "{:U('huifangbianxie','is_next=1')}");
+        $("#form1").submit();
+    });
+    //影楼选择
+    $('#customer_name').click(function () {
+        $('#dialog-message').dialog('open');
+        $('#dialog-message').load("/index.php?m=customer&a=listDialog");
+    });
+    $('#dialog-message').dialog({
+        autoOpen: false,
+        modal: true,
+        width: 800,
+        maxHeight: 400,
+        buttons: {
+            "确定": function () {
+                item = $('input:radio[name="customer"]:checked').val();
+                name = $('input:radio[name="customer"]:checked').parent().next().html();
+                contacts_id = $('input:radio[name="customer"]:checked').attr('rel');
+                contacts_name = $('input:radio[name="customer"]:checked').next().attr('value');
+                contacts_telephone = $('input:radio[name="customer"]:checked').next().next().attr('value');
+                address = $('input:radio[name="customer"]:checked').next().next().next().attr('value');
+                create_name = $('input:radio[name="customer"]:checked').next().next().next().next().attr('value');
+                create_user_id = $('input:radio[name="customer"]:checked').next().next().next().next().attr('rel');
+                owner_name = $('input:radio[name="customer"]:checked').next().next().next().next().next().attr('value');
+                owner_user_id = $('input:radio[name="customer"]:checked').next().next().next().next().next().attr('rel');
+
+                $('#customer_name').val(name);
+                $('#customer_id').val(item);
+                $('#contacts_id').val(contacts_id);
+                $('#contacts_name').val(contacts_name);
+                $('#contacts_telephone').val(contacts_telephone);
+                $('#address').val(address);
+                $('[mark=sale]').val(create_name);
+                $('#sale_id').val(create_user_id);
+                $('[mark=teacher]').val(owner_name);
+                $('#teacher_id').val(owner_user_id);
+                
+                $(this).dialog("close");
+            },
+            "关闭": function () {
+                $(this).dialog("close");
+            }
+        },
+        position:["center",100]
+    });
+    
+    //人员选择
+    $('#return_man').click(function(){
+        identification = $(this).attr('identification');
+        $('#dialog-role-list').dialog('open');
+        $('#dialog-role-list').load("{:U('user/listDialog')}");
+    });
+    $("#dialog-role-list").dialog({
+        autoOpen: false,
+        modal: true,
+        width: 800,
+        maxHeight: 400,
+        buttons: { 
+            "确定": function () {
+                var item = $('input:radio[name="owner"]:checked').val();
+                var name = $('input:radio[name="owner"]:checked').parent().next().html();
+                if(item){
+                    $('[identification='+identification+']').val(name);
+                    $('[identification_id='+identification+']').val(item);
+                }
+                $('#return_man').val(name) ;
+                $('#tid').val(item) ;
+                $(this).dialog("close"); 
+            },
+            "关闭": function () {
+                $(this).dialog("close");
+            }
+        },
+        position: ["center", 100]
+    });
+</script>
+<include file="Public:footer" />

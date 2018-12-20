@@ -1,0 +1,32 @@
+<ul class="nav pull-left">
+    <li class="pull-left">
+        {:L('Choose_department')}:
+        <select style="width:auto" name="department" id="department">
+            <option class="all" value="all">{:L('ALL')}</option>
+            <volist name="role_department_res" id="vo">
+                <option value="{$vo.department_id}" <if condition="$zxc['department'] eq $vo['department_id']">selected</if>>{$vo.name}</option>
+            </volist>
+        </select>&nbsp;&nbsp;
+    </li>
+    <li class="pull-left">
+        {:L('Select_the_employee')}:
+        <select style="width:auto" name="sid" id="staffList">
+        </select>&nbsp;&nbsp;
+    </li>
+    <!--<li class="pull-left">
+        {:L('satisfaction_type')}:
+        <select style="width:auto" name="manyidu" id="role">
+            <option class="all" value="0" <if condition="$zxc['manyidu'] eq 0">selected</if> >{:L('ALL')}</option>
+            <option class="all" value="1" <if condition="$zxc['manyidu'] eq 1">selected</if> >{:L('great_satisfaction')}</option>
+            <option class="all" value="2" <if condition="$zxc['manyidu'] eq 2">selected</if> >{:L('satisfaction')}</option>
+            <option class="all" value="3" <if condition="$zxc['manyidu'] eq 3">selected</if> >{:L('ordinary')}</option>
+            <option class="all" value="4" <if condition="$zxc['manyidu'] eq 4">selected</if> >{:L('complain')}</option>
+        </select>&nbsp;&nbsp;
+    </li>-->
+    <li class="pull-left">
+        {:L('option_date')}<input type="text" id="start_time" name="start_time" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate" value="{$zxc.start_time}" style="width: 150px"/>{:L('to')}<input type="text" id="end_time" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" name="end_time" class="Wdate" value="{$zxc.end_time}" style="width: 150px"/>&nbsp;&nbsp;
+    </li>
+    <li class="pull-left">
+        <button type="submit" class="btn">{:L('SEARCH')}</button>
+    </li>
+</ul>

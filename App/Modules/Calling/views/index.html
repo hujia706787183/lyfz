@@ -1,0 +1,146 @@
+<include file="Public:header_uncompatible" />
+<include file="Public:nav" />
+
+{:stylesheet('element-ui')}
+
+<div class="container">
+    <include file="subnav" />
+    <include file="Public:alert" />
+    <div id="app" style="margin-top:16px">
+        <div>
+            <el-form :inline="true">
+                <el-form-item>
+                    <el-select v-model="query.searchType" placeholder="查询字段">
+                        <el-option label="客户名称" value="customer_name"></el-option>
+                        <el-option label="服务费到期时间" value="next_service_fee_date"></el-option>
+                        <el-option label="负责人" value="owner_name"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-date-picker
+                        type="daterange"
+                        v-if="query.searchType == 'next_service_fee_date'"
+                        v-model="query.date"
+                        value-format="yyyy-MM-dd"
+                        type="date"
+                        :picker-options="pickerOptions"
+                        placeholder="选择日期">
+                    </el-date-picker>
+                    <el-input v-else prefix-icon="el-icon-search" placeholder="查询关键字" v-model="query.keyword"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onQuery">查询</el-button>
+                </el-form-item>
+            </el-form>
+            <el-table :data="products" @sort-change="sortChange" v-loading="loading">
+                <el-table-column label="联系人名" prop="contact.name" :formatter="emptyFomatter"></el-table-column>
+                <el-table-column label="电话号码" prop="tel"></el-table-column>
+                <el-table-column label="通话时间" prop="calltime"></el-table-column>
+                <el-table-column label="负责人" prop="answerer.name" ></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="text" size="mini">详情</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination
+                layout="prev, pager, next"
+                :current-page.sync="query.page"
+                :page-size="15"
+                :total="total">
+            </el-pagination>
+        </div>
+    </div>
+</div>
+
+{:javascript('vue:2.5.16', 'element-ui:2.2.2', 'axios:0.18.0', 'jquery-cookie:1.4.1', 'lodash:4.17.5')}
+
+<script src="/Public/js/libs/axios/config.js"></script>
+
+<script>
+    var store = {
+        state: {
+            user: {
+                token: $.cookie('token')
+            }
+        }
+    }
+    var vue_app = new Vue({
+        el: '#app',
+        data: function(){
+            return {
+                loading: false,
+                products: [],
+                total: 0,
+                query: {
+                    page: 1,
+                    orderBy: '',
+                    keyword: '',
+                    searchType: 'customer_name',
+                    date: ''
+                },
+                pickerOptions: {
+                    shortcuts: [{
+                        text: '最近一周',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近一个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近三个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                }
+            }
+        },
+        methods: {
+            onQuery: function () {
+                this.loadData();
+            },
+            loadData: function(){
+                this.loading = true;
+                http.get('/calling/records', {params: this.query}).then(function (page) {
+                    this.products = page.data;
+                    this.total = page.total;
+                    this.loading = false;
+                }.bind(this));
+            },
+            sortChange: function(field) {
+                this.query.orderBy = field.prop;
+            },
+            emptyFomatter: function (row, cloumn){
+                return _.get(row, cloumn.property) || '未知';
+            },
+            goCustomerDetails: function (customer_id) {
+                window.open('/index.php?m=customer&a=view&id=' + customer_id);
+            }
+        },
+        watch: {
+            'query.page': function() {
+                this.loadData();
+            },
+            'query.orderBy': function() {
+                this.loadData();
+            }
+        },
+        created: function () {
+            this.loadData();
+        }
+    });
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,8 @@
+<ul class="nav nav-tabs">
+    <li <if condition='ACTION_NAME == "defaultinfo"'>class="active"</if>><a href="{:U('setting/defaultInfo')}">{:L('BASIC_SYSTEM_SETTING')}</a></li>
+    <li <if condition='ACTION_NAME == "smtp"'>class="active"</if>><a href="{:U('setting/smtp')}">{:L('SMTP_SETTING')}</a></li>
+    <li <if condition='ACTION_NAME == "fields"'>class="active"</if>><a href="{:U('setting/fields')}">{:L('CUSTOMIZING_FIELDS_SETTING')}</a></li>
+    <li <if condition='ACTION_NAME == "setting"'>class="active"</if>><a href="{:U('navigation/setting')}">{:L('SYSTEM_NAVIGATION_SETTING')}</a></li>
+    <li <if condition='ACTION_NAME == "other_setting"'>class="active"</if>><a href="{:U('setting/other_setting')}">其它设置</a></li>
+    <!--<li><a href="{:U('setting/appsetting')}">APP接口配置</a></li>-->
+</ul>

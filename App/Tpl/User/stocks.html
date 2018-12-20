@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/js/WdatePicker.js?t=20140830" type="text/javascript"></script>
+</head>
+<body>
+<h4 align="center">股票合计：{$recordsTotal}</h4>
+<br>
+<table class="table table-hover"  style="width: 50%;" border="solid 1px" align="center">
+   <tr align="center">
+       <th>类型</th>
+       <th>类型id</th>
+       <th>客户</th>
+       <th>用户</th>
+       <th>股票</th>
+       <th>描述</th>
+       <th>创建时间</th>
+       <th>更新时间</th>
+   </tr>
+    <volist name="records" id="record">
+        <tr align="center">
+            <td>{$record.type}</td>
+            <td>{$record.type_id}</td>
+            <td>{$record.customer_name}</td>
+            <td>{$record.name}</td>
+            <td>{$record.stocks}</td>
+            <td>{$record.description}</td>
+            <td>{$record.created_at}</td>
+            <td>{$record.updated_at}</td>
+        </tr>
+    </volist>
+</table>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单打印</title>
+</head>
+<body>
+    <style type="text/css">
+        html, body{
+            margin: 0;
+            padding: 0;
+
+        }
+
+        * {
+            font-family: '{$font_family}'/*'Microsoft Yahei';*/
+            /*font-weight: bold;*/
+        }
+
+        .tg  {border-collapse:collapse; border-spacing:0;margin:0 auto;width: 702px;}
+        .tg tbody td{font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+        .tg th{font-size:14px;font-weight:normal;overflow:hidden;word-break:normal;}
+        .tg .tg-2bn0{font-size:20px;text-align:center;vertical-align:top}
+        .tg .tg-25al{font-size:10px;vertical-align:top}
+        .tg .tg-yw4l{vertical-align:top; position:relative; padding:5px;}
+
+        h3 {
+            margin: 10px;
+        }
+        .tg .tg-yw4l div{
+            display: -webkit-box;
+            margin-top: 3px;
+        }
+        .tg .tg-yw4l div div {
+            -webkit-box-flex: 1;
+            font-size: 10px;
+        }
+        .tg tfoot small {
+            font-size: 10px;
+        }
+        .order_number {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+    </style>
+    <table class="tg">
+        <thead>
+            <tr>
+                <th class="tg-yw4l" colspan="4">
+                    <h3 class="tg-2bn0">利亚方舟科技有限公司 </h3>
+                    <small>地址: 广东省惠州市演达一路华乐弘城1栋22层      电话: 4006-607-608</small>
+                    <div>
+                        <div>单位: {$order_info.customer_name}</div>
+                        <div>姓名: {$order_info.contacts_name}</div>
+                        <div>电话: {$order_info.telephone}</div>
+                        <div>日期: {:Date('Y-m-d', $order_info['pay_time'])}</div>
+                    </div>
+                    <span class="order_number">NO.{$order_info.order_number}</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="tg-yw4l">收款描述</td>
+                <td class="tg-yw4l">支付方式</td>
+                <td class="tg-yw4l">金额</td>
+                <td class="tg-yw4l">开单人</td>
+            </tr>
+            <volist name="receiving_list" id="receiving">
+                <tr>
+                    <td class="tg-yw4l">{$receiving.description}</td>
+                    <td class="tg-yw4l">{$receiving.payment_way}</td>
+                    <td class="tg-yw4l">{$receiving.money}</td>
+                    <td class="tg-yw4l">{$receiving.owner_name}</td>
+                </tr>
+            </volist>
+            <tr>
+                <td class="tg-yw4l" colspan="4">
+                    <div>
+                        <div>付款情况:</div>
+                        <notempty name="order_info.arrearage">
+                            <div>应付: {$order_info.price}</div>
+                            <div>实付 {$order_info.received}</div>
+                            <div>欠款: {$order_info.arrearage}</div>
+                        <else/>
+                            <div>实付 {$order_info.received}</div>
+                        </notempty>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l" colspan="4">
+                    <div>
+                        <div>合计人民币(大写):</div>
+                        <div style="font-family: '华文楷体'; font-size: 18px;">{$order_info.money_cn} 元</div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr >
+                <td colspan="4">
+                    <small>
+                        1.此订单作为收据凭证。2.软件免费升级一年服务。3.以上无正当理由定金不退。4.软件加密锁为核心技术,请妥善保管,遗失不补。
+                    </small>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>

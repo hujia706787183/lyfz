@@ -1,0 +1,181 @@
+<script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+<link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+<!--库存-->
+
+<form id="invenform" method="post"  >
+    <div class="modal fade" id="out" tabindex="-100" role="dialog" aria-labelledby="myModalLabel" style="display:none">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">出库</h4>
+                </div>
+                <div class="modal-body">
+
+                    <input type="hidden" name="inve_id" value="-1">
+                    <div class="form-group">
+                        <label>产品名称：</label>
+                        <select id="product" name="product_id" class="form-control selectpicker" data-live-search="true">
+
+                        </select>&nbsp;
+                    </div>
+
+                    <div class="form-group">
+                        <label>经手人：</label>
+                        <select id="user" name="user_id" class="form-control selectpicker" data-live-search="true">
+                        </select>&nbsp;
+                    </div>
+
+                    <div class="form-group">
+                        <label> 出库数量：</label>
+                        <input type="text" class="form-control" name="mun" >
+                    </div>
+                    <div class="form-group">
+                        <label> 出库时间：</label>
+                        <input type="text" class="form-control" name="time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">
+                    </div>
+                    <div class="form-group"
+                    >
+                        <label>备注说明：</label>
+                        <input type="text" class="form-control" id="smsRechargeFormRemarks" name="description" >
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button  type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="save_smsRechargeForm">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="invenform1" method="post"  >
+    <div class="modal fade" id="put" tabindex="-100" role="dialog" aria-labelledby="myModalLabel" style="display:none">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">入库</h4>
+                </div>
+                <div class="modal-body">
+                    <form >
+                        <input type="hidden" name="inve_id" value="1">
+                        <div class="form-group">
+                            <label>产品名称：</label>
+                            <select id="put_product_id" name="product_id" class="form-control selectpicker" data-live-search="true">
+
+                            </select>&nbsp;
+                        </div>
+
+                        <div class="form-group">
+                            <label>经手人：</label>
+                            <select id="put_user_id" name="user_id" class="form-control selectpicker" data-live-search="true">
+                            </select>&nbsp;
+                        </div>
+
+                        <div class="form-group">
+                            <label> 入库数量：</label>
+                            <input type="text" class="form-control" name="mun" >
+                        </div>
+                        <div class="form-group">
+                            <label> 入库时间：</label>
+                            <input type="text" class="form-control" name="time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" >
+                        </div>
+                        <div class="form-group">
+                            <label>备注说明 ：</label>
+                            <input  type="text" class="form-control" i name="description" >
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button  type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="save_smsRechargeForm1">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    function put() {
+        $("#put").modal("show");
+    }
+    function out() {
+        $("#out").modal("show");
+    }
+
+    $.get('/api.php/user/getRoleList').then(function (response) {
+        var options = '';
+        $.each(response.data, function (k, v) {
+            options += '<option value="'+ v.role_id +'">'+ v.username + '  (' + v.department_name+ '-' + v.position_name +')</option> '
+        });
+        $("#user").html(options);
+        $('#user').selectpicker('refresh');
+    });
+
+    $.get('/api.php/product/getlist?category_id=7').then(function (response) {
+
+        var options = '';
+        $.each(response.data.product_list, function (k, v) {
+            options += '<option value="'+ v.product_id +'">'+ v.name + ' </option> '
+        });
+
+        $("#product").html(options);
+        $('#product').selectpicker('refresh');
+    });
+
+    $.get('/api.php/user/getRoleList').then(function (response) {
+        var options = '';
+        $.each(response.data, function (k, v) {
+            options += '<option value="'+ v.role_id +'">'+ v.username + '  (' + v.department_name+ '-' + v.position_name +')</option> '
+        });
+        $("#put_user_id").html(options);
+        $('#put_user_id').selectpicker('refresh');
+    });
+
+    $.get('/api.php/product/getlist?category_id=7').then(function (response) {
+
+        var options = '';
+        $.each(response.data.product_list, function (k, v) {
+            options += '<option value="'+ v.product_id +'">'+ v.name + ' </option> '
+        });
+
+        $("#put_product_id").html(options);
+        $('#put_product_id').selectpicker('refresh');
+    });
+
+
+    $('#save_smsRechargeForm').on('click', function () {
+        var inventory = $('#invenform').serialize();
+        $.ajax({
+            url:"{:U('Product/output')}",
+            type:"POST",
+            data:inventory,
+            dataType:"json",
+            success: function (info) {
+                if(info.code =10000){
+                    alert(info.msg);
+                    window.location.href='/index.php?m=product&a=inventory';return;
+                }
+                alert('出货,请从新添加数据');return;
+            }
+        });
+    });
+
+    $('#save_smsRechargeForm1').on('click', function () {
+        var inventory = $('#invenform1').serialize();
+        $.ajax({
+            url:"{:U('Product/output')}",
+            type:"POST",
+            data:inventory,
+            dataType:"json",
+            success: function (info) {
+                if(info.code=10000){
+                    alert(info.msg);
+                    window.location.href='/index.php?m=product&a=inventory';
+                }
+            }
+
+        });
+    });
+</script>

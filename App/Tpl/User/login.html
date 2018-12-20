@@ -1,0 +1,109 @@
+<include file="Public:header_uncompatible" />
+<style type="text/css">
+
+body{
+    background-color: #fafafa;
+}
+
+.panel-primary .panel-heading small {
+    color: #fff;
+}
+
+.fa {
+    width: 18px;
+}
+
+.form-group {
+    margin: 28px;
+}
+
+.login-form {
+    margin-top: 0px;
+}
+</style>
+<body>
+
+<div class="container">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default" >
+            <div class="panel-heading">
+                    <h3>{:L('USER_LOGIN')}<small> - {:C('defaultinfo.name')}</small></h3>
+            </div>
+            
+            <div class="panel-body">
+                <h1 style="text-align:center;line-height: 200px;">
+                    欢迎回来
+                </h1>
+                <div class="bg-warning">
+                    <include file="Public:alert" />
+                </div>
+                
+                <form class="form form-horizontal login-form" method="post">
+                    <div class="form-group">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                <input type="text" name="name" class="form-control" placeholder="{:L('USER_NAME')}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                <input type="password" name="password" class="form-control" placeholder="{:L('PASSWORD')}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10 col-md-offset-1">
+                            <input id="remember-me" type="checkbox" name="autologin"/>
+                            <label for="remember-me">{:L('AUTO_LOGIN_IN_THREE_DAYS')}</label>
+                            <a class="pull-right" href="{:U('user/lostpw')}">{:L('FORGET_PASSWORD')}</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10 col-md-offset-1">
+                            <input name="submit" class="btn btn-primary btn-block" type="submit" value="{:L('LOGIN')}"/>
+                        </div>
+                    </div>
+                    <hr>
+                </form>
+                <p style="text-align:center">
+                    <small>{:L('RIGHTS')}</small>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="announcement-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">公告</h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script type="text/javascript">
+(function($){
+    $('#announcement-list a').on('click', function(){
+        var content = $(this).find('.content').html(),
+            $modal = $('#announcement-modal');
+
+        $modal.find('.modal-body').html(content);
+
+        $modal.modal();
+    });
+})(jQuery)
+</script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
+
+<style>
+    .screenshot{
+        width:110px;
+        height:110px;
+        background-color:red;
+        float:left;
+        border:1px solid #ccc;
+        border-radius:5px;
+        margin:10px 10px;
+    }
+    
+    .notFloat{
+        text-align:center;
+        clear:both;
+    }
+    
+    .onTheLeft{
+        float:left;
+    }
+</style>
+
+<div class="container">
+	<div class="page-header">
+        <h4>{:L('Check_the_door_chance')}</h4>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<include file="Public:alert" />
+            <table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
+                    <tbody>
+                    <tr><th colspan="4">{:L('client_information')}</th></tr>
+                    <tr>
+                        <td class="tdleft" >{:L('The_name_of_the_studio')}:</td>
+                        <td>
+                            <input type="text" name="customer_name" id="customer_name" value="{$vo.customer_name}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('First_name')}:</td>
+                        <td>
+                            <input type="hidden" name="contacts_id" id="contacts_id">
+                            <input type="text" name="contacts_name" id="contacts_name" value="{$vo.contacts_name}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('First_number')}:</td>
+                        <td>
+                            <input type="text" name="contacts_telephone" id="contacts_telephone" value="{$vo.contacts_telephone}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('Customer_need')}:</td>
+                        <td>
+                            <input type="text" name="client_need" id="client_need" value="{$vo.client_need}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" width="15%">{:L('Studio_contact_address')}:</td>
+                        <td colspan="3">
+                            <input type="text" style="width: 950px" name="address" id="address" value="{$vo.address}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" width="15%">{:L('The_door_type')}:</td>
+                        <td >
+                            <switch name="vo['type']">
+                                <case value="1">{:L('first_the_door')}</case>
+                                <case value="2">{:L('second_the_door')}</case>
+                                <case value="3">{:L('third_the_door')}</case>
+                                <case value="4">{:L('more_the_door')}</case>
+                                <case value="5">更换铂金版</case>
+                            </switch>
+                        </td>
+                        <td class="tdleft" >{:L('SALESMAN')}:</td>
+                        <td>
+                            <input type="text" name="saleman" value="{$vo.saleman}" id="saleman" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('Saleman')}:</td>
+                        <td>
+                            <input type="text" name="submitter" value="{$vo.submitter}"  readonly>
+                        </td>
+                        <if condition="$vo['type'] neq 1">
+                            <td class="tdleft" >{:L('LAST_TIME_MAN')}:</td>
+                            <td>
+                                <input type="hidden" name="last_id" id="last_id" value="{$vo.last_id}" />
+                                <input type="text" name="last_man" id="last_man" value="{$vo.last_man}" readonly>
+                            </td>
+                        </if>
+                    </tr>
+                    <tr>
+                        <th colspan="4">{:L('Scheduling')}</th>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('training_teacher')}:</td>
+                        <td>
+                            <input type="hidden" name="tid" value="{$vo.tid}">
+                            <input class="user_input" type="text" value="{$vo.operator_name}" id="operator_name" name="operator_name" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('Training_status')}:</td>
+                        <td>
+                            <switch name="vo['status']">
+                                <case value="1">{:L('I_arrangements')}</case>
+                                <case value="2">{:L('teacher_has_contact')}</case>
+                                <case value="3">{:L('in_training')}</case>
+                                <case value="4">{:L('training_over')}</case>
+                                <case value="5">{:L('nonprogrammable')}</case>
+                                <default/>{:L('not_available')}
+                            </switch>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('Dispatch_note')}:</td>
+                        <td colspan="3">
+                            <textarea class="span8" rows="3"  name="desc"  readonly>{$vo.desc}</textarea>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th colspan="4">{:L('Details_of_the_door')}</th>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('visiting_time')}:</td>
+                        <td>
+                            <input type="text" name="remote_time" value="{$vo.remote_time}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('Departure_Time')}:</td>
+                        <td>
+                            <input type="text" name="remore_time" value="{$vo.remore_time}" readonly>
+                        </td>
+                    </tr>
+                    <notempty name="customerFile">
+                    <tr>
+                        <td  class="tdleft" style="width: 120px;">
+                            合同：
+                        </td>
+                        <td colspan="3">
+                            <volist name="customerFile" id="file">
+                                <div class="onTheLeft">
+                                    <a href="{$file.file_path}" target="_blank">
+                                        <div class="screenshot" style="background:url({$file.file_path}); background-size:cover;"></div>
+                                    </a>
+                                </div>
+                            </volist>
+                        </td>
+                    </tr>
+                    </notempty>
+                    <notempty name="groupPhoto">
+                    <tr>
+                        <td  class="tdleft" style="width: 120px;">
+                            合影：
+                        </td>
+                        <td colspan="3">
+                            <volist name="groupPhoto" id="photo">
+                                <div class="onTheLeft">
+                                    <a href="{$photo.file_path}" target="_blank">
+                                        <div class="screenshot" style="background:url({$photo.file_path}); background-size:cover;"></div>
+                                    </a>
+                                </div>
+                            </volist>
+                        </td>
+                    </tr>
+                    </notempty>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input name="bargain" disabled type="checkbox"  {:($vo['bargain']=='on')?'checked="checked"':''} >{:L('bargain')}&nbsp&nbsp&nbsp&nbsp
+                            <input name="group_photo" disabled type="checkbox" {:($vo['group_photo']=='on')?'checked="checked"':''} >{:L('group_photo')}&nbsp&nbsp&nbsp&nbsp
+                            <input name="whether_group" disabled type="checkbox" {:($vo['whether_group']=='on')?'checked="checked"':''} >{:L('whether_group')}&nbsp&nbsp&nbsp&nbsp
+                            <input name="final_payment" disabled type="checkbox" {:($vo['final_payment']=='on')?'checked="checked"':''} >{:L('final_payment')}&nbsp&nbsp&nbsp&nbsp
+                            <input name="note" disabled type="checkbox" {:($vo['note']=='on')?'checked="checked"':''} >{:L('note')}&nbsp&nbsp&nbsp&nbsp
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">{:L('Return_visit')}</th>
+                    </tr>
+                    <tr>
+                        <input type="hidden" name="id" value="{$vo.id}" id="customer_id"/>
+                        <td class="tdleft" >{:L('Return_time')}:</td>
+                        <td>
+                            <input type="text" name="return_time" value="{$vo.return_time}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('Return_man')}:</td>
+                        <td>
+                            <input type="text" name="return_man" value="{$vo.return_man}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft">{:L('Return_status')}:</td>
+                        <td>
+                            <switch name="vo['return_status']">
+                                <case value="1">{:L('estranged')}</case>
+                                <case value="2">{:L('lose_contact')}</case>
+                                <case value="3">{:L('OK')}</case>
+                                <default/>{:L('not_available')}
+                            </switch>
+                        </td>
+                        <td class="tdleft">{:L('Return_result')}:</td>
+                        <td>
+                            <switch name="vo['manyidu']">
+                                <case value="1">{:L('great_satisfaction')}</case>
+                                <case value="2">{:L('satisfaction')}</case>
+                                <case value="3">{:L('ordinary')}</case>
+                                <case value="4">{:L('complain')}</case>
+                                <default/>{:L('not_available')}
+                            </switch>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('evaluate')}：</td>
+                        <td colspan="3">
+                            <textarea class="span8" rows="3" name="eva" id="eva" readonly>{$vo.eva}</textarea>
+                            <empty name="vo.onsiteservice_customer_id">
+                                <a class="btn btn-default btn-lg" href="{:U('getCustomerAnswer',['id'=>$vo['id']])}" role="button" disabled>查看客户答题情况</a>
+                            <else/>
+                                <a class="btn btn-default btn-lg" href="{:U('getCustomerAnswer',['id'=>$vo['id']])}" role="button">查看客户答题情况</a>
+                            </empty>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >{:L('SEND_MONEY')}:</td>
+                        <td>
+                            <input type="text" name="send_money" value="{$vo.send_money}">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th colspan="4">{:L('RETURN_VERIFY')}</th>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >发放时间:</td>
+                        <td>
+                            <input type="text" name="verifier_time" value="{$vo.verifier_time}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('VERIFIER')}:</td>
+                        <td>
+                            <input type="text" name="verifier" value="{$vo.verifier}" id="verifier" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >实发金额:</td>
+                        <td>
+                            <input type="text" name="actual_money" value="{$vo.actual_money}" readonly>
+                        </td>
+                        <td class="tdleft" >{:L('SEND_STATUS')}:</td>
+                        <td>
+                            <switch name="vo['send_status']">
+                                <case value="1">{:L('ISSUED')}</case>
+                                <case value="2">{:L('NOT_ISSUE')}</case>
+                                <case value="3">可发放</case>
+                                <default/>{:L('not_available')}
+                            </switch>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >备注:</td>
+                        <td colspan="3">
+                            <textarea class="span8" rows="3" name="send_remark" disabled>{$vo.send_remark}</textarea>
+                        </td>
+                    </tr>
+                    </tbody>
+                <tfoot>
+                    <tr>
+                        <td style="text-align:center;" colspan="4">
+                            <input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+		</div>
+	</div>
+</div>
+
+<include file="Public:footer" />

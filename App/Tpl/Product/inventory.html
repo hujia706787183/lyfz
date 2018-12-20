@@ -1,0 +1,225 @@
+
+<include file="Public:header" />
+<style>
+  .btn{
+    z-index:13891204;
+  }
+</style>
+<script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+<link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+
+<div class="container">
+  <!--<div class="page-header">-->
+  <!--<h4>{:L('PRODUCT_LIST')}</h4>-->
+  <!--</div>-->
+
+  <div class="page-header" style="border:none; font-size:14px;">
+    <ul class="nav nav-tabs">
+      <li><a href="{:U('product_list')}"><img src="__PUBLIC__/img/task_checked2.png"/> &nbsp;{:L('PRODUCT_LIST')} </a></li>
+
+      <volist name="extra_actions" id="actions">
+        <li>
+          <a href="{:U($key)}">{$actions.label}</a>
+        </li>
+      </volist>
+
+      <li ><a href="{:U('index')}"><img src="__PUBLIC__/img/shangji.png"/>&nbsp; 产品管理</a></li>
+      <li class="active"><a href="{:U('inventory')}"><img src="__PUBLIC__/img/shangji.png"/>&nbsp; 仓库管理</a></li>
+    </ul>
+  </div>
+
+  <include file="Public:alert" />
+  <div class="row">
+    <div class="span10">
+      <div class="pull-left">
+        <ul class="nav pull-left">
+          <li class="pull-left">
+            <a id="delete" class="btn" style="margin-right: 5px;"><i class="icon-remove"></i>{:L('DELETE')}</a>
+          </li>
+          <li class="pull-left">
+            <form class="form-inline"  action="{:U('product/inventory')}" method="get">
+              <ul class="nav pull-left">
+                <li class="pull-left">
+                  &nbsp;&nbsp;
+                  <select id="field" style="width:auto" onchange="changeCondition()" name="field">
+                    <option class="text" value="all">全部</option>
+                    <option class="text" value="product.name">产品名称</option>
+                    <option class="text" value="inventory.description">描述</option>
+                    <option class="text" value="user.name">负责人</option>
+                    <option class="date" value="update_time">{:L('MODIFICATION_TIME')}</option>
+                  </select>&nbsp;&nbsp;
+                </li>
+                <li id="conditionContent" class="pull-left">
+                  <select id="condition" style="width:auto" name="condition" onchange="changeSearch()">
+                    <option value="contains">{:L('INCLUDE')}</option>
+                    <option value="start_with">{:L('BEGINNING_CHARACTER')}</option>
+                    <option value="end_with">{:L('TERMINATION_CHARACTER')}</option>
+                    <option value="is_empty">{:L('MANDATORY')}</option>
+                  </select>&nbsp;&nbsp;
+                </li>
+                <li id="searchContent" class="pull-left">
+                  <input id="search" type="text" class="input-medium search-query" name="search"/>&nbsp;&nbsp;
+                </li>
+                <li class="pull-left">
+                  <if condition="isset($_GET['category_id'])"><input name="category_id" type="hidden" value="{$_GET['category_id']}" /></if>
+                  <input type="hidden" name="m" value="product"/>
+                  <input type="hidden" name="a"  value="inventory"/>
+                  <input type="hidden" name="daochu" id="daochu" value=""/>
+                  <input type="hidden" name="current_page" id="current_page" value=""/>
+                  <input type="hidden" name="export_limit" id="export_limit" value=""/>
+                  <if condition="$Think.get.by neq null"><input type="hidden" name="by" value="{$Think.get.by}"/></if>
+                  <button type="submit"  class="btn"> <img src="__PUBLIC__/img/search.png"/>  {:L('SEARCH')}</button>
+                </li>
+                <!--<li class="pull-left">
+                    <a href="http://5kcrm.com/index.php?m=doc&a=index&id=28" target="_blank" style="font-size: 12px;color: rgb(255, 102, 0);padding-left:10px;line-height: 25px;"><img width="20px;" src="__PUBLIC__/img/help.png"/> {:L('HELP')}</a>
+                </li>-->
+              </ul>
+            </form>
+          </li>
+        </ul>
+      </div>
+      <div class="pull-right">
+        <button  class="btn btn-primary" href="javascript:;"  onclick="put()">&nbsp; 入库</button>&nbsp;
+        <button  class="btn btn-primary" href="javascript:;" tabindex="1000" onclick="out()">&nbsp; 出库</button>&nbsp;
+      </div>
+    </div>
+    <div class="span10">
+      <form id="form1" action="{:U('')}" method="Post">
+        <table class="table table-hover table-striped table_thead_fixed">
+
+          <thead>
+          <tr id="childNodes_num">
+            <th style="width:5%;"><input class="check_all" id="check_all" type="checkbox" /> &nbsp;</th>
+
+
+            <volist name="inven_array" id="vo">
+              <th>{$vo.name}</th>
+            </volist>
+
+
+          </tr>
+          </thead>
+
+
+          <tbody>
+          <volist name="inve" id="vo">
+            <tr>
+              <td>
+                <input name="inventory_id[]" class="check_list" type="checkbox" value="{$vo.inventory_id}"/>
+              </td>
+              <td><img src="__PUBLIC__/img/default_img.png" class="thumbnail thumb45"></td>
+              <td>{$vo.name}</td>
+              <td>{$vo.create_time}</td>
+              <td>{$vo.out_put}</td>
+              <td>{$vo.sum}</td>
+              <td>{$vo.user_name}</td>
+              <td>{$vo.description}</td>
+            </tr>
+          </volist>
+          </tbody>
+          <tfoot>
+          <tr>
+            <td colspan="8">
+              {$paging}<include file="Public:listrows" />
+            </td>
+          </tr>
+          </tfoot>
+          </if>
+        </table>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<include file="put" />
+
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var url = "{:U('product/inventory')}";
+    var limit_size = 1000;
+    var count = {$count};
+    var i = 1;
+
+    function remainTime(){
+        var id_array = new Array();
+        $("input[class='check_list']:checked").each(function() {
+            id_array.push($(this).val());
+        });
+        $.get(url,function(data){
+            if(data.data == 0){
+                if((i-1)*limit_size < count){
+                    $("#act").val('excel');
+                    $("#daochu").val(id_array);
+                    $("#current_page").val(i);
+                    $("#export_limit").val(limit_size);
+                    $("#searchForm").submit();
+                    setTimeout("remainTime()",1000);
+                    i++;
+                }else{
+                    $("#act").val('');
+                    i = 1;
+                }
+            }else{
+                setTimeout("remainTime()",1000);
+            }
+        }, 'json');
+    }
+
+    $("#dosearch").click(function(){
+        result = checkSearchForm();
+        if(result) $("#act").val('search');$("#searchForm").submit();
+    });
+    $("#check_all").click(function(){
+        $("input[class='check_list']").prop('checked', $(this).prop("checked"));
+    });
+    $('#delete').click(function(){
+        if(confirm('{:L('Confirm_to_delete')}')){
+
+            $("#form1").attr('action', '{:U("product/invendelete")}');
+            $("#form1").submit();
+
+        }
+    });
+
+    $(function(){
+
+
+        $("#category_add").click(function(){
+            $('#dialog-category-add').dialog('open');
+            $('#dialog-category-add').load('{:U("product/inventory_edit")}');
+        });
+        $("#check_all").click(function(){
+            $("input[class='check_list']").prop('checked', $(this).prop("checked"));
+        });
+    });
+
+
+
+    if ('{$list}'){
+        console.log(1);
+        $nodes_num = document.getElementById("childNodes_num").children.length;
+        $("#td_colspan").attr('colspan',$nodes_num);
+    }
+</script>
+<include file="Public:footer" />
+<code class="language-html"><a class="button button-small border-yellow" href="JavaScript:vol()" onclick="delAll()">批量删除</a>
+  <input type="checkbox" class="plsc" name="id" value="{$v.id}" />
+  <script type="text/javascript">
+      //批量删除
+      function delAll(){
+          var idstr="";
+          $(".plsc").each(function(i,x){
+              if(x.checked){
+                  idstr=idstr+x.value+",";
+              }
+          })
+          alert(idstr);
+          $.get("{:U('coupon/coupon_delall')}",{"ids":idstr},function(d){
+              location.href="{:U('Admin/coupon/coupon')}";
+          });
+      }
+  </script></code>

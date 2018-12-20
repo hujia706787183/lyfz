@@ -1,0 +1,386 @@
+<include file="Public:header" />
+
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<style>
+    .store{
+        width: 29%;
+        height: 800px;
+        float:left;
+    }
+    #mapContainer{
+        width: 70%;
+        float: left;
+        margin-right: 1%; 
+    }
+    .address_name{
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        overflow:hidden;
+    }
+</style>
+<div class="container">
+	<div class="page-header" style="border:none; font-size:14px;">
+        <ul class="nav nav-tabs">
+            <li><a href="{:U('index')}"><img src="__PUBLIC__/img/shangji.png"/>&nbsp; {:L('Submit_the_door')}</a></li>
+            <li class="active"><a href="{:U('scheduling')}"><img src="__PUBLIC__/img/task_checked2.png"/> &nbsp; {:L('Scheduling')}</a></li>
+            <li><a href="{:U('theDoorServer')}"><img src="__PUBLIC__/img/tongji.png"/> &nbsp; {:L('door_to_door')}</a></li>
+            <li><a href="{:U('visit')}"><img src="__PUBLIC__/img/contacts_icon.png"/> &nbsp; {:L('Return_visit')}</a></li>
+            <li><a href="{:U('verify')}"><img src="__PUBLIC__/img/task_checked2.png"/>  {:L('RETURN_VERIFY')}</a></li>
+            <li><a href="{:U('aboveStatistics')}"><img src="__PUBLIC__/img/shangji.png"/> &nbsp; {:L('door_of_statistical')}</a></li>
+        </ul>
+	</div>
+    
+	<include file="Public:alert" />
+	<div class="row">
+		<div class="span12">
+			<ul class="nav pull-left">
+				<li class="pull-left">
+				<form class="form-inline" action="{:U('scheduling')}" method="get">
+					<ul class="nav pull-left">
+						<li class="pull-left">
+                            {:L('Saleman')}:
+							    <input type="text" cid="select" id="saleman" name="saleman" value="{:L('Onclick')}" style="width:100px" readonly>
+                                <input type="hidden" id="sid" name="sid">
+						</li>
+                        <li class="pull-left">
+                                        {:L('address')}:
+                            <input type="text" name="address" style="width:100px;" cid="select" id="address" value="{$search.address}">
+                            <input type="hidden" name="soso" value="soso">
+                            <input type="hidden" name="m" value="{:MODULE_NAME}">
+                            <input type="hidden" name="a" value="scheduling">
+            						</li>
+                        <li class="pull-left">
+                            {:L('The_name_of_the_studio')}:
+                            <input type="text" name="customer_name" style="width:100px;" cid="select" id="customer_name" value="{$search.customer_name}">
+                        </li>
+
+                        <li class="pull-left">
+                            {:L('Reason_for_training')}:
+							<select style="width:auto" cid="select" name="type" cid="select" id="type">
+                                <option class="text" value="0" <if condition="$search['type'] eq 0">selected</if>>{:L('ALL')}</option>
+                                <option class="text" value="1" <if condition="$search['type'] eq 1">selected</if>>{:L('first_the_door')}</option>
+                                <option class="text" value="2" <if condition="$search['type'] eq 2">selected</if>>{:L('second_the_door')}</option>
+                                <option class="text" value="3" <if condition="$search['type'] eq 3">selected</if>>{:L('third_the_door')}</option>
+								<option class="text" value="4" <if condition="$search['type'] eq 4">selected</if>>{:L('more_the_door')}</option>
+							</select>
+						</li>
+                        <li class="pull-left">
+                            {:L('Training_status')}:
+							<select style="width:auto" cid="select" name="status" cid="select" id="status">
+                                <option class="text" value="5" <if condition="$search['status'] eq 5">selected</if>>{:L('nonprogrammable')}</option>
+                                <option class="text" value="2" <if condition="$search['status'] eq 2">selected</if>>已联系</option>
+                                <option class="text" value="1" <if condition="$search['status'] eq 1">selected</if>>{:L('I_arrangements')}</option>
+                                <option class="text" value="0" <if condition="$search['status'] eq 0">selected</if>>{:L('ALL')}</option>
+                            </select>
+						</li>
+                        <li class="pull-left">
+                            {:L('training_teacher')}:			
+								<input type="text" id="operator_name" identification="faultService" style="width:100px" name="operator_name" cid="select" value="{:L('Onclick')}" readonly>
+                                <input type="hidden"  id="tid" identification_id="faultService" name="tid">
+						</li>
+                        <li class="pull-left">
+                            <button type="submit" class="btn"> <img src="__PUBLIC__/img/search.png"/>   {:L('SEARCH')}</button>
+                        </li>
+                    </ul>
+				</form>
+				</li>
+			</ul>
+		</div>
+
+	    <div class="span12">
+            <table class="table table-hover table-striped" style="table-layout:fixed; " id="sample2">
+                <tr>
+                    <th style="width: 30px">{:L('List')}</th>
+                    <th width="200px"><b>{:L('The_name_of_the_studio')}</b></th>
+                    <th><b>&nbsp;&nbsp;&nbsp;{:L('address')}&nbsp;&nbsp;&nbsp;</b></th>
+                    <th><b>{:L('software_version')}</b></th>
+                    <th><b>客户姓名</b></th>
+                    <th><b>电话</b></th>
+                    <th><b>{:L('Reason_for_training')}</b></th>
+                    <th><b>{:L('SALESMAN')}</b></th>
+                    <th><b>{:L('Studio_to_the_teacher')}</b></th>
+                    <th><b>安排状态</b></th>
+                    <th>{:L('Operation')}</th>
+                </tr>
+
+                <div id="textData">
+                    <volist name="list" id="vo">
+                        <tr class="ajaxEmpty" align="center" style="white-space:nowrap;">
+                            <td>{$i}</td>
+                            <td style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden;" title="{$vo.customer_name}">
+                                <a href="{:U('customer/view')}&id={$vo.customer_id}" class="uname" uname="{$vo.customer_name}">{$vo.customer_name}</a>
+                            </td>
+                            <td class="address_name" address="{$vo.address}" title="{$vo.address}">{$vo.address}</td>
+                            <td style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden;" class="ruanjian" title="{$vo.product_name}">{$vo.product_name} <!--软件版本--></td>
+                            <td>{$vo.contacts_name}</td>
+                            <td>{$vo.contacts_telephone}</td>
+                            <td style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">
+                              <switch name="vo['type']">
+                                  <case value="1">{:L('first_the_door')}</case>
+                                  <case value="2">{:L('second_the_door')}</case>
+                                  <case value="3">{:L('third_the_door')}</case>
+                                  <case value="4">{:L('more_the_door')}</case>
+                              </switch>
+                            </td>
+                            <td style="white-space:nowrap;text-overflow:ellipsis;overflow:hidden;" class="saleman" title="{$vo.saleman}">{$vo.saleman}</td>
+                            <td style="width:150px;">{$vo.operator_name}</td>
+
+                            <td style="width:150px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">
+                                <if condition="$vo.status neq ''">
+                                    <switch name="vo['status']">
+                                        <case value="5">{:L('nonprogrammable')}</case>
+                                        <case value="1">{:L('I_arrangements')}</case>
+                                        <case value="2">已联系</case>
+                                        <case value="3">{:L('in_training')}</case>
+                                        <case value="4">{:L('training_over')}</case>
+                                    </switch>
+                                    <else/>{:L('not_available')}
+                                </if>
+                            </td>
+                            <td style="width:150px;">
+                                <a href="{:U('remoteServiceView',array('id'=>$vo['id']))}">{:L('examine')}</a>
+                                <a href="{:U('schedu_update',array('id'=>$vo['id']))}">{:L('compile')}</a>
+                            </td>
+                        </tr>
+                    </volist>
+                </div>
+	        </table>
+            <b><center id="count">{$page}</center></b>
+            <include file="Public:listrows" />
+	    </div>
+    </div>
+<div class="hide" id="dialog-role-list" title="人员选择">loading...</div>
+<div class="hide" id="dialog-role-result" title="人员选择">loading...</div>
+
+
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xrICWNuDGQwoI32qEGHuILYMcw0zsTW2"></script>
+<script>
+
+    $('[id=operator_name]').click(function(){
+        identification = $(this).attr('identification');
+        $('#dialog-role-list').dialog('open');
+        $('#dialog-role-list').load("{:U('user/listDialog')}");
+    });
+    $("#dialog-role-list").dialog({
+        autoOpen: false,
+        modal: true,
+        width: 800,
+        maxHeight: 400,
+        buttons: { 
+            "确定": function (mak) {
+                var item = $('input:radio[name="owner"]:checked').val();
+                var name = $('input:radio[name="owner"]:checked').parent().next().html();
+                if(item){
+                    $('#operator_name').val(name);
+//                    $('[identification_id='+identification+']').val(item);
+                    $('#tid').val(item) ;
+                }
+//                people()
+                $(this).dialog("close");
+            },
+            "关闭": function () {
+                $(this).dialog("close");
+            }
+        },
+        position: ["center", 100]
+    });
+
+    $('[id=saleman]').click(function(){
+        $('#dialog-role-result').dialog('open');
+        $('#dialog-role-result').load("{:U('user/listDialog')}");
+    });
+    $("#dialog-role-result").dialog({
+        autoOpen: false,
+        modal: true,
+        width: 800,
+        maxHeight: 400,
+        buttons: { 
+            "确定": function (org) {
+                var item = $('input:radio[name="owner"]:checked').val();
+                var name = $('input:radio[name="owner"]:checked').parent().next().html();
+                if(item){
+                    $('#saleman').val(name);//写入
+                    $('#sid').val(item);//执行不下去
+                }
+//                people()
+
+                $(this).dialog("close"); //关闭不掉
+
+            },
+            "关闭": function () {
+                $(this).dialog("close");
+            }
+        },
+        position: ["center", 100]
+    });
+    
+// 初始化地图
+    var map = new BMap.Map("mapContainer");          // 创建地图实例
+    var point = new BMap.Point(105,32);  // 创建点坐标
+    var arr = [];
+    var data = []
+    var trList = []
+    var unameList = []
+    var image = ''
+    map.centerAndZoom(point,5);
+    map.enableScrollWheelZoom(true);
+    var myGeo = new BMap.Geocoder();
+    loadmap() ;
+
+    function staff_init(arr) {
+        for (let i = 0; i < arr.length; i++) {
+//            var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(200,103));
+            let myIcon = new BMap.Icon(arr[i].img, new BMap.Size(30,30));
+            let point = new BMap.Point(parseFloat(arr[i].y),parseFloat(arr[i].x));
+            let marker = new BMap.Marker(point,{
+                icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
+                    scale: 1.5,//图标缩放大小
+                    fillColor: "orange",//填充颜色
+                    fillOpacity: 0.8//填充透明度
+                })
+            });  // 创建标注
+            map.addOverlay(marker);
+            marker.setLabel(new BMap.Label(arr[i].label,{offset:new BMap.Size(-13,-15)}));
+            myGeo.getLocation(new BMap.Point(point), function(rs){
+                if (rs){
+                    var marker2 = new BMap.Marker(point,{icon:myIcon});  // 创建标注
+                    map.addOverlay(marker2);              // 将标注添加到地图中
+                }
+            });
+        }
+    }
+
+function loadmap(){
+    trList.splice(0,trList.length);
+    unameList.splice(0,unameList.length);
+    arr.splice(0, arr.length);
+    address_name = []
+    $(".address_name").each(function(){
+        trList.push($(this).attr('address').replace(/\s/g,''))
+    });
+    var uname = document.getElementsByClassName('uname');
+    // 1 查询是否有人打卡
+//    $.ajax({
+//        type:"POST",
+//        url:"{:U('ajaxMap')}",
+//        dataType:"json",
+//        success:function(obj){
+//            if(obj.meta.code == 200){
+//                for (let item of obj.body) {
+//                    data = {
+//                        x:item.x,
+//                        y:item.y,
+//                        img:item.img,
+//                        label:item.name ,
+//                    }
+//                    arr.push(data);
+//                }
+//            }else{
+//                console.log('没人打卡');
+//            }
+//            staff_init(arr);
+//        }
+//    });
+    $.ajax({
+        type:"POST",
+        url:"{:U('getSign')}",
+        dataType:"json",
+        success:function(signData){
+            console.log(signData);
+            if(signData.errcode == 0){
+                for (let item of signData.data) {
+                    data = {
+                        x:item.latitude,
+                        y:item.longitude,
+                        img:item.avatar,
+                        label:item.name ,
+                    }
+                    arr.push(data);
+                }
+            }else{
+                console.log('没人打卡');
+            }
+            staff_init(arr);
+        }
+    });
+    // 2 地图店家位置
+    for(let i=0; i<trList.length; i++){
+        address_name[i] = trList[i]
+        unameList[i] = uname[i].innerText
+        // 创建地址解析器实例
+        var myGeo = new BMap.Geocoder();
+        // 将地址解析结果显示在地图上,并调整地图视野
+        myGeo.getPoint(address_name[i], function(point){
+            if (point) {
+                let marker = new BMap.Marker(point,{
+                        icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
+                        scale: 1.4,//图标缩放大小
+                        fillColor: "red",//填充颜色
+                        fillOpacity: 0.8//填充透明度
+                    })
+                });  // 创建标注
+                map.addOverlay(marker);              // 将标注添加到地图中
+                marker.addEventListener("mousedown",function(){
+                    var opts={width:300,height:30,title:"客户信息"};
+                    var infoWindow = new BMap.InfoWindow('影楼名称：'+unameList[i]+'<br/>影楼地址：'+address_name[i],opts);
+                    map.openInfoWindow(infoWindow,point);
+                });
+                marker.addEventListener("mouseup",function(){
+                    map.closeInfoWindow();
+                });
+            }else{
+               console.log("您选择地址没有解析到结果!");
+            }
+        });
+    }
+}
+
+// 点击地图后显示高亮 软件版本
+$(document).on("click",'[class=ruanjian]',function(){
+    var address_name = $(this).next().next().next().next().next().next().text().replace(/\s/g,'');
+    var uname = $(this).prev().text().replace(/\s/g,'');
+
+    mapcall(address_name,uname)
+});
+
+//客户类型
+$(document).on("click",'[class=kehu]',function(){
+    var address_name = $(this).next().next().next().next().next().text().replace(/\s/g,'');
+    var uname = $(this).prev().prev().text().replace(/\s/g,'');
+
+    mapcall(address_name,uname)
+});
+function mapcall(address_name,uname){
+    // 创建地址解析器实例
+    var myGeo = new BMap.Geocoder();
+    // 将地址解析结果显示在地图上,并调整地图视野
+    myGeo.getPoint(address_name, function(point){
+        if (point) {
+//            marker.setAnimation(BMAP_ANIMATION_DROP); //跳动的动画
+            map.centerAndZoom(point, 7);
+            let marker = new BMap.Marker(point,{
+                icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
+                    scale: 1.4,//图标缩放大小
+                    fillColor: "green",//填充颜色
+                    fillOpacity: 0.8//填充透明度
+                })
+            });  // 创建标注
+            map.addOverlay(marker);              // 将标注添加到地图中
+            marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+            marker.addEventListener("mousedown",function(){
+                var opts={width:300,height:30,title:"客户信息"};
+                var infoWindow = new BMap.InfoWindow('影楼名称：'+uname+'<br/>影楼地址：'+address_name,opts);
+                map.openInfoWindow(infoWindow,point);
+            });
+            marker.addEventListener("mouseup",function(){
+                map.closeInfoWindow();
+            });
+        }else{
+           alert("您选择地址没有解析到结果!");
+        }
+    });
+
+}
+
+</script>
+<include file="Public:footer" />

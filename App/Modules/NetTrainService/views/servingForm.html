@@ -1,0 +1,308 @@
+<style>
+    input[type=file] {
+        display: none;
+    }
+    .upload-box {
+        position: relative;
+        width: 100px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        display: inline-block
+    }
+    .upload-box .img-btn {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        display: block !important;
+        top: 0;
+        left: 0
+    }
+    .imgs_boxs {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%
+    }
+    .img_list {
+        width: 100px;
+        height: 100px;
+        margin: 10px;
+        display: inline-block
+    }
+    .upload_img {
+        width: 100px;
+        height: 100px;
+    }
+</style>
+<script type="text/x-template" id="serving-form-template">
+    <div>
+        <div v-if="status == 1 || status == 2" style="text-align:center">
+            <el-button  @click="start">开始</el-button>
+        </div>
+        <el-card v-else>
+            <div slot="header" v-if="status != 6" class="clearfix">
+                <span>{:L('Details_of_the_door')}</span>
+                <span style="float: right; padding: 3px 0">
+                    <el-button size="text" @click="dialogFormVisible = true"> 添加 </el-button>
+                    <el-button size="text" @click="complete"> 培训结束 </el-button>
+                </span>
+            </div>
+            <h4>培训详情<el-button type="text" v-if="status == 6" @click="beat_back_sync = !beat_back_sync" style="float: right">打回</el-button></h4>
+            <el-table :data="logList" max-height="300">
+                <el-table-column prop="user.name" label="负责人"></el-table-column>
+                <el-table-column prop="description" label="内容"></el-table-column>
+                <el-table-column prop="created_at" label="时间"></el-table-column>
+                <el-table-column prop="step_id" :formatter="stepIdFormatter" label="阶段"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click.native="show_imgs(scope.$index, logList)" size="mini" type="text">查看截图</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!-- 暂时注释 -->
+            <!--
+            <table style="width: 100%">
+                <tr>
+                    <td class="tdleft" >{:L('visiting_time')}:</td>
+                    <td>
+                        <input type="text" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" name="remote_time" value="{$vo.remote_time|default=date('Y-m-d H:i')}">
+                    </td>
+                    <td class="tdleft" >{:L('Departure_Time')}:</td>
+                    <td>
+                        <input type="text" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" name="remore_time" value="{$vo.remore_time}">
+                    </td>
+                </tr>
+            </table>
+            -->
+        </el-card>
+        <div v-if="status == 4" style="text-align:center">
+            <h4>请等待回访人员回访</h4>
+        </div>
+        <el-dialog title="服务记录" :visible.sync="dialogFormVisible">
+            <el-form ref="LogForm" :model="form">
+                <el-form-item label="服务内容" prop="description" label-width="80px">
+                    <el-input v-model="form.description" type="textarea"></el-input>
+                </el-form-item>
+                <el-form-item label="服务截图" label-width="80px">
+                    <div class="img-container"></div>
+                    <div class="upload-box">
+                        <el-button>上传图片</el-button>
+                        <input class="img-btn" @change="add_img" type="file">
+                    </div>
+                    <el-tag type="info">可ctrl + v粘贴</el-tag>
+                    <!-- <el-button @click.native="zhantie">点击粘贴图片</el-button> -->
+                    <div class="imgs_boxs">
+                        <div class="img_list" v-for="(item, index) in upload_img_list">
+                            <img class="upload_img" :src="item.url" alt="">
+                            <el-button @click.native="remove_imgs(item, index)">删除该图片</el-button>
+                        </div>
+                    </div>
+                </el-form-item>
+
+                <el-form-item label="阶段" prop="step_id" label-width="80px">
+                    <el-select v-model="form.step_id" type="textarea">
+                        <el-option v-for="option in statusOptions" :label="option.label" :value="option.value"></el-option>
+                    </el-select>
+                </el-form-item>
+                <!-- <el-form-item label="服务截图" label-width="80px">
+                    <el-upload ref="upload" list-type="picture-card" multiple action="/api.php/file/post">
+                        <i class="el-icon-plus"></i>
+                    </el-upload>
+                </el-form-item> -->
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="quxiao_upload">取 消</el-button>
+                <el-button type="primary" @click="save">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <!-- 打回原因 -->
+        <el-dialog title="打回原因" :visible.sync="beat_back_sync">
+            <el-form>
+                <el-form-item label="请填写原因" label-width="100px">
+                    <el-input v-model="back_reason"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer" style="text-align: center">
+                <el-button @click="beat_back">确定</el-button>
+            </div>
+        </el-dialog>
+
+        <!-- 显示截图 -->
+        <el-dialog
+            title="显示截图"
+            :visible.sync="show_imgs_blean"
+            width="30%">
+                <ul style="display: flex; justify-content: center;flex-wrap: wrap">
+                    <li style="list-style: none; margin: 0 5px" v-for="item in show_imgs_list">
+                        <img style="display: block" width=100 height=100 :src="item.url" alt="">
+                        <el-button type="text" style="display: block; margin:0 auto" @click="yulan(item.url)">预览</el-button>
+                    </li>
+                </ul>
+        </el-dialog>
+
+        <el-dialog
+            title="显示截图"
+            :visible.sync="yulan_status"
+            width="50%">
+            <img style="display: block; margin:0 auto" width=300 height=300 :src="yulan_url" alt="">
+        </el-dialog>
+
+    </div>
+</script>
+<script>
+    Vue.component('serving-form', {
+        template: '#serving-form-template',
+        data: function () {
+            return {
+                beat_back_sync: false,
+                back_reason: '',
+                status: store.state.service.status,
+                logList: [],
+                dialogFormVisible: false,
+                form: {
+                    description: '',
+                    step_id: store.state.service.status
+                },
+                service_id: store.state.service.id,
+                show_imgs_blean: false,
+                show_imgs_list:[],
+                upload_img_list: [],
+                imgData: {  
+                    accept: 'image/gif, image/jpeg, image/png, image/jpg',  
+                },
+                yulan_status: false,
+                yulan_url: ''
+            }
+        },
+        computed: {
+            statusOptions: function(){
+                return _(store.state.steps).filter(function (i){return _.includes([3, 7, 8, 9], Number(i.value))}).value()
+            }
+        },
+        methods: {
+            remove_imgs: function(data, index) {
+                this.upload_img_list.splice(index, 1)
+            },
+            quxiao_upload: function() {
+                this.dialogFormVisible = false
+                this.form.description = ''
+                this.upload_img_list = []
+            },
+            yulan: function(data) {
+                this.yulan_status = !this.yulan_status
+                this.yulan_url = data
+            },
+            add_img: function(event) {
+                let reader =new FileReader();  
+                let img1=event.target.files[0];
+                let type=img1.type; // 文件的类型，判断是否是图片  
+                let size=img1.size; // 文件的大小，判断图片的大小  
+                if(this.imgData.accept.indexOf(type) == -1){  
+                    alert('请选择我们支持的图片格式！');  
+                    return false;  
+                }  
+                if(size>3145728){  
+                    alert('请选择3M以内的图片！');  
+                    return false;  
+                }
+                this.success_upload(img1)
+            },
+            success_upload: function(img1) {
+                var that = this
+                var form = new FormData()
+                form.append('file',img1,img1.name)
+                if (this.upload_img_list.length > 4) {
+                    this.$message.error('上传不能超过5张图片')
+                    return
+                }
+                http.post(window.location.origin + '/api.php/file/post?prefix=service/log', form, {
+                    headers:{'Content-Type':'multipart/form-data', 'Authorization': 'a60ff2361fbd017a185ffd764d1e9200'}
+                }).then(function (result){
+                    console.log(result)
+                    that.upload_img_list.push({ url: result.data[0].savepath + result.data[0].savename })
+                })
+            },
+            zhantie: function() {
+                var body = document.getElementsByTagName('body')[0];
+                var identification;
+                body.addEventListener('paste', function(e){
+                    var clipboard = e.clipboardData;
+                    var type = clipboard.items[0].type;
+                    if (type.match(/image/)) {
+                        var blob = clipboard.items[0].getAsFile();
+                        this.success_upload(blob)
+                        // var file = new FileReader();
+                        // file.addEventListener('loadend', function(e){
+                        //     if(that.screenshotList.length > 4){
+                        //         alert('截图最多可上传5张！');
+                        //         return
+                        //     }
+                        //     data = {img: e.target.result}
+                        //     that.screenshotList.push(data);
+                        //     console.log(e.target.result)
+                        //     that.success_upload({name: e.target.result})
+                        // });
+                        // file.readAsDataURL(blob);
+                    }
+                }.bind(this));
+            },
+            beat_back() {
+                http.get(API_BASE + '/NetTrainService/'+ this.service_id +'/reject', { reason: this.back_reason }).then(function (result){
+                    window.history.go(-1)
+                });
+            },
+            start: function() {
+                http.get(API_BASE + '/NetTrainService/'+ this.service_id +'/start').then(function (result){
+                    this.status = result.status;
+                }.bind(this));
+            },
+            complete: function() {
+                http.get(API_BASE + '/NetTrainService/'+ this.service_id +'/complete').then(function (result){
+                    this.status = result.status;
+                }.bind(this));
+            },
+            show_imgs: function(index, data) {
+                this.show_imgs_blean = true
+                this.show_imgs_list = data[index].media
+            },
+            save: function(){
+
+                // var imageFileResponseList = this.$refs.upload.uploadFiles;
+
+                // var imageUrlList = imageFileResponseList.map(function(item) {
+                //     return { url: item.response.data[0].savepath + item.response.data[0].savename }
+                // });
+                
+                // this.form.snapshot = imageUrlList;
+                this.form.snapshot = this.upload_img_list;
+
+                http.post(API_BASE + '/NetTrainService/'+ this.service_id +'/log', this.form).then(function (result){
+                    this.$refs.LogForm.resetFields();
+                    this.loadLogList();
+                    // this.$refs.upload.clearFiles();
+                    this.dialogFormVisible = false
+                }.bind(this));
+            },
+            loadLogList: function() {
+                http.get(API_BASE + '/NetTrainService/'+ this.service_id +'/logs').then(function (result){
+                    this.logList = result;
+                    this.dialogFormVisible = false
+                    this.form.description = ''
+                    this.upload_img_list = []
+                }.bind(this));
+            },
+            stepIdFormatter: function (row, column) {
+                var value = row[column.property];
+                var step = _(this.statusOptions).find(function(i){return i.value == value})
+                return step && step.label;
+            }
+        },
+        created: function() {
+            this.loadLogList();
+            this.zhantie()
+        }
+    })
+</script>

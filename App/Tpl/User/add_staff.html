@@ -1,0 +1,315 @@
+<include file="Public:header" />
+	<div class="container">
+		<div class="page-header">
+			<h4>{:L('ADD_STAFF')}</h4>
+		</div>
+		<div class="row">
+			<div class="span12">
+				<include file="Public:alert" />
+				<div class="tab-content">
+					<div class="tab-pane active" id="tab2">
+						<form id="add" action="{:U('user/add_staff')}" method="post">
+							<table style="width:1000px" class="table">
+								<thead>
+									<tr>
+										<th colspan="2">{:L('BASIC_INFO')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="tdleft" width="10%">{:L('USERNAME')}&nbsp;<span style="color:red;">*</span></td>
+										<td>
+											<input class="span2" type="text" name="name" id="name" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('SEX')}&nbsp;</td>
+										<td>
+											<select  name="sex" style="width: 190px;">
+												<option value="1">{:L('MALE')}</option>
+												<option value="2">{:L('FEMALE')}</option>
+												<option value="3">{:L('PRIVARY')}</option>
+											</select>
+										</td>
+										<td class="tdleft" width="10%">{:L('NATIVE_PLACE')}&nbsp;<span style="color:red;"></span></td>
+										<td>
+											<input class="span2" type="text" name="native_place"  style="width:180px"/>
+										</td>
+
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">{:L('ADDRESS')}&nbsp;<span style="color:red;">*</span></td>
+										<td>
+											<input class="span2" type="text" name="address" id="address" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('ID_NUMBER')}&nbsp;<span style="color:red;">*</span></td>
+										<td>
+											<input class="span2" type="text" name="id_number" id="id_number" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('BIRTHDAY')}&nbsp;</td>
+										<td>
+											<input class="span2 Wdate" type="text" name="birthday" onClick="WdatePicker()" style="width:180px"/>
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">{:L('MARITAL_STATUS')}&nbsp;</td>
+										<td style="padding-top: 19px">
+											<select  name="marital_status" style="width: 190px;">
+												<option value="1">{:L('MARRIED')}</option>
+												<option value="2">{:L('UNMARRIED')}</option>
+												<option value="3">{:L('PRIVARY')}</option>
+											</select>
+										</td>
+										<td class="tdleft" width="10%">{:L('DEPARTMENT')}<br/>{:L('POSITION')}</td>
+										<td>
+											<select id="department" name="department" style="width: 190px;" onchange="changeRoleContent()">
+												<option value=""></option>
+												<volist name="department_list" id="temp">
+													<option value="{$temp.department_id}">{$temp.name}</option>
+												</volist>
+											</select>
+											<select id="role" name="position" style="width: 190px;"></select>
+										</td>
+										<td class="tdleft" width="10%">{:L('SALARY')}&nbsp;</td>
+										<td style="padding-top: 19px">
+											<input class="span2" type="text" name="salary" id="salary" style="width:180px"/>
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">{:L('PROBATION_DATE')}&nbsp;</td>
+										<td>
+											<input class="span2 Wdate" type="text" name="probation_date" onClick="WdatePicker()" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('DATE_BOARD')}&nbsp;<span style="color:red;">*</span></td>
+										<td>
+											<input class="span2 Wdate" type="text" name="date_board" onClick="WdatePicker()" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('DATE_LEAVE')}&nbsp;</td>
+										<td>
+											<input class="span2 Wdate" type="text" name="date_leave" onClick="WdatePicker()" style="width:180px"/>
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">{:L('FINGERPRINT1')}&nbsp;<span style="color:red;"></span></td>
+										<td>
+											<input class="span2" type="text" name="fingerprint1"  style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('FINGERPRINT2')}&nbsp;<span style="color:red;"></span></td>
+										<td>
+											<input class="span2" type="text" name="fingerprint2"  style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('DIMISSION')}&nbsp;</td>
+										<td>
+											<select  name="dimisson" style="width: 190px;">
+												<option value="1">{:L('ON_JOB')}</option>
+												<option value="2">{:L('dismission')}</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">{:L('GRADUATE_INSTITUTIONS')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="graduate_institutions" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('EDUCATION')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="education" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('PERSONAL_CALL')}&nbsp;<span style="color:red;">*</span></td>
+										<td>
+											<input class="span2" type="text" name="personal_call" id="personal_call" style="width:180px"/>
+										</td>
+
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">{:L('PERSONAL_QQ')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="personal_qq" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('PERSONAL_weixin')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="personal_weixin" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('PERSONAL_EMAIL')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="personal_email" style="width:180px"/>
+										</td>
+									</tr>
+
+									<tr>
+										<td class="tdleft" width="10%">{:L('TELEPHONE')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="telephone" id="telephone" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">公司微信&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="weixinid"  style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('COMPANY_QQ')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="company_qq"  style="width:180px"/>
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">服务密码&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="service_password"  style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">登录密码&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="weixin_password"  style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">登录密码&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="qq_password"  style="width:180px"/>
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">{:L('MOTHER_NAME')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="mother_name" id="mother_name" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('FATHER_NAME')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="father_name" id="father_name" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">上班时间&nbsp;</td>
+										<td>
+											<select  name="office_hours" style="width: 190px;">
+												<option value="08:30">08:30</option>
+												<option value="09:00">09:00</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">{:L('MOTHER_PHONE')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="mother_phone" id="mother_phone" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('FATHER_PHONE')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="father_phone" id="father_phone" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">休息时间&nbsp;</td>
+										<td>
+											<select  name="intermission" style="width: 190px;">
+												<option value="单休">单休</option>
+												<option value="单双休">单双休</option>
+												<option value="双休">双休</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">{:L('EMERGENCY_CONTACT_NAME')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="emergency_contact_name" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('EMERGENCY_CONTACT_PHONE')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="emergency_contact_phone" style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">{:L('EMERGENCY_CONTACT')}&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="emergency_contact" style="width:180px"/>
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">银行账户&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="bank_account"  style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">户名&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="bank_username"  style="width:180px"/>
+										</td>
+										<td class="tdleft" width="10%">开户行&nbsp;</td>
+										<td>
+											<input class="span2" type="text" name="opening_bank"  style="width:180px"/>
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">自动创建用户</td>
+										<td>
+											<input type="radio" name="whether_create_user" value="1" checked/>是
+											<input type="radio" name="whether_create_user" value="0"/>否
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft" width="10%">{:L('USER_INFO_NOTE')}&nbsp;</td>
+										<td>
+											<textarea name="remark" rows="5" cols="150"></textarea>
+										</td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>  
+										<td colspan="5">
+											<input class="btn btn-primary" name="submit" type="submit" value="{:L('ADD')}"/>&nbsp; <input class="btn btn-primary" name="submit" type="submit" value="{:L('SAVE AND NEW')}"/> &nbsp;<input class="btn" onclick="javascript:history.go(-1)" type="reset" value="{:L('RETURN')}"/>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		function changeRoleContent(){
+			department_id = $('#department').val();
+			if(department_id == ''){
+				$("#role").html('');
+			}else{
+				$.ajax({
+					type:'get',
+					url:'index.php?m=user&a=getpositionlist&id='+department_id,
+					async:false,
+					success:function(data){
+						var options = '';
+						$.each(data.data, function(k, v){
+							options += '<option value="'+v.position_id+'">'+v.name+'</option>';
+						});
+						$("#role").html(options);
+					},
+					dataType:'json'
+				});		
+			}
+		}
+		function changeRoleContent2(){
+			department_id = $('#department2').val();
+			if(department_id == ''){
+				$("#role2").html('');
+			}else{
+				$.ajax({
+					type:'get',
+					url:'index.php?m=user&a=getpositionlist&id='+department_id,
+					async:false,
+					success:function(data){
+						var options = '';
+						if(data.data){
+							$.each(data.data, function(k, v){
+								options += '<option value="'+v.name+'">'+v.name+'</option>';
+							});
+						}
+						$("#role2").html(options);
+					},
+					dataType:'json'
+				});	
+			}
+		}
+		$('#role').click(
+			function(){
+				department_id = $('#department').val();
+				if(department_id == ''){
+					alert("{:L('SELECT_DEPARTMENT_FIRST')}");
+				}
+			}
+		);
+		$('#role2').click(
+			function(){
+				department_id = $('#department2').val();
+				if(department_id == ''){
+					alert("{:L('SELECT_DEPARTMENT_FIRST')}");
+				}
+			}
+		);
+	</script>
+<include file="Public:footer" />	

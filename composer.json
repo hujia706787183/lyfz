@@ -1,0 +1,17 @@
+{
+    "name": "lyfz/crm",
+    "type": "project",
+    "authors": [
+        {
+            "name": "zhongjianyu",
+            "email": "zhongjianyu@lyfz.net"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"App\\": "App/"}
+    },
+    "require": {
+        "lokielse/omnipay-alipay": "^2.3",
+        "overtrue/wechat": "^4.0"
+    }
+}

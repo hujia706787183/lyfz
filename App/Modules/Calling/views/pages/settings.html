@@ -1,0 +1,85 @@
+
+<script type="text/x-template" id="hello-world-template">
+    <el-form label-width="150px">
+        <el-form-item label="客人来电挂机配置：">
+            <el-input type="textarea" :rows="3" v-model="call_in_message"></el-input>
+        </el-form-item>
+        <el-form-item label="未知来电挂机配置：">
+            <el-input type="textarea" :rows="3" v-model="unknown_call_in_message"></el-input>
+        </el-form-item>
+        <el-form-item label="员工来电挂机配置：">
+            <el-input type="textarea" :rows="3" v-model="staff_call_in_message"></el-input>
+        </el-form-item>
+        <!--<el-form-item label="未接来电配置：">-->
+            <!--<el-input type="textarea" :rows="3" v-model="missed_call_in_message"></el-input>-->
+        <!--</el-form-item>-->
+        <el-form-item label="是否发送：">
+            <el-checkbox label="客人来电提醒" v-model="customer_enable"></el-checkbox>
+            <el-checkbox label="未知来电提醒" v-model="unknown_enable"></el-checkbox>
+            <el-checkbox label="员工来电提醒" v-model="staff_enable"></el-checkbox>
+            <!--<el-checkbox label="未接来电提醒" v-model="missed_enable"></el-checkbox>-->
+        </el-form-item>
+        <!--<el-form-item label="发送周期：">-->
+            <!--<el-select v-model="send_the_cycle" placeholder="请选择">-->
+                <!--<el-option v-for="item in options"-->
+                        <!--:key="item.value"-->
+                        <!--:label="item.label"-->
+                        <!--:value="item.value">-->
+                <!--</el-option>-->
+            <!--</el-select>-->
+        <!--</el-form-item>-->
+        <el-form-item>
+            <el-button @click="save">保存</el-button>
+        </el-form-item>
+    </el-form>
+</script>
+
+<script>
+    Vue.component('calling-setting', {
+        template: '#hello-world-template',
+        data: function () {
+            return {
+                call_in_message: '',
+                unknown_call_in_message: '',
+                staff_call_in_message: '',
+                missed_call_in_message: '',
+                customer_enable: false,
+                unknown_enable: false,
+                staff_enable: false,
+                missed_enable: false,
+                send_the_cycle: '',
+                options: [{
+                    value: '1',
+                    label: '一天内一次'
+                }, {
+                    value: '2',
+                    label: '一月内一次'
+                }, {
+                    value: '3',
+                    label: '一年内一次'
+                }],
+            }
+        },
+        methods: {
+            save: function () {
+                http.post('/api.php/setting/set?module=' + 'Calling', {call_in_msg_template: this.call_in_message,unknown_call_in_msg_template: this.unknown_call_in_message, missed_call_in_msg_template: this.missed_call_in_message,
+                    staff_call_in_msg_template: this.staff_call_in_message, customer_enable: this.customer_enable, unknown_enable: this.unknown_enable, staff_enable: this.staff_enable, missed_enable: this.missed_enable, send_the_cycle: this.send_the_cycle}).then(function (response) {
+                    this.$message('保存成功');
+                }.bind(this));
+            }
+        },
+        created: function () {
+            http.get('/api.php/setting/get_config?config_name=' + 'call_in_msg_template,unknown_call_in_msg_template,staff_call_in_msg_template,missed_call_in_msg_template,customer_enable,unknown_enable,staff_enable,missed_enable,send_the_cycle').then(function (response) {
+                this.call_in_message = response.call_in_msg_template;
+                this.unknown_call_in_message = response.unknown_call_in_msg_template;
+                this.staff_call_in_message = response.staff_call_in_msg_template;
+                this.missed_call_in_message = response.missed_call_in_msg_template;
+                this.customer_enable = response.customer_enable==='true';
+                this.unknown_enable = response.unknown_enable==='true';
+                this.staff_enable = response.staff_enable==='true';
+                this.missed_enable = response.missed_enable==='true';
+                this.send_the_cycle = response.send_the_cycle;
+            }.bind(this));
+        }
+    })
+</script>

@@ -1,0 +1,330 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.combo.select.js" charset="UTF-8"></script>
+<link type="text/css" href="__PUBLIC__/css/combo.select.css" rel="stylesheet">
+
+<style>
+    .screenshot{
+        width:210px;
+        height:210px;
+        background-color:red;
+        float:left;
+        border:1px solid #ccc;
+        border-radius:5px;
+        margin:10px 10px;
+    }
+    
+    .notFloat{
+        text-align:center;
+        clear:both;
+    }
+    
+    .onTheLeft{
+        float:left;
+    }
+</style>
+
+<div class="container">
+	<div class="page-header">
+        <h4>添加远程记录</h4>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<include file="Public:alert" />
+			<form id="form1" action="{:U(addRemoteService)}" method="post">
+			    <input type="hidden" name="refer_url" value="{$refer_url}">
+                <table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
+					<tbody>
+						<tr><th colspan="4">客户信息</th></tr>
+                        <tr>
+                            <td class="tdleft" >影楼名称：</td>
+                            <td>
+                                <input type="hidden" name="customer_id" id="customer_id" value="{$customer.customer_id}"/>
+                                <input type="text" name="customer_name" id="customer_name" value="{$customer.customer_name}" readonly>
+                            </td>
+                            <td class="tdleft" >首要联系人名字：</td>
+                            <td>
+                                <input type="hidden" name="contacts_id" id="contacts_id" value="{$customer.contacts_id}">
+                                <input type="text" name="contacts_name" id="contacts_name" value="{$customer.contacts_name}" readonly>
+                            </td>
+						</tr>
+                        <tr>
+                            <td class="tdleft" >首要联系人号码：</td>
+                            <td>
+                                <input type="text" name="contacts_telephone" id="contacts_telephone" value="{$customer.telephone}" readonly>
+                            </td>
+                            <td class="tdleft" width="15%">影楼联系地址：</td>
+                            <td colspan="3">
+                                <input type="text" name="address" id="address" value="{$customer.address}" readonly>
+                            </td>
+                        </tr>
+                        <tr>
+							<th colspan="4">故障登记</th>
+                        </tr>
+                        <tr>
+                            <if condition="$remote_type_field neq ''">
+                            <td class="tdleft" >远程类型：</td>
+                            <td>
+                                <div style="width:220px;">
+                                    <select id="remote_type" name="{$remote_type_field}">
+                                        <volist name="remote_type_option" id="vo">
+                                        <option value="{$vo}">{$vo}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                                (请选择提供的选项，请勿手动输入文字提交，否则按第一项提交！)
+                            </td>
+                            </if>
+                            <td class="tdleft" >影楼操作人员：</td>
+                            <td><input class="user_input" type="text" id="operator_name" name="operator_name"></td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft" >操作人员电话：</td>
+                            <td><input class="user_input" id="operation_people_phone" name="operation_people_phone" type="tel"  /></td>
+                            <td class="tdleft" >操作人员QQ：</td>
+                            <td>
+                                <input class="user_input" type="text" id="operator_qq" name="operator_qq"/>
+                            </td>
+                        </tr>
+                        <tr>
+							<th colspan="4">服务详细</th>
+                        </tr>
+                        <tr>
+                            <td class="tdleft" >负责人员：</td>
+                            <td>
+                                <input type="hidden" id="sale_id" identification_id="sale" name="sale_people_id">
+                                <input type="text" id="peopleChoice--" mark="sale" identification="sale" value="点击影楼名称选择" readonly>
+                            </td>
+                            <td class="tdleft" >故障提交人：</td>
+                            <td>
+                                <input type="hidden" id="faultApply_id" identification_id="fault" name="fault_subpeople_id" >
+                                <input type="text" id="peopleChoice" identification="fault" value="点击选择" readonly>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft" >上门老师：</td>
+                            <td>
+                                <input type="hidden" id="teacher_id" identification_id="teacher" name="teacher_id">
+                                <input type="text" id="peopleChoice--" mark="teacher" identification="teacher" value="点击影楼名称选择" readonly>
+                            </td>
+                            <td class="tdleft" >故障服务人员：</td>
+                            <td>
+                                <input type="hidden" id="fault_service_id" identification_id="faultService" name="service_personal_id">
+                                <input type="text" id="peopleChoice" identification="faultService" value="点击选择" readonly>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft" >自我评价：</td>
+                            <td>
+                                <select name="self_satisfaction">
+                                    <option value="1">客怨</option>
+                                    <option value="2">一般</option>
+                                    <option value="3">满意</option>
+                                    <option value="4">非常满意</option>
+                                </select>
+                            </td>
+                            <td class="tdleft" >是否教解决方法：</td>
+                            <td>
+                                <input class="user_input" name="is_solve" type="radio" value="1"/>是 &nbsp&nbsp
+                                <input class="user_input" name="is_solve" type="radio" value="2" checked/>否
+                            </td>
+                        </tr>
+						<tr>
+                            <td class="tdleft" >解决过程说明：</td>
+                            <td colspan="3">
+                                <textarea class="span8" rows="3" name="desc" id="desc"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  class="tdleft" style="width: 120px;">
+                                解决过程截图：</br>
+                                (ctrl+v粘贴图片)
+                            </td>
+                            <td colspan="3" id="screenshotImg">
+                            </td>
+                        </tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td style="text-align:center;" colspan="4">
+                                <input class="btn btn-primary" id="check" type="submit" value="保存并新建"/>
+                                <input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
+							</td>
+						</tr>
+					</tfoot>
+                </table>
+                <if condition="$leads['leads_id']"><input type="hidden" name="leads_id" value="{$leads['leads_id']}"/></if>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="hide" id="dialog-message" title="影楼名称">loading...</div>
+<div class="hide" id="dialog-role-list" title="人员选择">loading...</div>
+
+<script type="text/javascript">
+    var body = document.getElementsByTagName('body')[0];
+    var screenshotList = []
+    var identification
+    
+    $(function() {
+        $('#remote_type').comboSelect();
+    });
+    
+    //校验提交数据
+    $('#check').click(function(){
+        if($('#customer_id').val() == ''){
+            alert('请选择影楼！');
+            return false;
+        }
+        if($('#crm_vaarks').val() == ''){
+            alert('请选择远程类型!');
+            return false;
+        }
+        if($('#operator_name').val() == ''){
+            alert('请输入影楼操作人员姓名!');
+            return false;
+        }
+        if($('#operation_people_phone').val() == ''){
+           // alert('请输入影楼操作人员电话!');
+            //return false;
+        }
+        if($('#operator_qq').val() == ''){
+           // alert('请输入操作人员QQ!');
+          //  return false;
+        }
+        if($('#sale_id').val() == ''){
+//            alert('请选择销售人员!');
+//            return false;
+        }
+        if($('#fault_subpeople_id').val() == ''){
+            alert('请选择故障提交人!');
+            return false;
+        }
+        if($('#teacher_id').val() == ''){
+//            alert('请选择上门老师!');
+//            return false;
+        }
+        if($('#fault_service_id').val() == ''){
+            alert('请选择故障服务人员!');
+            return false;
+        }
+        if($('#desc').val() == ''){
+            alert('请输入解决过程说明!');
+            return false;
+        }
+        if(screenshotList.length == 0){
+            alert('至少选择一张截图图片!');
+            return false;
+        }
+    })
+    
+    //粘贴图片处理
+    body.addEventListener('paste', function(e){
+        var clipboard = e.clipboardData;
+        var type = clipboard.items[0].type;
+        if (type.match(/image/)) {
+            var blob = clipboard.items[0].getAsFile();
+            var file = new FileReader();
+            file.addEventListener('loadend', function(e){
+                if(screenshotList.length > 11){
+                    alert('截图最多可上传12张！');
+                    return
+                }
+                data = {img: e.target.result}
+                screenshotList.push(data);
+                ergodicImg(2);
+            });
+            file.readAsDataURL(blob);
+        }
+    });
+    function ergodicImg(is_empty){
+        if(screenshotList.length == 0 && is_empty != 1){
+            return;
+        }
+        $('#screenshotImg').empty();
+        for(i=0; i<screenshotList.length; i++){
+            num = i + 1;
+            $('#screenshotImg').append('<div class="onTheLeft"><a href="'+screenshotList[i].img+'" target="_blank"><input type="hidden" name="img_list['+i+']" value="'+screenshotList[i].img+'"><div class="screenshot" style="background:url('+screenshotList[i].img+'); background-size:cover;"></div></a><div class="notFloat"><a href="javascript:;" jid="'+i+'" class="delImg">删除截图('+num+')</a></div></div>');
+        }
+    }
+    $(document).on("click", ".delImg", function () {
+        jid = $(this).attr('jid');
+        screenshotList.splice(jid,1);
+        ergodicImg(1);
+    });
+    
+    //影楼选择
+    $('#customer_name').click(function () {
+		$('#dialog-message').dialog('open');
+		$('#dialog-message').load("/index.php?m=customer&a=listDialog");
+	});
+    $('#dialog-message').dialog({
+        autoOpen: false,
+        modal: true,
+        width: 800,
+        maxHeight: 400,
+        buttons: {
+            "确定": function () {
+                item = $('input:radio[name="customer"]:checked').val();
+                name = $('input:radio[name="customer"]:checked').parent().next().html();
+                contacts_id = $('input:radio[name="customer"]:checked').attr('rel');
+                contacts_name = $('input:radio[name="customer"]:checked').next().attr('value');
+                contacts_telephone = $('input:radio[name="customer"]:checked').next().next().attr('value');
+                address = $('input:radio[name="customer"]:checked').next().next().next().attr('value');
+                create_name = $('input:radio[name="customer"]:checked').next().next().next().next().attr('value');
+                create_user_id = $('input:radio[name="customer"]:checked').next().next().next().next().attr('rel');
+                owner_name = $('input:radio[name="customer"]:checked').next().next().next().next().next().attr('value');
+                owner_user_id = $('input:radio[name="customer"]:checked').next().next().next().next().next().attr('rel');
+
+                $('#customer_name').val(name);
+                $('#customer_id').val(item);
+                $('#contacts_id').val(contacts_id);
+                $('#contacts_name').val(contacts_name);
+                $('#contacts_telephone').val(contacts_telephone);
+                $('#address').val(address);
+                $('[mark=sale]').val(create_name);
+                $('#sale_id').val(create_user_id);
+                $('[mark=teacher]').val(owner_name);
+                $('#teacher_id').val(owner_user_id);
+                
+                $(this).dialog("close");
+            },
+            "关闭": function () {
+                $(this).dialog("close");
+            }
+        },
+        position:["center",100]
+    });
+
+    //人员选择
+	$('[id=peopleChoice]').click(function(){
+        identification = $(this).attr('identification');
+        $('#dialog-role-list').dialog('open');
+        $('#dialog-role-list').load("{:U('user/listDialog')}");
+    });
+    $("#dialog-role-list").dialog({
+        autoOpen: false,
+        modal: true,
+        width: 800,
+        maxHeight: 400,
+        buttons: { 
+            "确定": function () {
+                var item = $('input:radio[name="owner"]:checked').val();
+                var name = $('input:radio[name="owner"]:checked').parent().next().html();
+                if(item){
+                    $('[identification='+identification+']').val(name);
+                    $('[identification_id='+identification+']').val(item);
+                }
+                $(this).dialog("close"); 
+            },
+            "关闭": function () {
+                $(this).dialog("close");
+            }
+        },
+        position: ["center", 100]
+    });
+</script>
+<include file="Public:footer" />

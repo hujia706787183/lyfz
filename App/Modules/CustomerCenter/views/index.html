@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>绑定</title>
+
+    {:stylesheet('common.css')}
+    {:stylesheet('mint-ui')}
+    {:stylesheet('element-ui')}
+
+</head>
+<body>
+    <div id="main">
+        <transition name="fade">
+            <router-view class="page"></router-view>
+            <div class="copyright">利亚方舟技术支持</div>
+        </transition>
+    </div>
+
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/mint-ui/2.2.13/index.js"></script>
+    <script src="https://cdn.bootcss.com/vue-router/3.0.1/vue-router.min.js"></script>
+    <script src="https://cdn.bootcss.com/element-ui/2.3.3/index.js"></script>
+
+    <script>
+        var store = {
+            info: {}
+        }
+
+        var routers = [];
+    </script>
+
+    <script type="text/x-template" id="template-1">
+        <div>
+            <div class="cell-box">
+                <div style="padding-left: 20px;">
+                    尊敬的<br>
+                    <span style="color:#666">{{ info.customer_name }} {{ info.contacts_name }} <span>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <mt-cell type="primary" is-link to="/orders" title="我的订单"></mt-cell>
+                <mt-cell type="primary" is-link to="/products" title="我的产品"></mt-cell>
+                <mt-cell type="primary" is-link to="/aftersales" title="我的售后"></mt-cell>
+            </div>
+            <mt-button style="margin: 20px 10px;" @click="closeWindow" type="primary">返回</mt-button>
+
+        </div>
+    </script>
+   
+    <script>
+        (function(){
+            var index = Vue.component('index', {
+                template: '#template-1',
+                data: function(){
+                    return store;
+                },
+                methods: {
+                    closeWindow: function () {
+                        if (typeof WeixinJSBridge !== 'undefined') {
+                            WeixinJSBridge.call('closeWindow')
+                        } else {
+                            window.close();
+                        }
+                    }
+                },
+                created: function () {
+                    http.get('/index.php/CustomerCenter?op=getMine').then(function(response){
+                        this.info = response
+                    }.bind(this))
+                }
+            })
+
+            routers.push({ path: '/', component: index });
+        })()
+    </script>
+
+    <script type="text/x-template" id="template-2">
+        <div>
+            <div v-for="order in orders" style="margin-top: 20px;">
+                <!-- <div class="card">
+                    <div class="card-header">{{order.order_number}}<br>{{order.name}}</div>
+                    <div class="card-body">
+                        
+                    </div>
+                    <div class="card-footer">
+                        
+                    </div>
+                </div> -->
+                
+                <mt-cell type="primary" title="单号">{{order.order_number}}</mt-cell>
+                <mt-cell type="primary" title="描述">{{order.name}}</mt-cell>
+                <mt-cell type="primary" title="价格">{{order.price}}</mt-cell>
+                <mt-cell type="primary" title="时间">{{order.pay_time}}</mt-cell>
+            </div>
+            <div v-if="orders.length == 0" class="tips">
+                当前无订单信息
+            </div>
+        </div>
+    </script>
+   
+    <script>
+        (function(){
+            var orders = Vue.component('orders', {
+                template: '#template-2',
+                data: function(){
+                    return {
+                        orders: []
+                    }
+                },
+                methods: {
+
+                },
+                created: function () {
+                    http.get('/index.php/CustomerCenter/orders').then(function(orders){
+                        this.orders = orders
+                    }.bind(this))
+                }
+            })
+
+            routers.push({ path: '/orders', component: orders });
+        })()
+    </script>
+
+    <script type="text/x-template" id="template-3">
+        <div>
+            <div v-for="product in products" style="margin-top: 10px;">
+                <div class="card">
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        {{product.product_name}}
+                    </div>
+                    <!-- <div class="card-footer">
+                        <mt-button type="primary" plain size="small">申请售后</mt-button>
+                    </div> -->
+                </div>
+            </div>
+
+            <div v-if="products.length == 0" class="tips">
+                当前无产品信息
+            </div>
+        </div>
+    </script>
+
+    <script>
+        (function(){
+            var products = Vue.component('products', {
+                template: '#template-3',
+                data: function(){
+                    return {
+                        products: []
+                    }
+                },
+                created: function () {
+                    http.get('/index.php/CustomerCenter/products').then(function(products){
+                        this.products = products
+                    }.bind(this))
+                }
+            })
+
+            routers.push({ path: '/products', component: products });
+        })()
+    </script>
+    <script type="text/x-template" id="template-4">
+        <div>
+            <div v-for="aftersale in aftersales" style="margin-top: 10px;">
+                <!-- <div class="card">
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        <div>
+                            处理人员：{{aftersale.server_name}}
+                        </div>
+                        <div>
+                            处理内容：{{aftersale.crm_anjazk}}
+                        </div>
+                        <div>
+                            处理时间： {{aftersale.remote_time}}
+                        </div>
+                        <div>
+                            
+                        </div>
+                    </div> -->
+                    <!-- <div class="card-footer">
+                        <mt-button type="primary" plain size="small">申请售后</mt-button>
+                    </div> -->
+                <!-- </div> -->
+                <mt-cell type="primary" title="处理人员">{{aftersale.server_name}}</mt-cell>
+                <mt-cell type="primary" title="处理内容">{{aftersale.crm_anjazk}}</mt-cell>
+                <mt-cell type="primary" title="处理时间">{{aftersale.remote_time}}</mt-cell>
+                <mt-cell type="primary" title="处理状态">已完成</mt-cell>
+            </div>
+
+            <div v-if="aftersales.length == 0" class="tips">
+                当前无售后信息
+            </div>
+        </div>
+    </script>
+
+    <script>
+        (function(){
+            var aftersales = Vue.component('aftersales', {
+                template: '#template-4',
+                data: function(){
+                    return {
+                        aftersales: []
+                    }
+                },
+                created: function () {
+                    http.get('/index.php/CustomerCenter/aftersales').then(function(aftersales){
+                        this.aftersales = aftersales
+                    }.bind(this))
+                }
+            })
+
+            routers.push({ path: '/aftersales', component: aftersales });
+        })()
+    </script>
+
+    <script>
+        
+        var MessageBox = MINT.MessageBox;
+        
+        var http = axios.create({
+            // baseURL: window.location.origin,
+            timeout: 1000
+        })
+        
+        http.interceptors.response.use(
+            function (response) {
+                return new Promise(function (resolve, reject) {
+                    if (!response.data.status) {
+                        resolve(response.data)
+                    } else {
+                        MessageBox.alert(response.data.info).then(function(){
+                            reject(response.data)
+                        })
+                    }
+                }).catch(function (reason){
+                    if (reason.status == 1001) {
+                        window.location.href = "/index.php/CustomerCenter/binding"
+                    }
+                })
+            }
+        )
+
+        var router = new VueRouter({
+            routes: routers
+        })
+
+        var vue_app = new Vue({
+            el: '#main',
+            router
+        })
+    </script>
+</body>
+</html>

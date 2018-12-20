@@ -1,0 +1,432 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.combo.select.js" charset="UTF-8"></script>
+<link type="text/css" href="__PUBLIC__/css/combo.select.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+<link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+
+<style>
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*=col-]{
+        margin-left: -10px;
+    }
+    .screenshot{
+        width:210px;
+        height:210px;
+        background-color:red;
+        float:left;
+        border:1px solid #ccc;
+        border-radius:5px;
+        margin:10px 10px;
+    }
+    
+    .notFloat{
+        text-align:center;
+        clear:both;
+    }
+    
+    .onTheLeft{
+        float:left;
+    }
+</style>
+
+<div class="container">
+	<div class="page-header">
+        <h4>{:L('Add_the_door_needs')}</h4>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<include file="Public:alert" />
+			<form id="form1" action="{:U('insertHomeDemand','customer_id_flag='.$customer['customer_id'])}" method="post">
+			   <!--  <input type="hidden" name="refer_url" value="{$refer_url}"> -->
+                <input type="hidden" name="order_product_id" id="order_product_id" value="{$customer.order_product_id}">
+                <table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
+					<tbody>
+						<tr><th colspan="4">{:L('client_information')}:</th></tr>
+                        <tr>
+                            <td class="tdleft" >{:L('The_name_of_the_studio')}:</td>
+                            <td>
+                                <input type="hidden" name="customer_id" id="customer_id" value="{$customer.customer_id}"/>
+                                <input type="text" name="customer_name" id="customer_name" <empty name="customer">value="从下面列表中选择"<else/>value="{$customer.customer_name}"</empty> readonly>
+                            </td>
+                            <td class="tdleft" >{:L('First_name')}:</td>
+                            <td>
+                                <input type="hidden" name="contacts_id" id="contacts_id" value="{$customer.contacts_id}">
+                                <input type="text" name="contacts_name" id="contacts_name" value="{$customer.contacts_name}" readonly>
+                            </td>
+						</tr>
+                        <tr>
+                            <td class="tdleft" >{:L('First_number')}:</td>
+                            <td>
+                                <input type="text" name="contacts_telephone" id="contacts_telephone" value="{$customer.telephone}" readonly>
+                            </td>
+                            <td class="tdleft" >{:L('Customer_need')}:</td>
+                            <td>
+                                <input type="text" name="client_need" id="client_need">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft" >{:L('Studio_contact_address')}:</td>
+                            <td colspan="3">
+                                <input type="text" style="width: 798px" name="address" id="address" value="{$customer.address}" readonly>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td class="tdleft" width="15%">{:L('The_door_type')}:</td>
+                            <td>
+                                <select name="type" id="type">
+                                    <option value="1">{:L('first_the_door')}</option>
+                                    <option value="2">{:L('second_the_door')}</option>
+                                    <option value="3">{:L('third_the_door')}</option>
+                                    <option value="4">{:L('more_the_door')}</option>
+                                </select>
+                            </td>
+                            <td class="tdleft" >{:L('SALESMAN')}:</td>
+                            <td>
+                                <input type="hidden" name="saleman" id="saleman" value="{$customer.owner_name}" />
+                                <select id="sid" name="sid" class="selectpicker" data-live-search="true"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <!--提交人-->
+                            <td class="tdleft" >{:L('Saleman')}:</td>
+                            <td>
+                                <input type="hidden" name="submitter_id" id="submitter_id" value="{$Think.session.user_id}" />
+                                <input type="text" id="submitter" name="submitter" value="{$Think.session.name}"  readonly>
+                            </td>
+                            <notempty name="is_schedu_update">
+                                <td class="tdleft" >{:L('training_teacher')}:</td>
+                                <td>
+                                    <input type="hidden" name="operator_name" id="operator_name" value="{$vo.operator_name}">
+                                    <!--<input class="user_input" type="text" value="{$vo.operator_name}" id="operator_name" name="operator_name" placeholder="点击选择"  readonly>-->
+                                    <select id="tid" name="tid" class="selectpicker" data-live-search="true"></select>
+                                </td>
+                            </notempty>
+                        </tr>
+                        <tr style="display: none" id="last_tr">
+                            <td class="tdleft" >{:L('LAST_TIME_MAN')}:</td>
+                            <td>
+                                <input type="hidden" name="last_man" id="last_man" />
+                                <select id="last_id" name="last_id" class="selectpicker" data-live-search="true"></select>
+                            </td>
+                        </tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td style="text-align:center;" colspan="4">
+                                <input class="btn btn-primary check" id="check" type="submit" value="{:L('Save')}"/>
+                                <input class="btn btn-primary check"  type="button" id="save_and_next" value="{:L('SAVE_AND_NEXT')}"/>
+                                <input class="btn" type="reset" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
+							</td>
+						</tr>
+					</tfoot>
+                </table>
+                <if condition="$leads['leads_id']"><input type="hidden" name="leads_id" value="{$leads['leads_id']}"/></if>
+		    </form>	
+		</div>
+	</div>
+    <div>
+        <div class="span12">
+            <ul class="nav pull-left">
+                <li class="pull-left">
+                    <form class="form-inline" id="search_form" method="get">
+                        <ul class="nav pull-left">
+                            <li class="pull-left">
+                                {:L('The_name_of_the_studio')}:
+                                <input type="text" name="customer_name" style="width:150px;" value="{$customer.customer_name}">
+                                &nbsp;&nbsp;创建时间：
+                                <input type="text" name="start_time" style="width:150px;" onclick="WdatePicker()"/> -
+                                <input type="text" name="end_time" style="width:150px;" onclick="WdatePicker()" value="{:date('Y-m-d')}"/>
+                            </li>
+                            <input type="hidden" name="m" value="{:MODULE_NAME}"/>
+                            <input type="hidden" name="a" value="addHomeDemand"/>
+                            <li class="pull-left">
+                                <button type="submit" class="btn"> <img src="__PUBLIC__/img/search.png"/>   {:L('SEARCH')}</button>
+                            </li>
+                        </ul>
+                    </form>
+                </li>
+            </ul>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="80px">客户名称</th>
+                    <th width="80px">联系人</th>
+                    <th width="100px">电话</th>
+                    <th width="120px">产品名称</th>
+                    <th width="80px">负责人</th>
+                    <th width="80px">创建时间</th>
+                    <th width="80px">服务次数</th>
+                </tr>
+             </thead>
+            <tbody>
+                <volist name="not_the_door" id="customer2">
+                    <tr onclick="getCustomer($(this))">
+                        <td>{$customer2.customer_name}</td>
+                        <td>{$customer2.contacts_name}</td>
+                        <td>{$customer2.telephone}</td>
+                        <td>{$customer2.product_name}</td>
+                        <td>{$customer2.owner_role_name}</td>
+                        <td>{:date('Y-m-d', $customer2['create_time'])}</td>
+                        <td style="display: none">{$customer2.address}</td>
+                        <td style="display: none">{$customer2.customer_id}</td>
+                        <td style="display: none">{$customer2.owner_role_id}</td>
+                        <td style="display: none">{$customer2.order_product_id}</td>
+                        <td>{$customer2.service_times}</td>
+                    </tr>
+                </volist>
+
+            </tbody>
+        </table>
+        <b><center>{$page}</center></b>
+        <include file="Public:listrows" />
+    </div>
+</div>
+
+
+<div class="hide" id="dialog-message" title="影楼名称">loading...</div>
+<div class="hide" id="dialog-role-result" title="人员选择">loading...</div>
+<div class="hide" id="dialog-role-result1" title="上次上门人选择">loading...</div>
+<div class="hide" id="dialog-role-list" title="上门人选择">loading...</div>
+<script type="text/javascript">
+    var identification
+    $("#type").change(function(){
+        var opt=$("#type").val();
+        if (opt==1){
+            $('#last_tr').hide() ;
+        }else{
+            $('#last_tr').show() ;
+        }
+    });
+    $(function() {
+        $('#remote_type').comboSelect();
+    });
+    $(function() {
+      $('#remote_type').comboSelect();
+
+      $("#tid").selectpicker({
+        noneSelectedText : '请选择上门人'
+      });
+      $.get('/api.php/user/getRoleList').then(function (response) {
+        console.log(response)
+        var options = '<option value="">--请选择上门人--</option>';
+        $.each(response.data, function (k, v) {
+          options += '<option data-username="'+ v.username +'" value="'+ v.role_id +'">'+ v.username + '  (' + v.department_name+ '-' + v.position_name +')</option> '
+        });
+        $("#tid").html(options);
+        $('#tid').selectpicker('refresh');
+      });
+      $('#tid').on('change', function(){
+        var username = $(this).find("option:selected").data('username');
+        $('#operator_name').val(username)
+      });
+
+      $("#sid").selectpicker({
+        noneSelectedText : '请选择销售人'
+      });
+      $.get('/api.php/user/getRoleList', {all:1}).then(function (response) {
+        console.log(response)
+        var options = '<option value="">--请选择销售人--</option>';
+        $.each(response.data, function (k, v) {
+          options += '<option data-username="'+ v.username +'" value="'+ v.role_id +'">'+ v.username + '  (' + v.department_name+ '-' + v.position_name +')</option> '
+        });
+        $("#sid").html(options);
+        $('#sid').selectpicker('val', '{$customer.owner_role_id}');
+        $('#sid').selectpicker('refresh');
+      });
+      $('#sid').on('change', function(){
+        var username = $(this).find("option:selected").data('username');
+        $('#saleman').val(username)
+      });
+
+      $("#last_id").selectpicker({
+        noneSelectedText : '请选择上次上门人'
+      });
+      $.get('/api.php/user/getRoleList').then(function (response) {
+        console.log(response)
+        var options = '<option value="">--请选择上次上门人--</option>';
+        $.each(response.data, function (k, v) {
+          options += '<option data-username="'+ v.username +'" value="'+ v.role_id +'">'+ v.username + '  (' + v.department_name+ '-' + v.position_name +')</option> '
+        });
+        $("#last_id").html(options);
+        $('#last_id').selectpicker('refresh');
+      });
+      $('#last_id').on('change', function(){
+        var username = $(this).find("option:selected").data('username');
+        $('#last_man').val(username)
+      });
+    });
+
+    //校验提交数据
+    $('#check').click(function(){
+        if($('#customer_id').val() == ''){
+            alert('请选择影楼！');
+            return false;
+        }
+        if($('#crm_vaarks').val() == ''){
+            alert('请选择客户类型!');
+            return false;
+        }
+    });
+    $('#save_and_next').click(function () {
+        if($('#customer_id').val() == ''){
+            alert('请选择影楼！');
+            return false;
+        }
+        if($('#crm_vaarks').val() == ''){
+            alert('请选择客户类型!');
+            return false;
+        }
+        $('#form1').attr('action', "{:U('insertHomeDemand','is_next=1&customer_id_flag='.$customer['customer_id'])}");
+        $("#form1").submit();
+    });
+
+    $('[id=saleman]').click(function(){
+        $('#dialog-role-result').dialog('open');
+        $('#dialog-role-result').load("{:U('user/listDialog')}");
+    });
+    $("#dialog-role-result").dialog({
+        autoOpen: false,
+        modal: true,
+        width: 800,
+        maxHeight: 400,
+        buttons: { 
+            "确定": function () {
+                var item = $('input:radio[name="owner"]:checked').val();
+                var name = $('input:radio[name="owner"]:checked').parent().next().html();
+                if(item){
+                    // console.log(identification)
+                    $('#saleman').val(name);//写入
+                    $('#sid').val(item);//执行不下去
+                }
+                $(this).dialog("close"); //关闭不掉
+            },
+            "关闭": function () {
+                $(this).dialog("close");
+            }
+        },
+        position: ["center", 100]
+    });
+    
+    //影楼选择
+    // $('#customer_name').click(function () {
+	// 	$('#dialog-message').dialog('open');
+	// 	$('#dialog-message').load("/index.php?m=customer&a=listDialog");
+	// });
+    $('#dialog-message').dialog({
+        autoOpen: false,
+        modal: true,
+        width: 1000,
+        maxHeight: 600,
+        buttons: {
+            "确定": function () {
+                item = $('input:radio[name="customer"]:checked').val();
+                name = $('input:radio[name="customer"]:checked').parent().next().html();
+                contacts_id = $('input:radio[name="customer"]:checked').attr('rel');
+                contacts_name = $('input:radio[name="customer"]:checked').next().attr('value');
+                contacts_telephone = $('input:radio[name="customer"]:checked').next().next().attr('value');
+                address = $('input:radio[name="customer"]:checked').next().next().next().attr('value');
+                create_name = $('input:radio[name="customer"]:checked').next().next().next().next().attr('value');
+
+                create_user_id = $('input:radio[name="customer"]:checked').next().next().next().next().attr('rel');
+                owner_name = $('input:radio[name="customer"]:checked').next().next().next().next().next().attr('value');
+                owner_user_id = $('input:radio[name="customer"]:checked').next().next().next().next().next().attr('rel');
+
+                $('#customer_name').val(name);
+                $('#customer_id').val(item);
+                $('#contacts_id').val(contacts_id);
+                $('#contacts_name').val(contacts_name);
+                $('#contacts_telephone').val(contacts_telephone);
+                $('#address').val(address);
+                $('#create_name').val(create_name);
+                $('#create_id').val(create_user_id);
+                $('#saleman').val(create_name);
+                $('#sid').val(create_user_id);
+                
+                $(this).dialog("close");
+            },
+            "关闭": function () {
+                $(this).dialog("close");
+            }
+        },
+        position:["center",100]
+    });
+
+    //上次上门人员选择
+    $('[id=last_man]').click(function(){
+        $('#dialog-role-result1').dialog('open');
+        $('#dialog-role-result1').load("{:U('user/listDialog')}");
+    });
+    $("#dialog-role-result1").dialog({
+        autoOpen: false,
+        modal: true,
+        width: 800,
+        maxHeight: 400,
+        buttons: {
+            "确定": function () {
+                var item = $('input:radio[name="owner"]:checked').val();
+                var name = $('input:radio[name="owner"]:checked').parent().next().html();
+                if(item){
+                    $('#last_man').val(name);
+                    $('#last_id').val(item);
+                }
+                $(this).dialog("close");
+            },
+            "关闭": function () {
+                $(this).dialog("close");
+            }
+        },
+        position: ["center", 100]
+    });
+
+    //上门人选择
+    $('#operator_name').click(function(){
+        identification = $(this).attr('identification');
+        $('#dialog-role-list').dialog('open');
+        $('#dialog-role-list').load("{:U('user/listDialog')}");
+    });
+    $("#dialog-role-list").dialog({
+        autoOpen: false,
+        modal: true,
+        width: 800,
+        maxHeight: 400,
+        buttons: {
+            "确定": function () {
+                var item = $('input:radio[name="owner"]:checked').val();
+                var name = $('input:radio[name="owner"]:checked').parent().next().html();
+                if(item){
+                    $('[identification='+identification+']').val(name);
+                    $('[identification_id='+identification+']').val(item);
+                }
+                $('#operator_name').val(name) ;
+                $('#tid').val(item) ;
+                $(this).dialog("close");
+            },
+            "关闭": function () {
+                $(this).dialog("close");
+            }
+        },
+        position: ["center", 100]
+    });
+    $(function(){
+        if ('{$Think.get.customer_name}') $("#search_form input[name='customer_name']").prop('value', '{$Think.get.customer_name}');
+        if ('{$Think.get.start_time}') $("#search_form input[name='start_time']").prop('value', '{$Think.get.start_time}');
+        if ('{$Think.get.end_time}') $("#search_form input[name='end_time']").prop('value', '{$Think.get.end_time}');
+
+    });
+    function getCustomer(customer_tr){
+        $('#customer_name').val(customer_tr.find('td').eq(0).html());
+        $('#contacts_name').val(customer_tr.find('td').eq(1).html());
+        $('#contacts_telephone').val(customer_tr.find('td').eq(2).html());
+        $('#saleman').val(customer_tr.find('td').eq(4).html());
+        $('#address').val(customer_tr.find('td').eq(6).html());
+        $('#customer_id').val(customer_tr.find('td').eq(7).html());
+        $('#sid').val(customer_tr.find('td').eq(8).html());
+        $('#order_product_id').val(customer_tr.find('td').eq(9).html());
+    }
+
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,113 @@
+<div class="span12">
+    <ul class="nav pull-left">
+        <if condition="$Think.session.admin eq 1 or $Think.get.by neq 'deleted'">
+            <div class="btn-group pull-left">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    &nbsp;{:L('BATCH_OPERATION')}
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                <if condition="$Think.get.by neq 'share'">
+                    <li><a id="delete" href="javascript:void(0)">{:L('BATCH_REMOVE')}</a></li>
+                </if>
+                <if condition="$Think.get.content eq 'resource'">
+                    <li><a id="batch_receive" href="javascript:void(0)">{:L('BATCH_TO_RECEIVE')}</a></li>
+                    <li><a id="batch_assign" href="javascript:void(0)">{:L('MASS_DISTRIBUTION')}</a></li>
+                <elseif condition="$Think.get.by neq 'deleted'" />
+                    <li><a id="remove" href="javascript:void(0)">{:L('BATCH_INTO_THE_CUSTOMER_POOL')}</a></li>
+                    <li><a id="all_focus" href="javascript:void(0)">{:L('ALL_FOCUS')}</a></li>
+                    <li><a id="share" href="javascript:void(0)">{:L('SHARE')}</a></li>
+                    <li><a id="close_focus" href="javascript:void(0)">{:L('CLOSE_FOCUS')}</a></li>
+                    <li><a id="close_share" href="javascript:void(0)">{:L('CLOSE_SHARE')}</a></li>
+                </if>
+                </ul>&nbsp;&nbsp;
+            </div>
+        </if>
+        <li class="pull-left">
+            <form class="form-inline" id="searchForm" action="" method="get">
+                <ul class="nav pull-left">          
+                <li class="pull-left" >
+                    <select style="width:auto" id="field" onchange="changeCondition()" name="field">
+                        <!-- <option class="" value="">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option> -->
+                        <volist name="field_list" id="v">
+                            <if condition="$v['field'] neq 'annual_revenue' AND $v['field'] neq 'industry' AND $v['field'] neq 'origin'">
+                                <option class="{$v['form_type']}" value="{$v['model']}->{$v['field']}" rel="customer">{$v[name]}</option>
+                            </if>
+                        </volist>
+                        <if condition="$Think.get.content neq 'resource'"><option class="role" value="customer.owner_role_id" rel="user">{:L('PRINCIPAL')}</option></if>
+                        <option class="date" value="customer.create_time">{:L('CREATION_TIME')}</option>
+                        <option class="date" value="customer.update_time">{:L('MODIFICATION_TIME')}</option>
+                    </select>&nbsp;&nbsp;
+                </li>
+                <li id="conditionContent" class="pull-left">
+                    <select id="condition" style="width:auto" name="condition" onchange="changeSearch()">
+                        <option value="contains">{:L('INCLUDE')}</option>
+                        <option value="not_contain">{:L('EXCLUSIVE')}</option>
+                        <option value="is">{:L('YES')}</option>
+                        <option value="isnot">{:L('ISNOT')}</option>                        
+                        <option value="start_with">{:L('BEGINNING_CHARACTER')}</option>
+                        <option value="end_with">{:L('TERMINATION_CHARACTER')}</option>
+                        <option value="is_empty">{:L('Mandatory')}</option>
+                        <option value="is_not_empty">{:L('ISNOTEMPTY')}</option>
+                    </select>&nbsp;&nbsp;
+                </li>
+                <li id="searchContent" class="pull-left">
+                    <input id="search" type="text" class="input-medium search-query" name="search"/>&nbsp;&nbsp;
+                </li>
+                <li class="pull-left"> 
+                    <if condition="$Think.get.by neq null"><input type="hidden" name="by" value="{$Think.get.by}"/></if>
+                    <button type="button" id="dosearch" class="btn"><i class="fa fa-search"></i> {:L('SEARCH')}</button>
+                    &nbsp;
+                </li>
+                <li class="pull-left">
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-comment"></i> {:L('SEND_SMS')}
+                            <span class="caret"></span>
+                        </a>
+                        
+                        <ul class="dropdown-menu">
+                            <li><a id="all_send"  href="javascript:void(0)">{:L('ALL_SEND')}</a></li>
+                            <li><a id="page_send" href="javascript:void(0)">{:L('PAGE_SEND')}</a></li>
+                            <li><a id="check_send" href="javascript:void(0)">{:L('CHECK_SEND')}</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-envelope"></i> {:L('SEND_EMAIL')}
+                            <span class="caret"></span>
+                        </a>    
+                        <ul class="dropdown-menu">
+                            <li><a id="all_send_email"  href="javascript:void(0)">{:L('ALL_SEND')}</a></li>
+                            <li><a id="page_send_email" href="javascript:void(0)">{:L('PAGE_SEND')}</a></li>
+                            <li><a id="check_send_email" href="javascript:void(0)">{:L('CHECK_SEND')}</a></li>
+                        </ul>
+                    </div>
+                </li>
+                </ul>
+                <input type="hidden" name="m" value="{:MODULE_NAME}"/>
+                <input type="hidden" name="a" value="{:ACTION_NAME}"/>
+                <input type="hidden" name="act" id="act" value="search"/>
+                <input type="hidden" name="daochu" id="daochu" value=""/>
+                <input type="hidden" name="current_page" id="current_page" value=""/>
+                <input type="hidden" name="export_limit" id="export_limit" value=""/>
+                <input type="hidden" name="content" <if condition="$_GET['content']">value="resource"</if>/>
+            </form>
+
+
+        </li>
+    </ul>
+    
+    <div class="pull-right">
+        <if condition="ACTION_NAME == 'index'">
+            <a href="{:U('Customer/add')}" class="btn btn-primary"><i class="icon-plus fa fa-plus"></i> {:L('CREATE_NEW_CUSTOMER')}</a>
+        </if>
+        <div class="btn-group">
+            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i>&nbsp; {:L('CLIENT_TOOLS')}<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li><a id="import_excel" class="link" href="javascript:void(0);"><i class="icon-upload fa fa-upload"></i> {:L('IMPORT_CUSTOMER')}</a></li>
+                <li><a href="javascript:void(0);" id="excelExport"  class="link"> <i class="icon-download fa fa-download"></i> {:L('EXPORT_CUSTOMERS')} </a> </li>
+            </ul>
+        </div>
+    </div>
+</div>

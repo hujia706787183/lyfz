@@ -1,0 +1,210 @@
+<div id="receiables">
+    <h4 class="page-header clearfix">
+        <small>{:L('TOTAL_COMSUMPTION')}: {{ total_consumption }} {:L('TOTAL_RECEIVED')}:{{ total_received }} {:L('TOTAL_ARREARAGE')}:{{
+            total_arrearage }}</small>
+        <if condition="$customer['is_deleted'] == 0">
+            <div class="pull-right">
+                <el-button v-if="receiving.listing_order_number" size="small" @click="receiving.listing_order_number = ''">显示全部</el-button>
+                <el-button size="small" @click="open_create_order_dialog">{:L('ADD')}</el-button>
+            </div>
+            <else/>
+            <span class="pull-right">{:L('HAS BEEN REMOVED')}</span>
+        </if>
+    </h4>
+    <el-table border :data="order.list" highlight-current-row @current-change="order_table_row_click" height="250" style="width: 100%">
+        <el-table-column prop="order_number" label="{:L('RECEIVABLE_NUM')}" width="140px">
+        </el-table-column>
+        <el-table-column prop="name" label="{:L('RECEIVABLE_TITLE')}">
+        </el-table-column>
+        <el-table-column prop="price" label="{:L('MONEY')}" width="100px">
+        </el-table-column>
+        <el-table-column label="{:L('ARREARAGE')}" width="100px">
+            <template scope="scope">
+                <span :class="{'text-danger': scope.row.arrearage > 0}">
+                    {{ scope.row.arrearage }}
+                </span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="order_time" label="{:L('ORDER_TIME')}" width="110px">
+        </el-table-column>
+        <el-table-column prop="owner_name" label="{:L('PRINCIPAL')}" width="80px">
+        </el-table-column>
+        <el-table-column width="200px" fixed="right" label="{:L('OPERATION')}">
+            <template scope="scope">
+                <el-button type="text" size="small" @click="open_order_details_dialog(scope.row)">{:L('DETAILS')}</el-button>
+                <el-button type="text" size="small" @click="open_receving_dialog(scope.row)">{:L('RECEIVE_MONEY')}</el-button>
+                <el-button type="text" size="small" @click="open_order_preview(scope.row)">{:L('ORDER_PREVIEW')}</el-button>
+                <el-button type="text" size="small" @click="delete_order(scope, $event)">{:L('DELETE')}</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <!-- 打单 -->
+    <div class="clearfix" style="float:right;margin-top: 20px">
+        <el-button size="small" @click="financeLink" v-if="selectCheckData.length">打单</el-button>
+        <el-button size="small" @click="open_receiving_recycle_bin">回收站</el-button>
+    </div>
+    <!-- 打单 -->
+    <h4 class="page-header clearfix">
+        <span>{:L('RECEIVING HISTORY')}</span>
+    </h4>
+    <el-table border height="250" :data="receiving.table_data" style="width: 100%" @selection-change="selectCheck">
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column prop="receiving_num" label="收款单号" width="140px">
+        </el-table-column>
+        <el-table-column prop="amount" label="收款金额" width="100px">
+        </el-table-column>
+        <el-table-column prop="payment_way" label="收款方式">
+        </el-table-column>
+        <el-table-column prop="description" label="收款描述" width="180">
+        </el-table-column>
+        <el-table-column prop="owner_name" label="负责人">
+        </el-table-column>
+        <el-table-column prop="pay_time" label="收款时间">
+        </el-table-column>
+        <el-table-column prop="status" label="状态">
+            <template scope="scope">
+                <span :class="{'text-danger': scope.row.status == '0'}">
+                    <span v-if="scope.row.status == '1'">已到账</span>
+                    <span v-else>未到账</span>
+                </span>
+            </template>
+        </el-table-column>
+        <el-table-column width="50px" fixed="right" label="{:L('OPERATION')}">
+            <template scope="scope">
+                <el-button type="text" size="small" @click.native.prevent="delete_receiving(scope.$index, receiving.table_data)">{:L('DELETE')}</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <!-- 收款弹层 -->
+    <el-dialog title="收款" :visible.sync="receiving.dialog.visible">
+        <el-form :model="receiving.form" label-width="100px">
+            <el-form-item label="负责人">
+                <el-cascader v-model="receiving.dialog.owner_selected" :options="department_list" :show-all-levels="false"></el-cascader>
+            </el-form-item>
+            <el-form-item label="收款金额">
+                <el-input v-model="receiving.form.amount"></el-input>
+            </el-form-item>
+            <el-form-item label="收款方式">
+                <el-select v-model="receiving.form.payment_way" placeholder="请选择">
+                    <el-option v-for="item in receiving.payment_way_options" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="收款时间">
+                <el-date-picker v-model="date_tmp" @change="receiving_time_date_picked" type="date" placeholder="选择日期">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="收款描述">
+                <el-input type="textarea" :rows="4" v-model="receiving.form.description"></el-input>
+            </el-form-item>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="receiving.dialog.visible = false">取 消</el-button>
+            <el-button type="primary" @click="receiving_money">确 定</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 是否确定收款 -->
+    <el-dialog title="订单" :visible.sync="order.dialog.visible">
+        <el-form :model="order.form" label-width="100px">
+            <el-form-item label="订单标题">
+                <el-input v-model="order.form.name" placeholder="{:L('DEFAULT VALUE IS ORDER NUMBER')}"></el-input>
+            </el-form-item>
+            <el-form-item label="负责人">
+                <el-cascader :filterable='true' v-model="order.dialog.owner_selected" :options="department_list" :show-all-levels="false"></el-cascader>
+            </el-form-item>
+            <el-form-item label="产品">
+                <el-cascader v-model="product_tmp" :options="product_list" @active-item-change="load_product" :filterable='true' @change="product_select"
+                    placeholder="点击选择产品"></el-cascader>
+                <el-table :data="order.dialog.table_list" border v-if="order.product_list_clone.length" style="margin-top: 10px">
+                    <el-table-column prop="name" label="产品名" width="150"></el-table-column>
+                    <el-table-column label="价格">
+                        <template scope="scope">
+                            <el-button style="width: 15%" type="text" @click="scope.row.showStatus = !scope.row.showStatus" size="small">{{scope.row.suggested_price}}</el-button>
+                            <el-button style="width: 15%" type="text" v-if="!scope.row.showStatus" @click="scope.row.showStatus = !scope.row.showStatus" size="small">修改</el-button>
+                            <div style="display: inline-block" v-if="scope.row.showStatus">
+                                <el-input style="width: 55%; margin-left: 5%" v-model="scope.row.suggested_price"></el-input>
+                                <el-button type="primary" @click.native.prevent="true_gai(scope.$index, order.dialog.table_list, scope.row.suggested_price)" style="width: 35%;">确认修改</el-button>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column fixed="right" label="操作" width="200">
+                        <template scope="scope" :filter-method="filterTag" filter-placement="bottom-end">
+                            <el-button type="text" size="small" @click.native.prevent="del_prod(scope.$index, order.dialog.table_list)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-form-item>
+            <el-form-item label="订单总金额">
+                <el-input v-model="order.form.total"></el-input>
+            </el-form-item>
+            <el-form-item label="下单时间">
+                <el-date-picker v-model="date_tmp" @change="order_create_time_date_picked" type="date" placeholder="选择日期">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="下单描述">
+                <el-input type="textarea" :rows="4" v-model="order.form.description"></el-input>
+            </el-form-item>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="order.dialog.visible = false">取 消</el-button>
+            <el-button type="primary" @click="create_order">确 定</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="订单信息" :visible.sync="order.details_dialog.visible">
+        <el-form label-width="100px">
+            <el-form-item label="订单号">
+                <p> {{ order.details_dialog.details.order_number }}</p>
+            </el-form-item>
+            <el-form-item label="订单标题">
+                <p> {{ order.details_dialog.details.name }}</p>
+            </el-form-item>
+            <el-form-item label="负责人">
+                <p> {{ order.details_dialog.details.owner_name }}</p>
+            </el-form-item>
+            <el-form-item label="订单总金额">
+                <p> {{ order.details_dialog.details.price }}</p>
+            </el-form-item>
+            <el-form-item label="下单时间">
+                <p> {{ order.details_dialog.details.pay_time }}</p>
+            </el-form-item>
+            <el-form-item label="下单描述">
+                <p> {{ order.details_dialog.details.description }}</p>
+            </el-form-item>
+            <el-table :data="order.details_dialog.details.product_list">
+                <el-table-column prop="product_name" label="产品名"></el-table-column>
+                <el-table-column prop="price" label="金额"></el-table-column>
+            </el-table>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="order.details_dialog.visible = false">确 定</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="收款回收站" :visible.sync="receiving.recycle_bin.dialog.visible">
+            <el-table border height="250" :data="receiving.recycle_bin.table_data" style="width: 100%">
+                <el-table-column prop="receiving_num" label="收款单号" width="140px">
+                </el-table-column>
+                <el-table-column prop="amount" label="收款金额" width="100px">
+                </el-table-column>
+                <el-table-column prop="owner_name" label="负责人">
+                </el-table-column>
+                <el-table-column prop="pay_time" label="收款时间">
+                </el-table-column>
+                <el-table-column width="120px" fixed="right" label="{:L('OPERATION')}">
+                    <template scope="scope">
+                        <el-button type="text" size="small" @click="recovery_receiving(scope, true)">{:L('RECOVERY')}</el-button>
+                        <el-button type="text" size="small" @click="delete_receiving(scope.$index, receiving.recycle_bin.table_data, true)">{:L('DELETE')}</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="receiving.recycle_bin.dialog.visible = false">确 定</el-button>
+        </div>
+    </el-dialog>
+</div>

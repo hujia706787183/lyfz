@@ -1,0 +1,18 @@
+<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<h3 align="center" style="margin-bottom: 30px;">客户满意度调查答题情况</h3>
+<table class="table table-hover"  style="width: 50%;"  align="center">
+    <empty name="answers">
+        客户还未答题！
+        <else/>
+        <volist name="answers" id="answer">
+            <tr <if condition="$answer['answer'] eq '是' or $answer['answer'] eq '满意' or $answer['answer'] eq '非常满意'">class="success" <else/> class="danger" </if>>
+                <td>{$answer.problem_id}、{$answer.problem}</td>
+                <td>{$answer.answer}</td>
+            </tr>
+        </volist>
+        <tr class="warning">
+            <td>客户建议：</td>
+            <td>{$suggestion}</td>
+        </tr>
+    </empty>
+</table>

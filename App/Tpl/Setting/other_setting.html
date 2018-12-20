@@ -1,0 +1,149 @@
+<include file="Public:header_uncompatible" />
+<include file="Public:nav" />
+<script src="https://cdn.bootcss.com/vue/2.5.13/vue.js"></script>
+<script src="https://cdn.bootcss.com/lodash.js/4.17.4/lodash.min.js"></script>
+<!-- 引入样式 -->
+<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="https://cdn.bootcss.com/element-ui/2.0.11/index.js"></script>
+<style>
+    .el-input {
+        width: 500px;
+    }
+</style>
+<div class="container">
+    <div class="page-header">
+        <h4>其它设置</h4>
+    </div>
+    <include file="Public:alert" />
+    <div class="tabbable">
+        <include file="nav"/>
+        <div id="app" style="margin-top:15px;">
+            <div class="col-md-3">
+                <ul class="nav nav-pills nav-stacked" role="tablist">
+                    <li class="active"><a href="#system" aria-controls="system" role="tab" data-toggle="tab">系统设置</a></li>  
+                    <volist name="modules" id="module">
+                        <if condition="$module['setting']">
+                                <li><a href="#{$module.key}" aria-controls="{$module.key}" role="tab" data-toggle="tab">{$module.name} </a></li>
+                        </if>
+                    </volist>
+                </ul>
+            </div>
+
+            <div class="col-md-9 tab-content" style="margin-top:15px">
+                <div class="tab-pane active" id="system">
+                    <el-form ref="form" :model="form" label-width="150px">
+                        <el-form-item label="不显示产品：">
+                            <el-select v-model="form.select_products" multiple filterable placeholder="请选择">
+                                <el-option v-for="product in products" :key="product.product_id" :label="product.label" :value="product.product_id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="打单字体设置：">
+                            <el-select v-model="form.font_family" filterable placeholder="请选择">
+                                <el-option v-for="font in font_source" :key="font.value" :label="font.label" :value="font.value"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="回访期限时间设置：">
+                            <el-input v-model="form.return_deadline" placeholder="请输入内容" clearable></el-input>
+                        </el-form-item>
+                        <el-form-item label="回访审核时间设置：">
+                            <el-input v-model="form.review_deadline" placeholder="请输入内容" clearable></el-input>
+                        </el-form-item>
+                        <el-form-item label="超时未回访设置：">
+                            <el-input v-model="form.overdue_return" placeholder="请输入内容" clearable></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="onSubmit">保存</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
+                <volist name="modules" id="module" >
+                    <if condition="$module['setting']">
+                        <div class="tab-pane" id="{$module.key}">
+                            <{$module.key}-setting />
+                        </div>
+                    </if>
+                </volist>
+            </div>
+        </div>
+    </div>
+
+    <volist name="modules" id="module">
+        <if condition="$module['setting']">
+            {:R('setting/renderModulesTpl', array("module" => $module['key']))}
+        </if>
+    </volist>
+
+    <script src="/Public/js/libs/http.js"></script>
+
+    <script>
+        http.onError = function (info) {
+            vm.$message.error(info)
+            return $.Deffered()
+        }
+
+        http.onWarning = function (info) {
+            vm.$message(info)
+        }
+
+        var vm = new Vue ({
+            el: '#app',
+            data: function() {
+              return {
+                products: [],
+                form: {
+                    select_products: [],
+                    font_family: '',
+                    return_deadline: '',
+                    review_deadline: '',
+                    overdue_return: ''
+                },
+                font_source: [{
+                    label: '华文中宋',
+                    value: '华文中宋'
+                },{
+                    label: '华文楷体',
+                    value: '华文楷体'
+                },{
+                    label: '微软雅黑',
+                    value: 'Microsoft Yahei'
+                },{
+                    label: '华文新魏',
+                    value: '华文新魏'
+                },{
+                    label: '黑体',
+                    value: '黑体'
+                }]
+              };
+            },
+
+            methods: {
+                onSubmit: function() {
+                    http.post('/index.php/setting/other_setting', this.form).then(function(response) {
+                        console.log(this.form);
+                    }.bind(this));
+                }
+              },
+            created: function() {
+                http.get('/api.php/product/getlist').then(function(response){
+                    var product_list = response.product_list;
+                    _.forEach(product_list, function(product_info){
+                        this.products.push({
+                            product_id: product_info.product_id,
+                            label: product_info.name
+                        });
+                    }.bind(this));
+                }.bind(this));
+                http.get('/api.php/setting/get_config?config_name=order_font_family,not_display_product_id,return_deadline,review_deadline,overdue_return').then(function (response) {
+                    this.form.font_family = response.order_font_family;
+                    this.form.select_products = response.not_display_product_id;
+                    this.form.return_deadline = response.return_deadline;
+                    this.form.review_deadline = response.review_deadline;
+                    this.form.overdue_return = response.overdue_return;
+                }.bind(this));
+            }
+        });
+    </script>
+</div>
+
+<include file="Public:footer" />

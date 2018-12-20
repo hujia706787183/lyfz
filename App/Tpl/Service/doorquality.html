@@ -1,0 +1,109 @@
+<include file="Public:header" />
+<if condition="$total_report.add_count gt 0">
+<script src="__PUBLIC__/js/chart/highcharts.js"></script>
+<script src="__PUBLIC__/js/chart/modules/exporting.js"></script>
+</if>
+<div class="container">
+	<include file="nav" />
+	<include file="Public:alert" />
+	<div class="row">
+		<div class="span12">
+			<ul class="nav pull-left">
+				<li class="pull-left">
+					<form action="__ACTION__" method="get">
+						<ul class="nav pull-left">
+							<li class="pull-left">
+								选择部门：
+                                <select style="width:auto" name="department" id="department">
+									<option class="all" value="all">{:L('ALL')}</option>
+                                    <volist name="role_department_res" id="vo">
+                                        <option value="{$vo.department_id}" <if condition="$_GET['department'] eq $vo['department_id']">selected</if>>{$vo.name}</option>
+                                    </volist>
+								</select>&nbsp;&nbsp;
+							</li>
+							<li class="pull-left">
+								选择员工： 
+                                <select style="width:auto" name="service_personal_id" id="staffList">
+								</select>&nbsp;&nbsp;
+							</li>
+							<li class="pull-left">
+								选择日期：从<input type="text" id="start_time" name="start_time" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate" value="{$Think.get.start_time}"/>至<input type="text" id="end_time" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" name="end_time" class="Wdate" value="{$Think.get.end_time}" />&nbsp;&nbsp;
+							</li>
+							<li class="pull-left">
+                                <button type="submit" class="btn">{:L('SEARCH')}</button>
+                            </li>
+						</ul>
+					</form>
+				</li>				
+			</ul>
+		</div>
+		<div class="span2 knowledgecate">
+			<ul class="nav nav-list">
+				<li class="active">
+					<a href="javascript:void(0)">选择统计内容</a>
+				</li>
+				<li><a href="{:U('service/remoteStatistics')}"><i class="icon-white icon-chevron-right"></i>远程一览表</a></li>
+				<li><a href="{:U('service/remoteTypeAnalysis')}"><i class="icon-white icon-chevron-right"></i>远程类型分析</a></li>
+				<li><a href="{:U('service/customerRanking')}"><i class="icon-white icon-chevron-right"></i>客户远程排名</a></li>
+                <li><a class="active" href="{:U('service/doorQuality')}"><i class="icon-white icon-chevron-right"></i>上门质量统计</a></li>
+			</ul>
+		</div>
+		<div class="span10">
+			<div id="report_content">
+				<table class="table table-hover table-striped">
+					<thead>
+						<tr>
+							<th>上门老师</th>
+							<th><a href="__ACTION__?remote_number_sort={$_GET['remote_number_sort'] == 'asc' ? 'desc':'asc'}">远程数量</a></th>
+							<!--<th>远程率</th>-->
+							<th>重复远程数</th>
+						</tr>
+					</thead>
+					<tbody>
+						<volist name="list" id="vo">
+						<tr>
+							<td><a href="{:U('service/index')}&field=teacher_name&search={$vo.user_name}">{$vo.user_name}</a></td>
+							<td>{$vo.remote_number}</td>
+							<!--<td>123123</td>-->
+							<td>{$vo.repeat_num}</td>
+						</tr>
+						</volist>
+					</tbody>
+				</table>
+                <center>{$page}</center>
+				<include file="Public:listrows" />
+			</div>
+		</div>
+	</div>
+</div>
+<div class="hide" id="dialog-role-info" title="{:L('EMPLOYEE_INFORMATION')}">loading...</div>
+<script type="text/javascript">
+    var url = "{:U('service/lookupDepartmentStaff')}";
+
+    $("#department").click(function(){
+        department_id = $(this).val();
+        $("#staffList").empty();
+        if(department_id == 'all'){
+            return
+        }
+        
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: url,
+            data: {department_id: department_id},
+            success: function (obj) {
+                if(obj.meta.code == 200){
+                    $("#staffList").append('<option class="all" value="all">全部</option>');
+                    for(i=0; i<obj.body.length; i++){
+                        $("#staffList").append('<option value="'+obj.body[i].user_id+'">'+obj.body[i].name+'</option>');
+                    }
+                }
+            },
+            error: function(data) {
+                alert('网络错误');
+            }
+        });
+    });
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,47 @@
+
+<script type="text/x-template" id="doorservice-template">
+    <el-form label-width="150px">
+        <el-form-item label="服务产品：">
+            <el-select v-model="product_on_service" multiple filterable placeholder="请选择服务产品">
+                <el-option v-for="product in products" :key="product.product_id" :label="product.label" :value="product.product_id"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item>
+            <el-button @click="save">保存</el-button>
+        </el-form-item>
+    </el-form>
+</script>
+
+<script>
+    Vue.component('doorservice-setting', {
+        template: '#doorservice-template',
+        data: function () {
+            return {
+                product_on_service: [],
+                products: []
+            }
+        },
+        methods: {
+            save: function () {
+                http.post('/api.php/setting/set?module=' + 'DoorService', {product_on_service: this.product_on_service}).then(function (response) {
+                    this.$message('保存成功');
+                }.bind(this));
+            }
+        },
+        created: function () {
+            http.get('/api.php/product/getlist').then(function(response){
+                var product_list = response.product_list;
+                _.forEach(product_list, function(product_info){
+                    this.products.push({
+                        product_id: product_info.product_id,
+                        label: product_info.name
+                    });
+                }.bind(this));
+            }.bind(this));
+
+            http.get('/api.php/setting/get_config?config_name=' + 'product_on_service').then(function (response) {
+                this.product_on_service = response || [];
+            }.bind(this));
+        }
+    })
+</script>

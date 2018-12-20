@@ -1,0 +1,522 @@
+<include file="Public:header_uncompatible" />
+<include file="Public:nav" />
+
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/WdatePicker.js?t=20140830" type="text/javascript"></script>
+<!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
+<link href="https://cdn.bootcss.com/element-ui/2.2.1/theme-chalk/index.css" rel="stylesheet">
+<link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+
+<!--这里是datatables的插件包-->
+<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+<style>
+
+    .el-date-editor.el-input {
+        width: 100%;
+    }
+
+    /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/  
+    ::-webkit-scrollbar  
+    {  
+        width: 2px;
+        height: 4px;
+        background-color: #F5F5F5;  
+    }  
+    
+    /*定义滚动条轨道 内阴影+圆角*/  
+    ::-webkit-scrollbar-track  
+    {  
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  
+        border-radius: 10px;  
+        background-color: #F5F5F5;  
+    }  
+    
+    /*定义滑块 内阴影+圆角*/  
+    ::-webkit-scrollbar-thumb  
+    {  
+        border-radius: 10px;  
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
+        background-color: #ffa0a0;  
+    }
+    /*更改按钮颜色*/
+    .btn-primary {
+        color: #000;
+        background-color: #eee;
+    }
+    .form-control {
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    }
+    form .nav{
+        margin-top: 20px;
+        width: 100%
+    }
+    form .nav li{
+        margin-right: 50px;
+        margin-bottom: 0
+    }
+
+    form .nav li button{
+        width: 100px;
+        margin-top: 20px
+    }
+    form .nav li:nth-child(3) input{
+        display: inline-block;
+    }
+
+    form .nav li:nth-child(5){
+        margin-right: 0;
+        margin-left: 50px
+    }
+
+    /* #app {
+        text-align: center;
+    } */
+
+    .page {
+        align-items: center;
+        display: flex;
+    }
+
+    .el-form-item {
+        margin-bottom: 14px;
+    }
+
+    .el-dialog__body {
+        padding-bottom: 10px
+    }
+    .statusRed {
+        width: 100%;height: 100%;display: block;background: #f2969b;color: #fff;padding: 12px !important;
+    }
+    .statusYellow {
+        width: 100%;height: 100%;display: block;background: #ffc798;color: #fff;padding: 12px !important;
+    }
+    .statusGreen {
+        width: 100%;height: 100%;display: block;background: #8cad82;color: #fff;padding: 12px !important;
+    }
+
+</style>
+<div class="container">
+    <include file="nav" />
+    <include file="Public:alert" />
+   <div>
+       <form id="form" method="get" action="">
+           <input type="hidden" name="m" value="{:MODULE_NAME}"/>
+           <input type="hidden" name="a" id="action_name" value="{:ACTION_NAME}"/>
+           <ul class="nav pull-left">
+               <li class="pull-left form-group">
+                   <label for="name">负责人:</label>
+                   <select name="checked" class="form-control">
+                       <option value="0"<if condition="$search['checked'] eq 0">selected</if>>全部</option>
+                       <option value="1"<if condition="$search['checked'] eq 1">selected</if>>我负责的</option>
+                       <option value="2"<if condition="$search['checked'] eq 2">selected</if>>我下属的</option>
+                       <option value="3"<if condition="$search['checked'] eq 3">selected</if>>查看某人</option>
+                   </select>
+               </li>
+               <li class="pull-left form-group" id="check_role_selector">
+                    <label for="name">人员：</label>
+                    <select id="check_role_id" name="check_role_id" class="form-control selectpicker" data-live-search="true">
+                    </select>
+                </li>
+               <li class="pull-left form-group">
+                   <label for="name">状态筛选:</label>
+                   <select style="width:auto" name="status" id="role" class="form-control">
+                       <option class="all" value="0"<if condition="$search['status'] eq 0">selected</if>>{:L('ALL')}</option>
+                       <option class="all" value="1"<if condition="$search['status'] eq 1">selected</if>>{:L('NONPROGRAMMABLE')}</option>
+                       <option class="all" value="2"<if condition="$search['status'] eq 2">selected</if>>{:L('UNSERVED')}</option>
+                       <option class="all" value="3"<if condition="$search['status'] eq 3">selected</if>>{:L('SERVING')}</option>
+                       <option class="all" value="4"<if condition="$search['status'] eq 4">selected</if>>{:L('FINISH')}</option>
+                   </select>&nbsp;&nbsp;
+               </li>
+               <li class="pull-left form-inline" style="width: 350px;">
+                   <label style="display: block;" for="name">选择日期:从</label>
+                   <input type="text" id="start_time" name="start_time" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate form-control" value="{$search.start_time}" style="width: 150px"/>
+                   <span style="margin:0 10px">至</span><input type="text" id="end_time" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" name="end_time" class="Wdate form-control" value="{$search.end_time}" style="width: 150px"/>&nbsp;&nbsp;
+               </li>
+               <li class="pull-right">
+                   <button  type="button" class="btn btn-info" id="excelExport">导出数据</button>
+               </li>
+               <li class="pull-right">
+                   <button type="submit" class="btn btn-primary" style="background: #418BCA;color: #fff">{:L('SEARCH')}</button>
+               </li>
+
+           </ul>
+       </form>
+   </div>
+    <div class="row">
+        <div id='app'>
+            <table  class="table table-hover table-bordered" id="table_id_example">
+                <notempty name="list">
+                    <thead>
+                        <tr id="childNodes_num">
+                            <th>序列</th>
+                            <th>影楼名称</th>
+                            <th>购买产品</th>
+                            <th>购买时间</th>
+                            <th>订单应收款</th>
+                            <th><a href="javascript:;" onclick="search2()">订单欠款</a></th>
+                            <th>客户姓名</th>
+                            <th>电话</th>
+                            <th>负责人员</th>
+                            <th>对接人员</th>
+                            <th>对接状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="list" id="vo">
+                        <tr>
+                            <th>{$i}</th>
+                            
+                            <td >
+                                <a href="{:U('customer/view')}&id={$vo.customer_id}">{$vo.customer_name}</a>
+                            </td>
+                            <td >
+                                {$vo.product_name}
+                            </td>
+                            <td >
+                                {$vo.create_time}
+                            </td>
+                            <td>{:$vo['price']-0}</td>
+                            <if condition="($vo['price'] - $vo['received']) gt 0">
+                                <td class="statusRed">
+                                    {:$vo['price'] - $vo['received']}
+                                </td>
+                            <else/>
+                                <td >
+                                    {:$vo['price'] - $vo['received']}
+                                </td>
+                            </if>
+
+                            <td style="width:100px;">
+                                <if condition="$vo.contacts_name neq ''">{$vo.contacts_name}<else/>暂无</if>
+                            </td>
+                            <td >
+                                <if condition="$vo.contacts_phone neq ''">{$vo.contacts_phone}<else/>暂无</if>
+                            </td>
+                            <td >
+                                {$vo.owner_name}
+                            </td>
+                            <td>
+                                {$vo.contacting_name}
+                            </td>
+                            <if condition="$vo.contacting_status eq 'UNSERVED' or $vo.contacting_status eq 'NONPROGRAMMABLE'">
+                                <td class="statusRed">
+                                    {:L($vo['contacting_status'])}
+                                </td>
+                            <elseif condition="$vo.contacting_status eq 'SERVING'"/>
+                                <td class="statusYellow">
+                                    {:L($vo['contacting_status'])}
+                                </td>
+                            <elseif condition="$vo.contacting_status eq 'FINISH'"/>
+                                <td class="statusGreen">
+                                    {:L($vo['contacting_status'])}
+                                </td>
+                            </if>
+                            <td >
+                                <el-button type="mini" @click="open_settings_dialog({$vo.order_product_id})">设置</el-button>
+                            </td>                                           
+                        </tr> 
+                        </volist>
+                    </tbody>
+                <else/>
+                    <tr><td>----暂无数据----</td></tr>
+                </notempty>
+            </table>
+            <div style="text-align:center" class="clearfix">
+                <div class="pagination">
+                    {$page}
+                </div>
+                <include file="Public:listrows" />
+            </div>
+
+
+            <el-dialog title="人员安排" :visible.sync="contacting.dialog.visible" width="80%" top="6vh">
+                <el-row>
+                    <el-col :span="8">
+                        <el-form label-width="100px">
+                            <el-form-item label="订单号：">{{ OrderProductInfo.order_number }}</el-form-item>
+                            <el-form-item label="接单人：">{{ OrderProductInfo.owner_role_name }}</el-form-item>
+                            <el-form-item label="产品名：">{{ OrderProductInfo.product_name }}</el-form-item>
+                            <el-form-item label="应收款：">{{ OrderProductInfo.price }}</el-form-item>
+                            <el-form-item label="实收款：">{{ OrderProductInfo.received || 0 }}</el-form-item>
+                            <el-form-item label="对接人员：" >
+                                <el-cascader
+                                    v-model="contacting.dialog.member_selected"
+                                    :options="department_list"
+                                    :show-all-levels="false"
+                                ></el-cascader>
+                            </el-form-item>
+                            <el-form-item label="状态：">
+                                <el-select v-model="contacting.form.contacting_status" placeholder="请选择">
+                                    <el-option label="未服务" value="UNSERVED"></el-option>
+                                    <el-option label="服务中" value="SERVING"></el-option>
+                                    <el-option label="已完成" value="FINISH"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-form>
+                    </el-col>
+                    <el-col :span="16">
+                        <el-table :data="current_customer_logs" height="200" >
+                            <el-table-column label="人员" prop="user_name"></el-table-column>
+                            <!-- <el-table-column label="标题" prop="subject"></el-table-column> -->
+                            <el-table-column label="内容" prop="content"></el-table-column>
+                            <el-table-column label="时间" prop="create_date"></el-table-column>
+                        </el-table>
+                        <el-form>
+                            <!-- <el-form-item label="日志标题">
+                                <el-input v-model="logForm.title"></el-input>
+                            </el-form-item> -->
+                            <el-form-item label="日志内容">
+                                <el-input v-model="logForm.content" type="textarea"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button @click="addCustomerLog">添加日志</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </el-col>
+                </el-row>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="contacting.dialog.visible = false">取 消</el-button>
+                    <el-button type="primary" @click="setContacting">确 定</el-button>
+                </div>
+            </el-dialog>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/vue/2.5.13/vue.min.js"></script>
+<!-- <script src="https://cdn.bootcss.com/element-ui/2.0.11/index.js"></script> -->
+<script src="https://cdn.bootcss.com/element-ui/2.2.1/index.js"></script>
+<script src="https://cdn.bootcss.com/lodash.js/4.17.4/lodash.min.js"></script>
+<script>
+    var check_role_id = '{:$search["check_role_id"]}';
+
+    $(document).ready( function () {
+        $('#table_id_example').DataTable();
+    } );
+
+    $.extend( $.fn.dataTable.defaults, {
+       //searching: false,
+        //ordering:  false
+        paging :false,
+        "autoWidth": false,
+        "bInfo" : false,
+        "lengthChange": false
+    } );
+
+    $(function () {
+        $('#excelExport').click(function () {
+//                            $('#form').submit();
+            window.open('/index.php?'+$('#form').serialize()+"&export=1");
+        });
+
+        // $("#check_role_id").selectpicker({
+        //      noneSelectedText : '请选择取款人'
+        // });
+        $.get('/api.php/user/getRoleList').then(function (response) {
+            var options = '<option value="">--请选择查看人--</option>';
+            $.each(response.data, function (k, v) {
+                selected = '';
+                if (v.role_id == check_role_id){
+                    selected = 'selected';
+                }
+                options += '<option ' + selected + ' data-username="'+ v.username +'" value="'+ v.role_id +'">'+ v.username + '  (' + v.department_name+ '-' + v.position_name +')</option> '
+            });
+            $("#check_role_id").html(options);
+            $('#check_role_id').selectpicker('refresh');
+        });
+
+        $('select[name="checked"]').on('change', function() {
+            if ($(this).val() == 3) {
+                $('#check_role_selector').show()
+            } else {
+                $('#check_role_selector').hide()
+            }
+        }).trigger('change');
+        
+    });
+    function search2() {
+      var url = window.location.href;
+      if(!url.match(RegExp(/order_by=debt/))){
+        url += '&order_by=debt'
+      }else {
+        url = url.replace(/&order_by=debt/,"");
+      }
+      location.href=url
+    }
+</script>
+<script type="text/javascript">
+
+
+    var http = {
+        request: function(settings){
+            var def = $.Deferred();
+            settings.dataType = "JSON";
+             $.ajax(settings).then(function (response){
+                if (!response.code){
+                    def.resolve(response.data);
+                } else {
+                    def.reject(response.info);
+                }
+            })
+
+            return def.fail(function(info){
+                app.$message.error(info)
+            });
+        },
+        get : function(url, data){
+            var settings = {
+                url: url,
+                data: data,
+                type: 'GET'
+            };
+
+            return this.request(settings);
+        },
+        post: function (url, data){
+            var settings = {
+                url: url,
+                data: data,
+                type: 'POST'
+            };
+
+            return this.request(settings);
+        }
+    }
+    var app = new Vue({
+        el: '#app',
+        data: function(){
+            return {
+                contacting: {
+                    form:{
+                        order_product_id: 0,
+                        contacting_role_id: 0,
+                        contacting_status: ''
+                    },
+                    dialog: {
+                        visible: false,
+                        member_selected: []
+                    }
+                },
+                logForm: {
+                    title: '',
+                    content: ''
+                },
+                OrderProductInfo: {
+                    order_number: '',
+                    owner_role_name: '',
+                    product_name: '',
+                    price: '',
+                    received: '',
+                },
+                department_list: [],
+                current_customer_logs: [],
+                operate_customer_id: 0
+            }
+        },
+        methods: {
+            load_customer_logs_list: function (customer_id) {
+                return http.get('/api.php/customer/get_communicate_logs', { customer_id: customer_id }).then(function (customer_logs) {
+                    this.current_customer_logs = customer_logs
+                }.bind(this))
+            },
+            open_settings_dialog: function(order_product_id){
+                this.contacting.form.order_product_id = order_product_id;
+
+                http.get('/api.php/product/get_order_product_details', { order_product_id: order_product_id}).then(function (orderProductInfo) {
+                    this.OrderProductInfo = orderProductInfo
+                    return orderProductInfo.customer_id
+                }.bind(this)).then(function (customer_id){
+                    this.operate_customer_id = customer_id
+                    this.contacting.dialog.visible = true;
+                    return this.load_customer_logs_list(customer_id);
+                }.bind(this))
+            },
+            addCustomerLog: function () {
+                http.post('/api.php/customer/add_communicate_log?customer_id=' + this.operate_customer_id, this.logForm).then(function () {
+                    this.$message('保存成功')
+                }.bind(this)).then(() => this.load_customer_logs_list(this.operate_customer_id)).then(()=>{
+                    Object.assign(this.logForm, {
+                        title: '',
+                        content: ''
+                    })
+                })
+            },
+            load_staff: function(department_info){
+                // department_info = department_info[0];
+                var option = _.find(this.department_list, function(item){return item.value.department_id == department_info.department_id});
+                if (!option || option.children.length == 0){
+                    $.get('/api.php/staff/getlist', {department_id: department_info.department_id}).then(function(response){
+                        var staff_list = response.data;
+                        _.forEach(staff_list, function(user_info){
+                            option.children.push({
+                                value: {
+                                    user_id: user_info.user_id,
+                                    user_name: user_info.name
+                                },
+                                label: user_info.name
+                            });
+                        });
+                    }.bind(this));
+                }
+            },
+            setContacting: function(){
+                console.log(this.OrderProductInfo.price!=0 || this.OrderProductInfo.received<this.OrderProductInfo.price);
+                if (this.contacting.form.contacting_status == 'FINISH' && this.OrderProductInfo.price!=0 && this.OrderProductInfo.received<this.OrderProductInfo.price){
+                    this.$message('安排失败，收款未结清，不能选择已完成！');
+                }else {
+                    $.post('/api.php/service/setOrderProductExtraInfo', this.contacting.form).then(function(response){
+                        if(!response.code){
+                            this.$message('安排成功');
+                            setTimeout(function(){window.location.reload()}, 1000);
+                        } else {
+                            this.$message('安排失败'+response.info);
+                        }
+                    }.bind(this));
+                }
+
+                this.contacting.dialog.visible = false
+            }
+        },
+        created: function(){
+            $.get('/api.php/department/getlist').then(function(response){
+                var department_list = response.data;
+                _.forEach(department_list, function (department_info) {
+                    this.department_list.push({
+                        value: {
+                            department_id: department_info.department_id
+                        },
+                        label: department_info.name,
+                        children: []
+                    });
+                    this.load_staff(department_info);
+                }.bind(this));
+            }.bind(this));
+        }, 
+        watch: {
+            'contacting.dialog.member_selected': function(value){
+                if (value[1]){
+                    this.contacting.form.contacting_role_id = value[1].user_id;
+                }
+            }
+        }
+    });
+</script>

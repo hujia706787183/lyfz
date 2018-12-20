@@ -1,0 +1,13 @@
+<!-- Docs nav ================================================== -->
+<div class="page-header" style="border:none; font-size:14px; ">
+    <ul class="nav nav-tabs">
+        <li class="<if condition='ACTION_NAME == "index" && ($_GET["content"] == "content" || $_GET["content"] == "")'>active</if>"><a  href="{:U('customer/index')}"><img src="__PUBLIC__/img/customer_icon.png"/>&nbsp; {:L('CUSTOMER')}</a></li>
+        <li class="<if condition='ACTION_NAME == "index" && $_GET["content"] == "resource" '>active</if>"><a  href="{:U('customer/index','content=resource')}"><img src="__PUBLIC__/img/customer_source_icon.png"/>&nbsp; {:L('CUSTOMER_POOL')}</a></li>
+        <li><a href="{:U('contacts/index')}"><img src="__PUBLIC__/img/contacts_icon.png"/> &nbsp;{:L('LINKMAN')}</a></li>
+        <li class="<if condition='ACTION_NAME == "cares"'>active</if>"><a href="{:U('customer/cares')}"><img src="__PUBLIC__/img/cares_icon.png"/> &nbsp;{:L('CUMTOMER_CARE')}</a></li>
+        <li class="<if condition='ACTION_NAME == "analytics"'>active</if>"><a href="{:U('customer/analytics')}"><img src="__PUBLIC__/img/tongji.png"/> &nbsp;{:L('CLIENT_STATISTICS')}</a></li>
+        <li class="<if condition='ACTION_NAME == "ordered" or ACTION_NAME == "ordered_search"'>active</if>"><a href="{:U('customer/ordered')}"><i class="fa fa-gavel"></i>{:L('ORDERED CUSTOMER')}</a></li>
+        
+    </ul>
+</div>
+<!--  !in_array(ACTION_NAME, ['ordered', 'analytics', 'cares']) &&  -->

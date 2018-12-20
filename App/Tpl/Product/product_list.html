@@ -1,0 +1,248 @@
+<include file="Public:header_uncompatible" />
+<include file="Public:nav" />
+
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/WdatePicker.js?t=20140830" type="text/javascript"></script>
+<script src="__PUBLIC__/js/5kcrm.js" type="text/javascript"></script>
+<script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+<link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+<style>
+
+    .el-date-editor.el-input {
+        width: 100%;
+    }
+
+    /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+    ::-webkit-scrollbar
+    {
+        width: 2px;
+        height: 4px;
+        background-color: #F5F5F5;
+    }
+
+    /*定义滚动条轨道 内阴影+圆角*/
+    ::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+        background-color: #F5F5F5;
+    }
+
+    /*定义滑块 内阴影+圆角*/
+    ::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #ffa0a0;
+    }
+    /*更改按钮颜色*/
+    .btn-primary {
+        color: #000;
+        background-color: #eee;
+    }
+    .form-control {
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    }
+    form .nav{
+        margin-top: 20px;
+        width: 100%
+    }
+    form .nav li{
+        margin-right: 50px;
+        margin-bottom: 0
+    }
+    form .nav li:nth-child(3){
+        width: 400px;
+    }
+    form .nav li button{
+        width: 100px;
+        margin-top: 20px
+    }
+    form .nav li:nth-child(3) input{
+        display: inline-block;
+    }
+    /*form .nav li:nth-child(4){*/
+        /*margin-right: 0;*/
+        /*margin-left: 50px*/
+    /*}*/
+    /*form .nav li:nth-child(5){*/
+        /*margin-right: 0;*/
+        /*margin-left: 50px*/
+    /*}*/
+</style>
+<div class="container">
+    <include file="nav" />
+    <include file="Product:subnav" />
+    <include file="Public:alert" />
+   <div>
+       <form id="form" method="get" action="">
+           <input type="hidden" name="m" value="{:MODULE_NAME}"/>
+           <input type="hidden" name="a" id="action_name" value="{:ACTION_NAME}"/>
+           <ul class="nav pull-left">
+               <li class="pull-left form-group">
+                   <label for="field">筛选类型:</label>
+                   <select style="width:auto" name="field" id="field" class="form-control" onchange="changeCondition()">
+                       <option class="product_name" value="product_name">产品名</option>
+                       <option class="product_type" value="product_type">产品类型</option>
+                   </select>&nbsp;&nbsp;
+               </li>
+               <li id="conditionContent" class="pull-left">
+                   <label for="condition">产品名:</label>
+                   <select style="width:auto" name="condition" id="condition" class="form-control">
+                       <volist name="product_list" id="product">
+                           <option value="{$product.product_id}" >{$product.name}</option>
+                       </volist>
+                   </select>&nbsp;&nbsp;
+               </li>
+               <li class="pull-left" style="width: 100px">
+                   <button type="submit" class="btn btn-primary" name="submit" value="search1" style="background: #418BCA;color: #fff"><i class="fa fa-search"></i> {:L('SEARCH')}</button>
+               </li>
+               <li class="pull-left">
+                   <label for="unfilled_order">未发货:</label>
+                   <select style="width:auto" id="unfilled_order" name="unfilled_order[]" class="selectpicker" multiple data-live-search="true">
+                       <volist name="product_type" id="product_type">
+                           <option value="{$product_type.category_id}" >{$product_type.name}</option>
+                       </volist>
+                   </select>&nbsp;&nbsp;
+               </li>
+               <li class="pull-left">
+                   <button type="submit" class="btn btn-primary" name="submit" value="search2" style="background: #418BCA;color: #fff"><i class="fa fa-search"></i> {:L('SEARCH')}</button>
+               </li>
+           </ul>
+       </form>
+   </div>
+    <div class="row">
+        <div class="span12" id='app'>
+            <table class="table table-hover table-striped">
+                <notempty name="list">
+                    <thead>
+                        <tr id="childNodes_num">
+                            <th>序列</th>
+                            <th>影楼名称</th>
+                            <th>购买产品</th>
+                            <th>快递公司</th>
+                            <th>快递单号</th>
+                            <th>客户备注</th>
+                            <th>购买时间</th>
+                            <th>订单应收款</th>
+                            <th>订单欠款</th>
+                            <!--<th>客户姓名</th>-->
+                            <!--<th>电话</th>-->
+                            <th>负责人员</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="list" id="vo">
+                        <tr>
+                            <th>{$i}</th>
+                            <td >
+                                <a href="{:U('customer/view')}&id={$vo.customer_id}">{$vo.customer_name}</a>
+                            </td>
+                            <td >
+                                {$vo.product_name}
+                            </td>
+                            <td>{$vo.express_company}</td>
+                            <td>{$vo.express_number}</td>
+                            <td title="{$vo.description}">{$vo.description}</td>
+                            <td >
+                                {$vo.create_time|date='Y-m-d',###}
+                            </td>
+                            <td>{:$vo['price']-0}</td>
+                            <td >
+                                {:$vo['price'] - $vo['received']}
+                            </td>
+
+                            <td >
+                                {$vo.owner_name}
+                            </td>
+                            <td >
+                                <button type="button"  id="" class="btn btn-primary btn-sm ">
+                                    操作
+                                </button>
+                            </td>
+                        </tr>
+                        </volist>
+                    </tbody>
+                <else/>
+                    <tr><td>----暂无数据----</td></tr>
+                </notempty>
+            </table>
+
+            <div class="pagination">
+                {$page}
+            </div>
+            <div class="clear"></div>
+            <!-- Modal -->
+            <include file="product_modal"/>
+
+        </div>
+    </div>
+</div>
+</div>
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.min.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://cdn.bootcss.com/lodash.js/4.17.4/lodash.min.js"></script>
+<script>
+    $(function () {
+        $("#unfilled_order").selectpicker({
+            noneSelectedText : '请选择'
+        });
+        if ('{$Think.get.submit}'=='search2'){
+            $('#unfilled_order').selectpicker('val', $.parseJSON('{$unfilled_order1}'));
+        }
+        $('#unfilled_order').selectpicker('refresh');
+        $('#excelExport').click(function () {
+//                            $('#form').submit();
+            window.open('/index.php?'+$('#form').serialize()+"&export=1");
+        });
+        $('.open_set_product_info_dialog').on('click', function(){
+            var product_id = $(this).data('product-id');
+            console.log(product_id);
+            var order_product_id = $(this).data('order-product-id');
+            $.ajax({
+                url: '{:U("Customer/product")}',
+                type: 'get',
+                data: {product_id: product_id, order_product_id: order_product_id},
+                success: function (product) {
+                    $('#product_info_form').html(product);
+                },
+                error: function () {
+                    console.log('错误');
+                }
+            });
+            $.ajax({
+                url: '{:U("Customer/productButton")}',
+                type: 'get',
+                async: false,
+                data: {product_id: product_id, order_product_id: order_product_id},
+                success: function (product) {
+                    $('#echoButton').html(product);
+                }
+            });
+            $('#myModal').modal('show');
+        });
+    });
+    if ('{$Think.get.field}'){
+        $("#field option[value='{$Think.get.field}']").prop("selected", true);changeCondition();
+        $("#condition option[value='{$Think.get.condition}']").prop("selected", true);
+    }
+</script>
+<include file="Public:footer" />

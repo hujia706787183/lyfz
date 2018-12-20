@@ -1,0 +1,12 @@
+
+/**
+ * 对bootstrap的框架补充, 修改, 样式覆盖 --- 可重用
+ */
+
+/* 导航条 brand 支持 img标签加logo*/
+.navbar-brand img {
+    display: inline;
+    margin-top: -6px;
+    width: 33px;
+    height: 33px;
+}

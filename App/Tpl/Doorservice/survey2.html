@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>满意度调查表</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/survey2.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/jedate.css">
+</head>
+<body>
+    <div class="survey-layout">
+        <div class="banner">
+            <img src="__PUBLIC__/img/banner_bg.jpg" alt="">
+        </div>
+        <form class="survey-info" action="{:U('postAnswer')}" method="post">
+            <!--影楼资料 -->
+            <ul class="concat-way">
+                <input type="hidden" name="onsiteservice_id" value="{$customerInfo.onsiteservice_id}">
+                <li>
+                    <label for="studioName">影楼名称</label>
+                    <input type="text" name="customer_name" id="studioName" value="{$customerInfo.customer_name}" required>
+                </li>
+                <li>
+                    <label for="studioTel">电话</label>
+                    <input type="tel" name="telephone" id="studioTel" value="{$customerInfo.telephone}" required>
+                </li>
+                <li>
+                    <label for="studioAddress">影楼地址</label>
+                    <input type="text" name="address" id="studioAddress" value="{$customerInfo.address}" required>
+                </li>
+            </ul>
+            <volist name="adjustmentProblem" id="problems">
+                <if condition="$problems['type'] eq 3">
+                    <div class="coach">
+                        <p class="coach-bar">{$key}</p>
+                        <ul class="coach-contain">
+                            <volist name="problems" id="problem">
+                                <notempty name="problem.answer">
+                                    <li>
+                                        <notempty name="problem.problem">
+                                            <p>{$key+1}.{$problem.problem}</p>
+                                        </notempty>
+                                        <volist name="problem.answer" id="answer">
+                                            <div>
+                                                <input type="checkbox" name="answer_{$problem.problem_id}[]" id="answer{$key}_{$problem.problem_id}" value="{$answer}">
+                                                <label for="answer{$key}_{$problem.problem_id}">{$answer}</label>
+                                            </div>
+                                        </volist>
+                                        <textarea name="answer_{$problems[0].problem_id}[]" id="textReason" style="display: none" placeholder="请描述一下原因" ></textarea>
+                                    </li>
+                                </notempty>
+                            </volist>
+                        </ul>
+                    </div>
+                <elseif condition="$problems['answer_total'] eq 3"/>
+                    <div class="function">
+                        <p class="function-bar">{$key}</p>
+                        <ul class="function-contain">
+                            <volist name="problems" id="problem">
+                                <notempty name="problem.answer">
+                                    <li>
+                                        <notempty name="problem.problem">
+                                            <p>{$key+1}.{$problem.problem}</p>
+                                        </notempty>
+                                        <volist name="problem.answer" id="answer">
+                                            <div>
+                                                <input type="radio" name="answer_{$problem.problem_id}" id="answer{$key}_{$problem.problem_id}" value="{$answer}">
+                                                <label for="answer{$key}_{$problem.problem_id}">{$answer}</label>
+                                            </div>
+                                        </volist>
+                                    </li>
+                                </notempty>
+                            </volist>
+                        </ul>
+                    </div>
+                <else/>
+                    <div class="train">
+                        <p class="train-bar">{$key}</p>
+                        <ul class="train-contain">
+                            <volist name="problems" id="problem">
+                                <notempty name="problem.answer">
+                                    <li>
+                                        <notempty name="problem.problem">
+                                            <p>{$key+1}.{$problem.problem}</p>
+                                        </notempty>
+                                        <volist name="problem.answer" id="answer">
+                                            <div>
+                                                <input type="radio" name="answer_{$problem.problem_id}" id="answer{$key}_{$problem.problem_id}" value="{$answer}">
+                                                <label for="answer{$key}_{$problem.problem_id}">{$answer}</label>
+                                            </div>
+                                        </volist>
+                                    </li>
+                                </notempty>
+                            </volist>
+                        </ul>
+                    </div>
+                </if>
+            </volist>
+            <!-- 5.您的意见与建议 -->
+            <div class="suggest">
+                <p>五、您的意见与建议</p>
+                <textarea name="suggestion" id="" ></textarea>
+            </div>
+            <!-- 软件安装时间 -->
+            <div class="install">
+                <if condition="$customerInfo['type'] eq 1">
+                    <p>软件安装培训时间</p>
+                    <else/>
+                    <p>软件回访培训时间</p>
+                </if>
+
+                <div>
+                    <input type="text" name="remote_time" id="dateStart" placeholder="开始时间:" readonly value="">
+                    <i></i>
+                </div>
+                <div>
+                    <input type="text" name="remore_time" id="dateEnd" placeholder="结束时间:" readonly value="">
+                    <i></i>
+                </div>
+            </div>
+            <input type="button" value="确认提交" class="confirm" id="confimBtn">
+            <!-- 弹窗 -->
+            <div class="popup" id="popBox">
+                <p>提交后将不可修改</p>
+                <input type="submit" value="提交">
+                <input type="button" value="修改" id="correctBtn">
+            </div>
+        </form>
+        <div class="mask"></div>
+    </div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js"></script>
+<script src="__PUBLIC__/js/jquery.jedate.min.js"></script>
+<script src="__PUBLIC__/js/template-web.js"></script>
+<script type="text/template" >
+     
+</script>
+<script>
+    $(function () {
+        // 点击按钮添加样式
+        $('.survey-info li').addClass('clearfix')
+        $('.survey-info li').each(function (index) {
+            var option = $(this).addClass('option' + index)
+            $(option).find('div input').each(function (i) {
+                $(this).click(function () {
+                    $(option).find('div input[type="radio"]').removeClass('active')
+                    $(option).find('div input[type="radio"]').eq(i).addClass('active')
+                    $(option).find('div input[type="radio"]').attr("checked", false)
+                    $(option).find('div input[type="radio"]').eq(i).attr("checked", 'checked')
+                })
+            })
+        })
+        // 日期选择
+        $('#dateStart').jeDate({
+            format: "YYYY-MM-DD hh:mm:ss"
+        })
+        $('#dateEnd').jeDate({
+            format: "YYYY-MM-DD hh:mm:ss"
+        })
+        // 提交弹窗
+        $('#confimBtn').click(function() {
+            $('#popBox').show()
+            $('.mask').css({
+                'background-color': 'rgba(0,0,0,.7)',
+                'z-index':'10'
+            })
+        })
+        $('#correctBtn').click(function(){
+             $('#popBox').hide()
+            $('.mask').css({
+                'background-color': 'rgba(0,0,0,0)',
+                'z-index': '-1'
+            })
+        })
+      $('#answer5_29').on('click',function() {
+        if(this.checked) {
+          $('#textReason').css({'display': 'block'})
+        }else {
+          $('#textReason').css({'display': 'none'})
+          $('#textReason').val('')
+        }
+      })
+    })
+</script>
+</html>

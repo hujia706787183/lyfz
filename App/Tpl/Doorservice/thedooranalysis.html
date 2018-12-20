@@ -1,0 +1,103 @@
+<include file="Public:header" />
+<if condition="$total_report.add_count gt 0">
+<script src="__PUBLIC__/js/chart/highcharts.js"></script>
+<script src="__PUBLIC__/js/chart/modules/exporting.js"></script>
+</if>
+<div class="container">
+	<div class="page-header" style="border:none; font-size:14px;">
+		<ul class="nav nav-tabs">
+			<li><a href="{:U('index')}"><img src="__PUBLIC__/img/shangji.png"/>&nbsp; {:L('Submit_the_door')}</a></li>
+			<li><a href="{:U('scheduling')}"><img src="__PUBLIC__/img/task_checked2.png"/> &nbsp; {:L('Scheduling')}</a></li>
+			<li><a href="{:U('theDoorServer')}"><img src="__PUBLIC__/img/tongji.png"/> &nbsp; {:L('door_to_door')}</a></li>
+			<li><a href="{:U('visit')}"><img src="__PUBLIC__/img/contacts_icon.png"/> &nbsp; {:L('Return_visit')}</a></li>
+			<li><a href="{:U('verify')}"><img src="__PUBLIC__/img/task_checked2.png"/>  {:L('RETURN_VERIFY')}</a></li>
+			<li class="active"><a href="{:U('aboveStatistics')}"><img src="__PUBLIC__/img/shangji.png"/> &nbsp; {:L('door_of_statistical')}</a></li>
+		</ul>
+	</div>
+	<include file="Public:alert" />
+	<div class="row">
+		<div class="span12">
+			<ul class="nav pull-left">
+				<li class="pull-left">
+					<form action="{:U('theDoorAnalysis','c=asd')}" method="post">
+						<include file="search"/>
+					</form>
+				</li>				
+			</ul>
+		</div>
+		<include file="nav"/>
+		<div class="span10">
+			<div id="report_content">
+				<table class="table table-hover table-striped">
+					<thead>
+						<tr>
+							<th>{:L('employee')}</th>
+							<th>{:L('On_site_customer')}</th>
+							<th>{:L('first_the_door')}</th>
+							<th>{:L('second_the_door')}</th>
+							<th>{:L('third_the_door')}</th>
+							<th>{:L('more_the_door')}</th>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr style="background:#029BE2; color:#FFF;">
+							<td>{:L('sum_to')}</td>
+							<td>{$sum.sum}</td>
+							<td>{$sum.one}</td>
+							<td>{$sum.two}</td>
+							<td>{$sum.three}</td>
+							<td>{$sum.four}</td>
+						</tr>
+					</tfoot>
+					<tbody>
+						<volist name="date" id="vo">
+						<tr>
+							<td><a href="{:U('me',array('sid'=>$vo['sid']))}">{$vo.name}</a></td>
+							<td>{$vo.sum}</td>
+							<td>{$vo.one}</td>
+							<td>{$vo.two}</td>
+							<td>{$vo.three}</td>
+							<td>{$vo.four}</td>
+						</tr>
+						</volist>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="pagination">
+			{$page}
+		</div>
+		<include file="Public:listrows" />
+	</div>
+</div>
+<div class="hide" id="dialog-role-info" title="{:L('EMPLOYEE_INFORMATION')}">loading...</div>
+<script type="text/javascript">
+    var url = "{:U('service/lookupDepartmentStaff')}";
+
+    $("#department").click(function(){
+        department_id = $(this).val();
+        $("#staffList").empty();
+        if(department_id == 'all'){
+            return
+        }
+        
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: url,
+            data: {department_id: department_id},
+            success: function (obj) {
+                if(obj.meta.code == 200){
+                    $("#staffList").append('<option class="all" value="all">全部</option>');
+                    for(i=0; i<obj.body.length; i++){
+                        $("#staffList").append('<option value="'+obj.body[i].user_id+'">'+obj.body[i].name+'</option>');
+                    }
+                }
+            },
+            error: function(data) {
+                alert('网络错误');
+            }
+        });
+    });
+</script>
+<include file="Public:footer" />

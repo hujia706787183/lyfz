@@ -1,0 +1,367 @@
+<include file="Public:header" />
+<script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+<link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+<style>
+	.bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*=col-]{
+		margin-left: -10px;
+	}
+</style>
+<div class="container">
+	<div class="page-header">
+		<h4>{:L('FINANCE')}<small> - <a href="{:U('finance/index','t=receivables')}">{:L('RECEIVABLES')}</a> | 
+		<!--<a href="{:U('finance/index','t=payables')}">{:L('PAYABLES')}</a> | -->
+		<a href="{:U('finance/index','t=receivingorder')}">{:L('RECEIVINGORDER')}</a> | 
+		<a class="active" href="{:U('finance/index','t=paymentorder')}">{:L('EXPENDITURE')}</a> | <a href="{:U('finance/analytics')}">{:L('STATISTICS')}</a></small> </h4>
+	</div>
+	<include file="Public:alert" />
+	<div class="row">
+		<div class="span12">
+			<form action="{:U('finance/add','t=paymentorder')}" method="post" enctype="multipart/form-data">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+							<td><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp;  <if condition="C('ismobile') neq 1"><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE AND NEW')}"/> &nbsp;</if> <input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('CANCEL')}"/></td>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr>
+							<td>&nbsp;</td>
+							<td><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp;  <if condition="C('ismobile') neq 1"><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE AND NEW')}"/> &nbsp;</if> <input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('CANCEL')}"/></td>
+						</tr>
+					</tfoot>
+					<tbody>
+						<tr>
+							<th colspan="2">{:L('ADD PAYABLES')}</th>
+						</tr>
+						<!--是否是其他付款-->
+						<!--<tr>-->
+							<!--<td class="tdleft" valign="middle">{:L(OTHER_PAYMENT)}</td>-->
+							<!--<td valign="middle"><input  type="radio" checked="checked" name="is_other_payment" value="0"/> {:L('NO')} <input type="radio"  name="is_other_payment" value="1"/> {:L('YES')} </td>-->
+						<!--</tr>-->
+						<!--所属团队-->
+						<tr>
+							<td class="tdleft" width="20%" valign="middle">所属团队</td>
+							<td valign="middle">
+								<select name="dept" id="dept">
+									<volist name="cost_item_dept" id="item_dept">
+										<option value="{$item_dept.cost_item}">{$item_dept.cost_item}</option>
+									</volist>
+								</select>
+								<input  class="btn btn-primary" id="item_dept_add" type="button" value="添加"/>
+								<!--<input  class="btn btn-primary" id="item_dept_edit" type="button" value="修改"/>-->
+							</td>
+						</tr>
+						<!--应付款名-->
+						<tr>
+							<td class="tdleft" width="20%" valign="middle">{:L('PAYABLES NAME')}</td>
+							<td valign="middle">
+								<select name="payable" id="payable">
+									<volist name="cost_item" id="item">
+										<option value="{$item.cost_item_id}">{$item.cost_item}</option>
+									</volist>
+								</select>
+								<input  class="btn btn-primary" id="item_add" type="button" value="添加"/>
+								<!--<input  class="btn btn-primary" id="item_edit" type="button" value="修改"/>-->
+							</td>
+						</tr>
+
+						<!--取款人-->
+						<!--<tr>-->
+							<!--<td class="tdleft" width="20%" valign="middle">取款人</td>-->
+							<!--<td valign="middle"><input name="payee_id" id="payee_id" type="hidden" /><input name="payee" id="payee" class="text-input large-input" type="text" /></td>-->
+						<!--</tr>-->
+						<tr>
+							<td class="tdleft" width="20%" valign="middle">取款人</td>
+							<td valign="middle">
+								<input name="payee" id="payee" class="text-input large-input" type="hidden" />
+								<select id="payee_id" name="payee_id" class="selectpicker" data-live-search="true">
+
+								</select>
+							</td>
+
+						</tr>
+							&nbsp;
+						<!--付款金额-->
+						<tr>
+							<td class="tdleft" valign="middle">{:L('PAYMENTS')}</td>
+							<td valign="middle"><input class="text-input large-input" id="money" placeholder="0.00" name="money" type="text" /></td>
+						</tr>
+						<!--付款时间-->
+						<tr>
+							<td class="tdleft" valign="middle">{:L('PAYMENT TIME')}</td>
+							<td valign="middle"><input onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" value="{:date('Y-m-d H:i:s')}" type="text" id="pay_time" name="pay_time"/></td>
+						</tr>
+						<!--经手人-->
+						<tr>
+							<td class="tdleft" width="20%" valign="middle">{:L('HANDLER_NAME')}</td>
+							<td valign="middle"><input name="handler_name_id" id="handler_name_id" type="hidden" value="{$Think.session.role_id}"/><input name="handler_name" id="handler_name" class="text-input large-input" type="text" value="{$Think.session.name}" readonly/></td>
+						</tr>
+
+						<!--付款单号-->
+						<!--<tr>-->
+							<!--<td class="tdleft" width="20%" valign="middle">{:L('PAYMENTS SINGLE NUMBER')}</td>-->
+							<!--<td valign="middle"><input name="name" id="name" class="text-input large-input" type="text" value="{:L('AUTOMATIC_GENERATION')}"/></td>-->
+						<!--</tr>-->
+						<!--应付款-->
+						<!--<tr id="payables_tr">-->
+							<!--<td class="tdleft" width="20%" valign="middle">{:L('PAYABLES')}</td>-->
+							<!--<td valign="middle"><input name="payables_id" id="payables_id" type="hidden" /><input name="payables" id="payables" class="text-input large-input" type="text" /></td>-->
+						<!--</tr>-->
+						<!--发票收据-->
+						<tr>
+							<td class="tdleft" width="20%" valign="middle">{:L('RECEIPT')}/{:L('INVOICE')}</td>
+							<!--<td valign="middle"><a class="add_file btn btn-primary" href="javascript:void(0);">点击添加</a></td>-->
+							<td valign="middle"><input type="file" id="fileUpload" name="img[]" multiple></td>
+						</tr>
+
+						<!--状态-->
+						<tr>
+							<td class="tdleft" valign="middle">{:L('STATUS')}</td>
+							<td valign="middle"><input  type="radio" checked name="status" value="0"/> {:L('NOT CLOSING')} <input type="radio" name="status"  value="1"/> {:L('HAS CLOSING')} </td>
+						</tr>
+						<!--描述-->
+						<tr>
+							<td class="tdleft" valign="middle">{:L('DESCRIPTION')}</td>
+							<td valign="middle"><textarea id="description" class="span6" rows="6" name="description"></textarea></td>
+						</tr>
+
+					</tbody>
+				</table>
+			</form>
+		</div> <!-- End #tab1 -->	
+	</div> <!-- End #main-content -->	
+</div>
+<div id="dialog-message" title="{:L('SELECT THE PAYABLES')}">loading...</div>
+<div id="dialog-message2" title="{:L('SELECT THE LEADER')}">loading...</div>
+<div id="dialog-message4" title="{:L('SELECT THE PAYEE')}">loading...</div>
+<div class="hide" id="dialog-file" title="{:L('ADD_RECEIPT_INVOICE')}">loading...</div>
+<div class="hide" id="dialog-item-dept" title="添加支出一级项目">loading...</div>
+<div class="hide" id="dialog-item" title="添加支出二级项目">loading...</div>
+
+<div id="dialog" title="添加项目名">
+	<form method="post" action="{:U('finance/cost_item_add')}">
+		<input name="level" id="cost_item_level" type="hidden"/>
+		项目名：<input name="cost_item" type="text"/>
+		<input type="submit" value="确定"/>
+	</form>
+</div>
+<!--<div id="dialog_dept_edit" title="编辑项目名">-->
+		<!--<volist name="cost_item_dept" id="item_department">-->
+			<!--<input type="text" name="cost_item" value="{$item_department.cost_item}">-->
+			<!--&lt;!&ndash;<a class="btn btn-default" href="{:U('finance/cost_item_edit','cost_item_id='.$item_department['cost_item_id'])}" role="button">保存</a>&ndash;&gt;-->
+			<!--<a class="btn btn-default" href="{:U('finance/cost_item_delete','cost_item_id='.$item_department['cost_item_id'])}" role="button">删除</a>-->
+		<!--</volist>-->
+<!--</div>-->
+<!--<div id="dialog_edit" title="编辑项目名">-->
+	<!--<volist name="cost_item" id="item">-->
+		<!--<input type="text" name="cost_item" value="{$item.cost_item}">-->
+		<!--&lt;!&ndash;<a class="btn btn-default" href="{:U('finance/cost_item_edit','cost_item_id='.$item['cost_item_id'])}" role="button">保存</a>&ndash;&gt;-->
+		<!--<a class="btn btn-default" href="{:U('finance/cost_item_delete','cost_item_id='.$item['cost_item_id'])}" role="button">删除</a>-->
+	<!--</volist>-->
+<!--</div>-->
+
+<script>
+    $(function () {
+        $( "#dialog" ).dialog({
+            autoOpen: false,
+            show: {
+                effect: "blind",
+                duration: 100
+            },
+            hide: {
+                effect: "explode",
+                duration: 100
+            }
+        });
+        // $( "#dialog_dept_edit" ).dialog({
+        //     autoOpen: false,
+        //     height:'300',
+        //     width:'500',
+        //     show: {
+        //         effect: "blind",
+        //         duration: 100
+        //     },
+        //     hide: {
+        //         effect: "explode",
+        //         duration: 100
+        //     }
+        // });
+        // $( "#dialog_edit" ).dialog({
+        //     autoOpen: false,
+			// height:'100',
+			// width:'1000',
+        //     show: {
+        //         effect: "blind",
+        //         duration: 100
+        //     },
+        //     hide: {
+        //         effect: "explode",
+        //         duration: 100
+        //     }
+        // });
+        $('#item_add').click(function () {
+            $("#dialog").dialog( "open" );
+            $("#cost_item_level").val(2);
+        });
+        $('#item_dept_add').click(function () {
+            $("#dialog").dialog( "open" );
+            $("#cost_item_level").val(1);
+        });
+        // $('#item_dept_edit').click(function () {
+        //     $("#dialog_dept_edit").dialog( "open" );
+        // });
+        // $('#item_edit').click(function () {
+        //     $("#dialog_edit").dialog( "open" );
+        // });
+
+		$('#description').val('');
+		$('#money').val('');
+		$('#payee_id').val('');
+		$('#payee').val('');
+		$('#fileUpload').val('');
+    });
+</script>
+<script type="text/javascript">
+<if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else />width=800;</if>
+$("#dialog-message").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	buttons: {
+		"Ok": function () {
+			var item = $('input:radio[name="payables"]:checked').val();
+			var name = $('input:radio[name="payables"]:checked').parent().next().html();
+			if(item){
+				$('#payables').val(name);
+				$('#payables_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"Cancel": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+$("#dialog-message2").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	buttons: {
+		"Ok": function () {
+			var item = $('input:radio[name="owner"]:checked').val();
+			var name = $('input:radio[name="owner"]:checked').parent().next().html();
+			if(item){
+				$('#owner_name').val(name);
+				$('#owner_role_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"Cancel": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+$(function(){
+	// $("input[name='submit']").click(function(){
+	// 	if($("#name").val() == null || $("#name").val() == ""){
+	// 		alert('付款单名不能为空！');
+	// 		return false;
+	// 	}
+	// })
+	$("#payables").click(
+		function(){
+			$('#dialog-message').dialog('open');
+			$('#dialog-message').load('{:U("finance/listdialog","t=payables")}');
+		}
+	);
+	$("#owner_name").click(
+		function(){
+			$('#dialog-message2').dialog('open');
+			$('#dialog-message2').load('{:U("user/listDialog","by=all")}');
+		}
+	);
+	$('#money').blur(function(){
+		var payables_id = $('#payables_id').val();
+		var input_price = parseInt(parseFloat($('#money').val())*100);
+		if((payables_id != null && payables_id != '') && (input_price !=null && input_price != '')){
+			$.ajax({
+				'type':'get',
+				'data': {'id':payables_id},
+				'dataType':'json',
+				'url':'{:U("finance/getpayablesmoney")}',
+				'success':function(data){
+					if(data.data.total != 0){
+						if((input_price + parseInt(parseFloat(data.data.paymentorder)*100))/100 > data.data.total){
+							alert('{:L('EXCEED THE AMOUNT OF PAYMENT')}');
+						}
+					}
+				}
+			});
+		}
+	});
+    $('input:radio[name="is_other_payment"]').change(function(){
+        ($(this).val()==1) ? $('#payables_tr').hide() : $('#payables_tr').show() ;
+    });
+    $("#dialog-file").dialog({
+        autoOpen: false,
+        modal: true,
+        width: width,
+        maxHeigh: 400,
+        position: ["center",100]
+    });
+    $('#payee').click(function () {
+        $('#dialog-message4').dialog('open');
+        $('#dialog-message4').load('{:U("user/listDialog","by=all")}');
+    });
+    $("#dialog-message4").dialog({
+        autoOpen: false,
+        modal: true,
+        width: width,
+        maxHeight: 400,
+        buttons: {
+            "Ok": function () {
+                var item = $('input:radio[name="owner"]:checked').val();
+                var name = $('input:radio[name="owner"]:checked').parent().next().html();
+                if(item){
+                    $('#payee').val(name);
+                    $('#payee_id').val(item);
+                }
+                $(this).dialog("close");
+            },
+            "Cancel": function () {
+                $(this).dialog("close");
+            }
+        },
+        position: ["center", 100]
+    });
+    $("#payee_id").selectpicker({
+        noneSelectedText : '请选择取款人'
+    });
+    $.get('/api.php/user/getRoleList').then(function (response) {
+        console.log(response)
+        var options = '<option value="">--请选择取款人--</option>';
+        $.each(response.data, function (k, v) {
+            options += '<option data-username="'+ v.username +'" value="'+ v.role_id +'">'+ v.username + '  (' + v.department_name+ '-' + v.position_name +')</option> '
+        });
+        $("#payee_id").html(options);
+        $('#payee_id').selectpicker('refresh');
+    });
+    // $('.selectpicker').on('changed.bs.select',function(e){
+    //     console.log('aaa')
+    // });
+    $('#payee_id').on('change', function(){
+        // var selected = $(this).find("option:selected").val();
+        var username = $(this).find("option:selected").data('username');
+        // console.log(selected);
+        // console.log(value);
+		$('#payee').val(username)
+    });
+
+});
+</script>
+<include file="Public:footer" />	

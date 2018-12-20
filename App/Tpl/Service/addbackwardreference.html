@@ -1,0 +1,197 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
+
+<style>
+    .screenshot{
+        width:210px;
+        height:210px;
+        background-color:red;
+        float:left;
+        border:1px solid #ccc;
+        border-radius:5px;
+        margin:10px 10px;
+    }
+    
+    .notFloat{
+        text-align:center;
+        clear:both;
+    }
+    
+    .onTheLeft{
+        float:left;
+    }
+</style>
+
+<div class="container">
+	<div class="page-header">
+        <h4>审核调查</h4>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<include file="Public:alert" />
+            <table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
+                <tbody>
+                    <tr><th colspan="4">客户信息</th></tr>
+                    <tr>
+                        <td class="tdleft" >影楼名称：</td>
+                        <td>
+                            <input type="text" name="customer_name" id="customer_name" value="{$service_res.customer_name}" readonly>
+                        </td>
+                        <td class="tdleft" >首要联系人名字：</td>
+                        <td>
+                            <input type="text" name="contacts_name" id="contacts_name" value="<if condition="$service_res['contacts_name'] neq ''">{$service_res.contacts_name}<else/>暂无</if>" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >首要联系人号码：</td>
+                        <td>
+                            <input type="text" name="contacts_telephone" id="contacts_telephone" value="<if condition="$service_res['contacts_phone'] neq ''">{$service_res.contacts_phone}<else/>暂无</if>" readonly>
+                        </td>
+                        <td class="tdleft" width="15%">影楼联系地址：</td>
+                        <td colspan="3">
+                            <input type="text" name="address" id="address" value="{$service_res.customer_address}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">故障登记</th>
+                    </tr>
+                    <tr>
+                        <if condition="$remote_type neq ''">
+                        <td class="tdleft" >远程类型：</td>
+                        <td>
+                            <input class="user_input" type="text" value="{$remote_type}" name="" readonly>
+                        </td>
+                        </if>
+                        <td class="tdleft" >影楼操作人员：</td>
+                        <td><input class="user_input" type="text" id="operator_name" value="{$service_res.operator_name}" name="operator_name" readonly></td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >操作人员电话：</td>
+                        <td><input class="user_input" id="operation_people_phone" value="{$service_res.operation_people_phone}" name="operation_people_phone" type="number" readonly></td>
+                        <td class="tdleft" >操作人员QQ：</td>
+                        <td>
+                            <input class="user_input" type="number" id="operator_qq" value="{$service_res.operator_qq}" name="operator_qq" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">服务详细</th>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >销售人员：</td>
+                        <td>
+                            <input type="text"  identification="sale" value="{$service_res.sale_people_name}" readonly>
+                        </td>
+                        <td class="tdleft" >故障提交人：</td>
+                        <td>
+                            <input type="text" identification="fault" value="{$service_res.fault_subpeople_name}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >上门老师：</td>
+                        <td>
+                            <input type="text"  identification="teacher" value="{$service_res.teacher_name}" readonly>
+                        </td>
+                        <td class="tdleft" >故障服务人员：</td>
+                        <td>
+                            <input type="text"  identification="faultService" value="{$service_res.service_personal_name}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >自我评价：</td>
+                        <td>
+                            <switch name="service_res['self_satisfaction']" >
+                                <case value="1"><input type="text" value="客怨" readonly></case>
+                                <case value="2"><input type="text" value="一般" readonly></case>
+                                <case value="3"><input type="text" value="满意" readonly></case>
+                                <case value="4"><input type="text" value="非常满意" readonly></case>
+                             </switch>
+                        </td>
+                        <td class="tdleft" >是否教解决方法：</td>
+                        <td>
+                            <input class="user_input" name="is_solve" type="radio" value="1" <if condition="$service_res['is_solve'] eq 1">checked</if> disabled>是 &nbsp&nbsp
+                            <input class="user_input" name="is_solve" type="radio" value="2" <if condition="$service_res['is_solve'] eq 2">checked</if> disabled>否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >解决过程说明：</td>
+                        <td colspan="3">
+                            <textarea class="span8" rows="3" name="desc" id="desc" disabled>{$service_res.desc}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="tdleft" style="width: 120px;">
+                            解决过程截图：
+                        </td>
+                        <td colspan="3" id="screenshotImg">
+                            <volist name="img_arr" id="vo">
+                                <div class="onTheLeft">
+                                    <a href="{$vo.img_url}" target="_blank">
+                                        <div class="screenshot" style="background:url({$vo.img_url}); background-size:cover;"></div>
+                                    </a>
+                                </div>
+                            </volist>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">回访审核</th>
+                    </tr>
+                    <form action="{:U('service/addBackwardReference')}" method="POST">
+                    <tr>
+                        <td class="tdleft" >回访结果：</td>
+                        <td>
+                            <if condition="$service_res.return_result neq 1">
+                                <switch name="service_res.return_result">
+                                    <case value="2"><input type="text"  identification="fault" value="客怨" readonly></case>
+                                    <case value="3"><input type="text"  identification="fault" value="一般" readonly></case>
+                                    <case value="4"><input type="text"  identification="fault" value="满意" readonly></case>
+                                    <case value="5"><input type="text"  identification="fault" value="非常满意" readonly></case>
+                                    <default/>未知
+                                </switch>
+                                <else/>
+                                <select name="return_result">
+                                    <option value="0">请选择回访结果</option>
+                                    <option value="2">客怨</option>
+                                    <option value="3">一般</option>
+                                    <option value="4">满意</option>
+                                    <option value="5">非常满意</option>
+                                <select>
+                            </if>
+                        </td>
+                        <td class="tdleft" >回访人员：</td>
+                        <td>
+                            <if condition="$service_res.return_result neq 1">
+                                <input type="text" value="{$service_res.return_name}" readonly>
+                            <else/>
+                                <input type="hidden" name="service_id" value="{$service_res.service_id}">
+                                <input type="text" identification="fault" value="{$_SESSION['name']}" readonly>
+                            </if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" >回访备注：</td>
+                        <td colspan="3">
+                            <textarea class="span8" rows="3" name="return_remarks" id="return_remarks" <if condition="$service_res.return_result neq 1">readonly</if>>{$service_res.return_remarks}</textarea>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td style="text-align:center;" colspan="4">
+                            <if condition="$service_res.return_result eq 1">
+                                <input class="btn btn-primary" id="check" type="submit" value="提交审核"/>
+                            </if>
+                            <input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
+                        </td>
+                    </tr>
+                </tfoot>
+                </form>
+            </table>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+</script>
+<include file="Public:footer" />

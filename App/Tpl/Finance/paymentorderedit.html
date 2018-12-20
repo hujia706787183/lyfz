@@ -1,0 +1,260 @@
+<include file="Public:header" />
+<script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+<link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+<style>
+    .bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*=col-]{
+        margin-left: -10px;
+    }
+</style>
+<div class="container">
+
+    <div class="page-header">
+        <h4>{:L('FINANCE')}<small> - <a href="{:U('finance/index','t=receivables')}">{:L('RECEIVABLES')}</a> |
+            <!--<a href="{:U('finance/index','t=payables')}">{:L('PAYABLES')}</a> |-->
+            <a href="{:U('finance/index','t=receivingorder')}">{:L('RECEIVINGORDER')}</a> |
+            <a href="{:U('finance/index','t=otherrevenue')}">其他收入</a> |
+            <a class="active" href="{:U('finance/index','t=paymentorder')}">{:L('EXPENDITURE')}</a> |
+            <a href="{:U('finance/analytics')}">{:L('STATISTICS')}</a></small> </h4>
+    </div>
+    <include file="Public:alert" />
+    <div class="row">
+        <div class="span12">
+            <form action="{:U('finance/edit','t=paymentorder')}" method="post" enctype="multipart/form-data">
+                <input type='hidden' name="id" value="{$info['paymentorder_id']}"/>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp; <input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('CANCEL')}"/></td>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp; <input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('CANCEL')}"/></td>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    <tr>
+                        <th colspan="2">{:L('EDIT PAYMENTORDER')}</th>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" width="20%" valign="middle">{:L('PAYMENTS SINGLE NUMBER')}</td>
+                        <td valign="middle"><input name="name" id="name" class="text-input large-input" type="text" value="{$info['name']}" /></td>
+                    </tr>
+
+                    <!--所属团队-->
+                    <tr>
+                        <td class="tdleft" width="20%" valign="middle">所属团队</td>
+                        <td valign="middle">
+                            <select name="dept" id="dept">
+                                <volist name="cost_item_dept" id="item_dept">
+                                    <option value="{$item_dept.cost_item}" <if condition="$info['dept'] eq $item_dept['cost_item']">selected</if>>{$item_dept.cost_item}</option>
+                                </volist>
+                            </select>
+                            <input  class="btn btn-primary" id="item_dept_add" type="button" value="添加"/>
+                            <!--<input  class="btn btn-primary" id="item_dept_edit" type="button" value="修改"/>-->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" width="20%" valign="middle">{:L('PAYABLES NAME')}</td>
+                        <td valign="middle">
+                            <select name="payable" id="payable">
+                                <volist name="cost_item" id="item">
+                                    <option value="{$item.cost_item_id}" <if condition="$item['cost_item_id'] eq $info['payable']">selected</if>>{$item.cost_item}</option>
+                                </volist>
+                            </select>
+                            <input  class="btn btn-primary" id="item_add" type="button" value="添加"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="tdleft" width="20%" valign="middle">取款人</td>
+                        <td valign="middle">
+                            <input name="payee" id="payee" class="text-input large-input" type="hidden" value="{$info.payee}" />
+                            <select id="payee_id" name="payee_id" class="selectpicker" data-live-search="true"></select>
+                        </td>
+
+                    </tr>
+                    <!--付款金额-->
+                    <tr>
+                        <td class="tdleft" valign="middle">{:L('PAYMENTS')}</td>
+                        <td valign="middle"><input class="text-input large-input" id="money" name="money" type="text" value="{$info['money']}"/></td>
+                    </tr>
+                    <!--经手人-->
+                    <tr>
+                        <td class="tdleft" width="20%" valign="middle">{:L('HANDLER_NAME')}</td>
+                        <td valign="middle"><input name="handler_name_id" id="handler_name_id" type="hidden" value="{$info.handler_name_id}"/><input name="handler_name" id="handler_name" class="text-input large-input" type="text" value="{$info.handler_name}" readonly/></td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" valign="middle">{:L('PAYMENT TIME')}</td>
+                        <td valign="middle"><input onclick="WdatePicker()"  type="text" id="pay_time" name="pay_time" value="{$info['pay_time']|date="Y-m-d",###}" /></td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" valign="middle">{:L('STATUS')}</td>
+                        <td valign="middle"><input  type="radio" <if condition="$info['status'] eq '0'">checked="checked"</if> name="status" value="0"/> {:L('NOT CLOSING')} <input  type="radio" <if condition="$info['status'] eq '1'">checked="checked"</if> name="status" value="1"/> {:L('HAS CLOSING')} </td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" valign="middle">{:L('DESCRIPTION')}</td>
+                        <td valign="middle"><textarea class="span6" rows="6" name="description">{$info['description']}</textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="tdleft" width="20%" valign="middle">{:L('RECEIPT')}/{:L('INVOICE')}</td>
+                        <td colspan="3">
+                            <volist name="paymentorder_image" id="images">
+                                <a href="{$images.paymentorder_image}" target="_blank">
+                                    <img src="{$images['paymentorder_image']}" width="200px" alt="" />
+                                </a>
+                                <a href="{:U('paymentorder_image_delete', 'id='.$images['id'])}">删除</a>
+                            </volist>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td valign="middle"><input type="file" name="img[]" multiple></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div> <!-- End #tab1 -->
+    </div> <!-- End #main-content -->
+</div>
+<div id="dialog-message" title="{:L('SELECT THE PAYABLES')}">loading...</div>
+<div id="dialog-message2" title="{:L('SELECT THE LEADER')}">loading...</div>
+<!--<div id="dialog-message4" title="{:L('SELECT THE PAYEE')}">loading...</div>-->
+<div id="dialog" title="添加项目名">
+    <form method="post" action="{:U('finance/cost_item_add')}">
+        <input name="level" id="cost_item_level" type="hidden"/>
+        项目名：<input name="cost_item" type="text"/>
+        <input type="submit" value="确定"/>
+    </form>
+</div>
+<script>
+$(function () {
+
+
+    $( "#dialog" ).dialog({
+        autoOpen: false,
+        show: {
+            effect: "blind",
+            duration: 100
+        },
+        hide: {
+            effect: "explode",
+            duration: 100
+        }
+    });
+    $('#item_add').click(function () {
+        $("#dialog").dialog( "open" );
+        $("#cost_item_level").val(2);
+    });
+    $('#item_dept_add').click(function () {
+        $("#dialog").dialog( "open" );
+        $("#cost_item_level").val(1);
+    });
+
+});
+</script>
+<script type="text/javascript">
+    <if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else />width=800;</if>
+    $("#dialog-message").dialog({
+        autoOpen: false,
+        modal: true,
+        width: width,
+        maxHeight: 400,
+        buttons: {
+            "Ok": function () {
+                var item = $('input:radio[name="payables"]:checked').val();
+                var name = $('input:radio[name="payables"]:checked').parent().next().html();
+                if(item){
+                    $('#payables').val(name);
+                    $('#payables_id').val(item);
+                }
+                $(this).dialog("close");
+            },
+            "Cancel": function () {
+                $(this).dialog("close");
+            }
+        },
+        position: ["center", 100]
+    });
+    $("#dialog-message2").dialog({
+        autoOpen: false,
+        modal: true,
+        width: width,
+        maxHeight: 400,
+        buttons: {
+            "Ok": function () {
+                var item = $('input:radio[name="owner"]:checked').val();
+                var name = $('input:radio[name="owner"]:checked').parent().next().html();
+                if(item){
+                    $('#owner_name').val(name);
+                    $('#owner_role_id').val(item);
+                }
+                $(this).dialog("close");
+            },
+            "Cancel": function () {
+                $(this).dialog("close");
+            }
+        },
+        position: ["center", 100]
+    });
+    $(function(){
+        $("#payables").click(
+            function(){
+                $('#dialog-message').dialog('open');
+                $('#dialog-message').load('{:U("finance/listDialog","t=payables")}');
+            }
+        );
+        $("#owner_name").click(
+            function(){
+                $('#dialog-message2').dialog('open');
+                $('#dialog-message2').load('{:U("user/listDialog","by=all")}');
+            }
+        );
+        $('#payee').click(function () {
+            $('#dialog-message4').dialog('open');
+            $('#dialog-message4').load('{:U("user/listDialog","by=all")}');
+        });
+        $("#dialog-message4").dialog({
+            autoOpen: false,
+            modal: true,
+            width: width,
+            maxHeight: 400,
+            buttons: {
+                "Ok": function () {
+                    var item = $('input:radio[name="owner"]:checked').val();
+                    var name = $('input:radio[name="owner"]:checked').parent().next().html();
+                    if(item){
+                        $('#payee').val(name);
+                        $('#payee_id').val(item);
+                    }
+                    $(this).dialog("close");
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+            },
+            position: ["center", 100]
+        });
+        $.get('/api.php/user/getRoleList').then(function (response) {
+            console.log(response)
+            var options = '';
+            $.each(response.data, function (k, v) {
+                options += '<option data-username="'+ v.username +'" value="'+ v.role_id +'">'+ v.username + '  (' + v.department_name+ '-' + v.position_name +')</option> '
+            });
+            $("#payee_id").html(options);
+            $('#payee_id').selectpicker('refresh');
+            $("#payee_id").selectpicker('val', '{$info["payee_id"]}');
+
+        });
+        $('#payee_id').on('change', function(){
+            // var selected = $(this).find("option:selected").val();
+            var username = $(this).find("option:selected").data('username');
+            // console.log(selected);
+            // console.log(value);
+            $('#payee').val(username)
+        });
+    });
+</script>
+<include file="Public:footer" />

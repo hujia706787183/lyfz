@@ -1,0 +1,146 @@
+<include file="Public:nav" />
+<style>
+
+    
+    .el-date-editor.el-input {
+        width: 100%;
+    }
+
+    /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/  
+    ::-webkit-scrollbar  
+    {  
+        width: 4px;
+        height: 4px;
+        background-color: #F5F5F5;  
+    }  
+    
+    /*定义滚动条轨道 内阴影+圆角*/  
+    ::-webkit-scrollbar-track  
+    {  
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  
+        border-radius: 10px;  
+        background-color: #F5F5F5;  
+    }  
+    
+    /*定义滑块 内阴影+圆角*/  
+    ::-webkit-scrollbar-thumb  
+    {  
+        border-radius: 10px;  
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
+        background-color: #C0CCDA;  
+    }
+
+    input[type=file] {
+        display: none;
+    }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<div class="container">
+	<div class="page-header">
+		<h4>{:L('FINANCE')}<small> - <a href="{:U('finance/index','t=receivables')}">{:L('RECEIVABLES')}</a> | 
+		<a href="{:U('finance/index','t=payables')}">{:L('PAYABLES')}</a> | 
+		<a href="{:U('finance/index','t=receivingorder')}">{:L('RECEIVINGORDER')}</a> | 
+		<a class="active" href="{:U('finance/index','t=paymentorder')}">{:L('PAYMENTORDER')}</a> | <a href="{:U('finance/analytics')}">{:L('STATISTICS')}</a></small> </h4>
+	</div>
+	<include file="Public:alert" />
+	<div id="app">
+        <h4 >{:L('ADD RECEIVINGORDER')}</h4 >
+            <el-main>
+                    <el-form label-width="80px">
+                            <el-form-item label="{:L('OWNER_ROLE')}">
+                                <el-cascader
+                                    :options="department_list"
+                                    :show-all-levels="false"
+                                ></el-cascader>
+                            </el-form-item>
+                            <el-form-item label="{:L('PAYMENTS')}">
+                                <el-input placeholder="0.00" /></el-input>
+                            </el-form-item>
+                            <el-form-item label="{:L('PAYMENT TIME')}">
+                                <el-date-picker
+                                    type="date"
+                                    placeholder="选择日期">
+                                  </el-date-picker>
+                            </el-form-item>
+                            <el-form-item label="{:L('STATUS')}">
+                                    <el-radio v-model="radio" label="0"> {:L('NOT CLOSING')}</el-radio>
+                                    <el-radio v-model="radio" label="1"> {:L('HAS CLOSING')}</el-radio>
+                            </el-form-item>
+                            <el-form-item label="{:L('DESCRIPTION')}">
+                                <el-input type="textarea" class="span6" rows="6" name="description"></textarea>
+                            </el-form-item>
+                            <el-form-item label="{:L('PROOF')}">
+                                <el-upload
+                                    list-type="picture-card">
+                                    <i class="el-icon-plus"></i>
+                                </el-upload>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button>{:L('SAVE')}</el-button>
+                                <el-button onclick="javascript:history.go(-1)">{:L('CANCEL')}</el-button>
+                            </el-form-item>
+                    </el-form>
+       
+            </el-main>
+
+	</div>
+	<!-- <form action="{:U('finance/add','t=paymentorder')}" method="post">				 -->
+
+	<!-- </form> -->
+</div>
+
+<script src="https://cdn.bootcss.com/vue/2.4.4/vue.min.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://cdn.bootcss.com/lodash.js/4.17.4/lodash.min.js"></script>
+
+<script>
+	var app = new Vue({
+        el: '#app',
+        data: function(){
+			return {
+                activeName: 'first',
+                radio: '',
+                department_list : []
+			}
+        },
+        methods: {
+            load_staff: function(department_info){
+                // department_info = department_info[0];
+                var option = _.find(this.department_list, function(item){return item.value.department_id == department_info.department_id});
+                if (!option || option.children.length == 0){
+                    $.get('/api.php/staff/getlist', {department_id: department_info.department_id}).then(function(response){
+                        var staff_list = response.data;
+                        _.forEach(staff_list, function(user_info){
+                            option.children.push({
+                                value: {
+                                    user_id: user_info.user_id,
+                                    user_name: user_info.name
+                                },
+                                label: user_info.name
+                            });
+                        });
+                    }.bind(this));
+                }
+            },
+        },
+        created: function(){
+            
+            $.get('/api.php/department/getlist').then(function(response){
+                var department_list = response.data;
+                _.forEach(department_list, function(department_info){
+                    this.department_list.push({
+                        value: {
+                            department_id: department_info.department_id
+                        },
+                        label: department_info.name,
+                        children: []
+                    });
+                    this.load_staff(department_info);
+                }.bind(this));
+            }.bind(this));
+        }, 
+        watch: {
+        }
+    });
+</script>
+<include file="Public:footer" />	

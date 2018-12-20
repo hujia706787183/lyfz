@@ -1,0 +1,41 @@
+<div id="calling_records">
+    <h4 class="page-header">
+        通话记录
+    </h4>
+    <el-table border :data="list" highlight-current-row>
+        <el-table-column prop="contact_name" label="联系人姓名">
+        </el-table-column>
+        <el-table-column prop="tel" label="联系人电话">
+        </el-table-column>
+        <el-table-column prop="calltime" label="通话开始时间">
+        </el-table-column>
+        <el-table-column prop="role_name" label="负责人">
+        </el-table-column>
+        <el-table-column prop="type_label" label="通话类型">
+        </el-table-column>
+        <el-table-column prop="record_uri" label="录音">
+        </el-table-column>
+    </el-table>
+</div>
+
+<script>
+    window.onload = function (){
+        new Vue({
+            el: '#calling_records',
+            data: function () {
+                return {
+                    list: [],
+                    customer_id: page.customer_info.id
+                }
+            },
+            created: function () {
+                http.get('/api.php/calling/getRecordList?' + $.param({customer_id: this.customer_id})).then(function (list) {
+                    this.list = list
+                    _.map(list, function (item) {
+                        return item.type_label = item.type == 0 ? '来电' : '去电'
+                    })
+                }.bind(this));
+            }
+        });
+    }
+</script>

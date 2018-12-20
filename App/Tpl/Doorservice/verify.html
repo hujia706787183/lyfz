@@ -1,0 +1,162 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<div class="container">
+	<div class="page-header" style="border:none; font-size:14px;">
+		<ul class="nav nav-tabs">
+			<li><a href="{:U('index')}"><img src="__PUBLIC__/img/shangji.png"/>&nbsp; {:L('Submit_the_door')}</a></li>
+			<li><a href="{:U('scheduling')}"><img src="__PUBLIC__/img/task_checked2.png"/> &nbsp; {:L('Scheduling')}</a></li>
+			<li><a href="{:U('theDoorServer')}"><img src="__PUBLIC__/img/tongji.png"/> &nbsp; {:L('door_to_door')}</a></li>
+			<li><a href="{:U('visit')}"><img src="__PUBLIC__/img/contacts_icon.png"/> &nbsp; {:L('Return_visit')}</a></li>
+			<li class="active"><a href="{:U('verify')}"><img src="__PUBLIC__/img/task_checked2.png"/>  {:L('RETURN_VERIFY')}</a></li>
+			<li><a href="{:U('aboveStatistics')}"><img src="__PUBLIC__/img/shangji.png"/> &nbsp; {:L('door_of_statistical')}</a></li>
+		</ul>
+	</div>
+    
+	<include file="Public:alert" />
+	<p class="view"><b>{:L('VIEW_NAV')}</b>
+		<img src=" __PUBLIC__/img/by_owner.png"/> <a href="{:U('verify')}" <if condition="$_GET['c'] eq null">class="active"</if>>{:L('ALL')}</a> |
+		<a href="{:U('check','c=3')}" <if condition="$_GET['c'] eq 3">class="active"</if>>{:L('Has_been_CHECKED')}</a> |
+		<a href="{:U('check','c=1')}" <if condition="$_GET['c'] eq 1">class="active"</if>>{:L('Did_not_check')}</a> |
+		<a href="{:U('check','c=2')}" <if condition="$_GET['c'] eq 2">class="active"</if>>{:L('not_check_moretime')}</a>
+		<!--| 发放状态:-->
+		<!--<select name="send_status" id="send_status" style="width: auto">-->
+			<!--<option value="1">已发放</option>-->
+			<!--<option value="2">未发放</option>-->
+			<!--<option value="0">全部</option>-->
+		<!--</select>-->
+	</p>
+	<div class="row">
+		<div class="span12">
+			<ul class="nav pull-left">
+				<li class="pull-left">
+				<form class="form-inline" action="{:U('search','c=4')}" method="post">
+					<ul class="nav pull-left">
+						<li class="pull-left">
+							<select style="width:auto" name="key">
+								<option class="text" value="customer_name" <if condition="$key eq 'customer_name'">selected</if>>{:L('The_name_of_the_studio')}</option>
+								<option class="text" value="contacts_name" <if condition="$key eq 'contacts_name'">selected</if>>{:L('First_name')}</option>
+								<option class="text" value="contacts_telephone" <if condition="$key eq 'contacts_phone'">selected</if>>{:L('First_number')}</option>
+								<option class="text" value="operator_name" <if condition="$key eq 'teacher_name'">selected</if>>{:L('Go_door_teacher')}</option>
+								<option class="text" value="saleman" <if condition="$key eq 'sale_people_name'">selected</if>>{:L('SALESMAN')}</option>
+								<option class="text" value="submitter" <if condition="$key eq 'submitter'">selected</if>>{:L('Saleman')}</option>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li id="searchContent" class="pull-left">
+							<input type="text" class="input-medium search-query" name="search" value="{$search}"/>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left">
+							发放状态:
+							<select name="send_status" style="width: auto">
+								<option value="1" <if condition="$params['send_status'] eq 1">selected</if>>已发放</option>
+								<option value="2" <if condition="$params['send_status'] eq 2">selected</if>>未发放</option>
+								<option value="3" <if condition="$params['send_status'] eq 3">selected</if>>可发放</option>
+								<option value="0" <if condition="$params['send_status'] eq 0">selected</if>>全部</option>
+							</select>
+						</li>
+						<li class="pull-left">
+							<button type="submit" class="btn"> <img src="__PUBLIC__/img/search.png"/>   {:L('SEARCH')}</button>
+						</li>
+					</ul>
+				</form>
+				</li>
+			</ul>
+            
+		</div>
+		<div class="span12">
+			<table class="table table-hover table-striped" style="table-layout:fixed;">
+				<notempty name="list">
+					<thead>
+						<tr id="childNodes_num">
+                            <th width="30px">{:L('List')}</th>
+                            <th width="85px">发放时间</th>
+							<th width="210px">{:L('The_name_of_the_studio')}</th>
+							<th>{:L('customer_name')}</th>
+							<th>{:L('The_door_type')}</th>
+
+							<th>{:L('Return_man')}</th>
+							<th>{:L('Return_result')}</th>
+							<th>{:L('VERIFIER')}</th>
+							<th>实发金额</th>
+							<th>{:L('SEND_STATUS')}</th>
+							<th>{:L('Operation')}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<volist name="list" id="vo">
+						<tr>
+                            <th>{$i}</th>
+                            <td style="width:85px; white-space:nowrap;text-overflow:ellipsis;overflow:hidden;" title="{$vo.verifier_time}">
+                                {$vo.verifier_time}
+                            </td>
+                            <td style="width:210px; white-space:nowrap;text-overflow:ellipsis;overflow:hidden;" title="{$vo.customer_name}">
+                                <a href="{:U('customer/view')}&id={$vo.customer_id}">{$vo.customer_name}</a>
+                            </td>
+                            <td style="width:100px; white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">
+                                <if condition="$vo.contacts_name neq ''">{$vo.contacts_name}<else/>{:L('not_available')}</if>
+                            </td>
+                            <td style="width:150px; white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">
+                                <switch name="vo['type']">
+	                                <case value="1">{:L('first_the_door')}</case>
+	                                <case value="2">{:L('second_the_door')}</case>
+	                                <case value="3">{:L('third_the_door')}</case>
+	                                <case value="4">{:L('more_the_door')}</case>
+									<case value="5">更换铂金版</case>
+	                            </switch>
+                            </td>
+                            <td style="width:150px;">
+                                {$vo.return_man}
+                            </td>
+                            <td style="width:150px;">
+                                <switch name="vo['manyidu']">
+	                                <case value="1">{:L('great_satisfaction')}</case>
+	                                <case value="2">{:L('satisfaction')}</case>
+	                                <case value="3">{:L('ordinary')}</case>
+	                                <case value="4">{:L('complain')}</case>
+	                            </switch>
+                            </td>
+							<td style="width:150px;">
+								{$vo.verifier}
+							</td>
+							<td style="width:150px;">
+								{$vo.actual_money}
+							</td>
+							<td style="width:150px;">
+								<switch name="vo['send_status']">
+									<case value="1">{:L('ISSUED')}</case>
+									<case value="2">{:L('NOT_ISSUE')}</case>
+									<case value="3">可发放</case>
+								</switch>
+							</td>
+							<td style="width:150px;">
+								<a href="{:U('remoteServiceView',array('id'=>$vo['id']))}">{:L('examine')}</a>
+								<a href="{:U('verify_edit',array('id'=>$vo['id']))}">{:L('compile')}</a>
+							</td>
+						</tr> 
+						</volist>
+					</tbody>
+				<else/>
+					<tr><td>----{:L('not_available')}----</td></tr>
+				</notempty>
+			</table>
+			<div class="pagination">
+				{$page}
+				<include file="Public:listrows" />
+			</div>
+		</div>
+	</div>
+</div>
+<div class="hide" id="dialog-role-info" title="{:L('EMPLOYEE_INFORMATION')}">loading...</div>
+<div class="hide" id="dialog-advance" title="{:L('ADVANCE_INFORMATION')}">loading...</div>
+<script type="text/javascript">
+    $(function () {
+        var send_status = '{$Think.get.send_status}';
+        if (send_status) $('#send_status').val(send_status)
+        $('#send_status').on('change', function () {
+            var send_status = $(this).val()
+            var url = '{:U("verify","send_status=")}' + send_status
+            console.log(url)
+            window.location.href = url
+        });
+    })
+</script>
+<include file="Public:footer" />

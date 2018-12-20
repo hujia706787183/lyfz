@@ -1,0 +1,11 @@
+<div class="page-header" style="border:none; font-size:14px;">
+    <ul class="nav nav-tabs">
+      <li class="<if condition='ACTION_NAME == "index" && ($_GET["t"] == "receivables" || $_GET["t"] == "")'>active</if>"><a  href="{:U('finance/index','t=receivables')}"><img src="__PUBLIC__/img/yingshoukuan.png"/>&nbsp; {:L('RECEIVABLES')}</a></li>
+      <li class="<if condition='ACTION_NAME == "index" && ($_GET["t"] == "receivingorder")'>active</if>"><a href="{:U('finance/index','t=receivingorder')}"><img src="__PUBLIC__/img/shoukuandan.png"/> &nbsp; {:L('RECEIVINGORDER')}</a></li>
+      <li class="<if condition='ACTION_NAME == "index" && ($_GET["t"] == "otherrevenue")'>active</if>"><a href="{:U('finance/index','t=otherrevenue')}"><img src="__PUBLIC__/img/yingfukuan.png"/> &nbsp; 其它收入</a></li>
+      <!--<li class="<if condition='ACTION_NAME == "index" && ($_GET["t"] == "payables")'>active</if>"><a href="{:U('finance/index','t=payables')}"><img src="__PUBLIC__/img/yingfukuan.png"/> &nbsp; {:L('PAYABLES')}</a></li>-->
+      <li class="<if condition='ACTION_NAME == "index" && ($_GET["t"] == "paymentorder")'>active</if>"><a href="{:U('finance/index','t=paymentorder')}"><img src="__PUBLIC__/img/fukuandan.png"/> &nbsp; {:L('EXPENDITURE')}</a></li>
+      <li class="<if condition='ACTION_NAME == "analytics"'>active</if>"><a href="{:U('finance/analytics')}"><img src="__PUBLIC__/img/tongji.png"/> &nbsp; {:L('STATISTICS')}</a></li>
+      <!-- <li class="<if condition='ACTION_NAME == "otherpayables"'>active</if>"><a href="{:U('finance/otherpayables')}"><img src="__PUBLIC__/img/tongji.png"/> &nbsp; {:L('OTHERPAYABLES')}</a></li> -->
+    </ul>
+</div>

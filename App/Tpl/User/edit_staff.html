@@ -1,0 +1,446 @@
+<include file="Public:header" />
+<link type="text/css" href="__PUBLIC__/css/dynamic.css" rel="stylesheet" />
+<div class="container">
+	<!-- Docs nav ================================================== -->
+	<div class="page-header">
+		<span style="font-size: 20px">{:L('STAFF_EDIT')}</span> <a class="btn btn-primary" href="{:U('user/staffIndex')}">{:L('STAFF_MEG')}</a>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<include file="Public:alert" />
+		</div>
+		<div class="span12">
+			<form class="form-horizontal" enctype="multipart/form-data" action="{:U('user/edit_staff')}" method="post" >
+				<input type="hidden" name="id" value="{$staff.id}"/>
+				<input type="hidden" name="r_url" value="{$r_url}">
+				<table style="width:1000px" class="table">
+					<thead>
+
+					<tr>
+						<td <if condition="C('ismobile') eq 1">colspan="2"<else />colspan="4"</if>>
+						<p style="font-size: 14px;">
+							<!--<a href="javascript:void(0);" class="add_log">{:L('ADD_USER_INFO_NOTE')}</a> |-->
+							<a href="javascript:void(0);" class="add_file">{:L('ADD_FILE')}</a> |
+							<a href="{:U('user/view_staff','id=' . $staff['id'])}">详情</a> |
+							<a href="javascript:void(0)" onclick="javascript:history.go(-1)">{:L('RETURN')}</a>
+						</p>
+						</td>
+					</tr>
+
+					<tr>
+						<th colspan="2">{:L('BASIC_INFO')}</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td class="tdleft">{:L('USERNAME')}&nbsp;<span style="color:red;">*</span></td>
+						<td>
+							<input class="span2" type="text" name="name" id="name" value="{$staff.name}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('SEX')}&nbsp;</td>
+						<td>
+							<select  name="sex" style="width: 190px;">
+								<option value="1" <if condition="$staff['sex'] eq 1">selected</if>>{:L('MALE')}</option>
+								<option value="2" <if condition="$staff['sex'] eq 2">selected</if>>{:L('FEMALE')}</option>
+								<option value="3" <if condition="$staff['sex'] eq 3">selected</if>>{:L('PRIVARY')}</option>
+							</select>
+						</td>
+						<td class="tdleft">{:L('NATIVE_PLACE')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="native_place" value="{$staff.native_place}"  style="width:180px"/>
+						</td>
+
+
+					</tr>
+					<tr>
+						<td class="tdleft">{:L('ADDRESS')}&nbsp;<span style="color:red;">*</span></td>
+						<td>
+							<input class="span2" type="text" name="address" value="{$staff.address}" id="address" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('ID_NUMBER')}&nbsp;<span style="color:red;">*</span></td>
+						<td>
+							<input class="span2" type="text" name="id_number" value="{$staff.id_number}" id="id_number" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('BIRTHDAY')}&nbsp;</td>
+						<td>
+							<input class="span2 Wdate" type="text" name="birthday" onClick="WdatePicker()" value="{$staff.birthday}" style="width:180px"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft">{:L('MARITAL_STATUS')}&nbsp;</td>
+						<td style="padding-top: 19px">
+							<select  name="marital_status" style="width: 190px;">
+								<option value="1" <if condition="$staff['marital_status'] eq 1">selected</if>>{:L('MARRIED')}</option>
+								<option value="2" <if condition="$staff['marital_status'] eq 2">selected</if>>{:L('UNMARRIED')}</option>
+								<option value="3" <if condition="$staff['marital_status'] eq 3">selected</if>>{:L('PRIVARY')}</option>
+							</select>
+						</td>
+						<td class="tdleft">{:L('DEPARTMENT')}&nbsp;<br/>{:L('POSITION')}&nbsp;</td>
+						<td>
+							<select id="department" name="department" style="width: 190px;" onchange="changeRoleContent()">
+								<option value=""></option>
+								<volist name="department_list" id="temp">
+									<option value="{$temp.department_id}">{$temp.name}</option>
+								</volist>
+							</select>
+							<select id="role" name="position" style="width: 190px;">
+								<option value=""></option>
+								<volist name="position_list" id="temp">
+									<option value="{$temp.position_id}">{$temp.name}</option>
+								</volist>
+							</select>
+						</td>
+						<td class="tdleft">{:L('SALARY')}&nbsp;</td>
+						<td style="padding-top: 19px">
+							<input class="span2" type="text" name="salary" value="{$staff.salary}" id="salary" style="width:180px"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft">{:L('PROBATION_DATE')}&nbsp;</td>
+						<td>
+							<input class="span2 Wdate" type="text" name="probation_date" onClick="WdatePicker()" value="{$staff.probation_date}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('DATE_BOARD')}&nbsp;<span style="color:red;">*</span></td>
+						<td>
+							<input class="span2 Wdate" type="text" name="date_board" onClick="WdatePicker()" value="{$staff.date_board}" style="width:180px"/>
+
+						</td>
+						<td class="tdleft">{:L('DATE_LEAVE')}&nbsp;</td>
+						<td>
+							<input class="span2 Wdate" type="text" name="date_leave" onClick="WdatePicker()" value="{$staff.date_leave}" style="width:180px"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft">{:L('FINGERPRINT1')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="fingerprint1"  value="{$staff.fingerprint1}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('FINGERPRINT2')}&nbsp</td>
+						<td>
+							<input class="span2" type="text" name="fingerprint2"  value="{$staff.fingerprint2}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('DIMISSION')}&nbsp;</td>
+						<td>
+							<select  name="dimisson" style="width: 190px;">
+								<option value="1" <if condition="$staff['dimisson'] eq 1">selected</if>>{:L('ON_JOB')}</option>
+								<option value="2" <if condition="$staff['dimisson'] eq 2">selected</if>>{:L('dismission')}</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft">{:L('GRADUATE_INSTITUTIONS')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="graduate_institutions" value="{$staff.graduate_institutions}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('EDUCATION')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="education" value="{$staff.education}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('PERSONAL_CALL')}&nbsp;<span style="color:red;">*</span></td>
+						<td>
+							<input class="span2" type="text" name="personal_call" value="{$staff.personal_call}" id="personal_call" style="width:180px"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft">{:L('PERSONAL_QQ')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="personal_qq" value="{$staff.personal_qq}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('PERSONAL_weixin')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="personal_weixin" value="{$staff.personal_weixin}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('PERSONAL_EMAIL')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="personal_email" value="{$staff.personal_email}" style="width:180px"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft">{:L('TELEPHONE')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="telephone" value="{$staff.telephone}"  style="width:180px"/>
+						</td>
+						<td class="tdleft">公司微信&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="weixinid" value="{$staff.weixinid}"  style="width:180px"/>
+						</td>
+
+						<td class="tdleft">{:L('COMPANY_QQ')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="company_qq" value="{$staff.company_qq}" style="width:180px"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft" width="10%">服务密码&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="service_password" value="{$staff.service_password}"  style="width:180px"/>
+						</td>
+						<td class="tdleft" width="10%">登录密码&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="weixin_password" value="{$staff.weixin_password}" style="width:180px"/>
+						</td>
+						<td class="tdleft" width="10%">登录密码&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="qq_password" value="{$staff.qq_password}" style="width:180px"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft">{:L('MOTHER_NAME')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="mother_name" id="mother_name" value="{$staff.mother_name}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('FATHER_NAME')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="father_name" id="father_name" value="{$staff.father_name}" style="width:180px"/>
+						</td>
+						<td class="tdleft" width="10%">上班时间&nbsp;</td>
+						<td>
+							<select  name="office_hours" style="width: 190px;">
+								<option value="08:30" <if condition="$staff['office_hours'] eq '08:30'">selected</if>>08:30</option>
+								<option value="09:00" <if condition="$staff['office_hours'] eq '09:00'">selected</if>>09:00</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft">{:L('MOTHER_PHONE')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="mother_phone" id="mother_phone" value="{$staff.mother_phone}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('FATHER_PHONE')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="father_phone" id="father_phone" value="{$staff.father_phone}" style="width:180px"/>
+						</td>
+						<td class="tdleft" width="10%">休息时间&nbsp;</td>
+						<td>
+							<select  name="intermission" style="width: 190px;">
+								<option value="单休" <if condition="$staff['intermission'] eq '单休'">selected</if>>单休</option>
+								<option value="单双休" <if condition="$staff['intermission'] eq '单双休'">selected</if>>单双休</option>
+								<option value="双休" <if condition="$staff['intermission'] eq '双休'">selected</if>>双休</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft">{:L('EMERGENCY_CONTACT_NAME')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="emergency_contact_name" value="{$staff.emergency_contact_name}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('EMERGENCY_CONTACT_PHONE')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="emergency_contact_phone" value="{$staff.emergency_contact_phone}" style="width:180px"/>
+						</td>
+						<td class="tdleft">{:L('EMERGENCY_CONTACT')}&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="emergency_contact" value="{$staff.emergency_contact}" style="width:180px"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft" width="10%">银行账户&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="bank_account"  value="{$staff.bank_account}" style="width:180px"/>
+						</td>
+						<td class="tdleft" width="10%">户名&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="bank_username" value="{$staff.bank_username}" style="width:180px"/>
+						</td>
+						<td class="tdleft" width="10%">开户行&nbsp;</td>
+						<td>
+							<input class="span2" type="text" name="opening_bank" value="{$staff.opening_bank}" style="width:180px"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="tdleft">{:L('USER_INFO_NOTE')}&nbsp;</td>
+						<td>
+							<textarea name="remark" rows="5" cols="150">{$staff.remark}</textarea>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+							<input class="btn btn-primary" name="submit" type="submit" value="{:L('UPDATE_INFO')}"/>&nbsp; <input class="btn" onclick="javascript:history.go(-1)" type="reset" value="{:L('RETURN')}"/>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</form>			
+		</div> <!-- End #tab1 -->		
+	</div> <!-- End #main-content -->	
+</div>
+<div class="hide" id="dialog-weixin" title="{:L('SCAN_QR_COD')}">loading...</div>
+<div class="hide" id="dialog_tips" title=""></div>
+<div class="hide" id="dialog-file" title="{:L('DIALOG_ADD_ATTACHMENTS')}">loading...</div>
+<div id="dialog" title="文件名修改">
+	<form method="post" action="{:U('customer/editFileName')}">
+		<input type="hidden" name="file_id" id="file_id" value=""/>
+		文件名：<input name="name" id="file_name" value=""/>
+		<input type="submit" value="确定"/>
+	</form>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+//初始化上传图片
+$("body").on('click','input[type="file"]', function(){
+	$('#file_upload').uploadPreview({ Img: 'avatar', Width: 80, Height: 80 });
+});
+</script>
+<script type="text/javascript">
+
+    function changeRoleContent(){
+        department_id = $('#department').val();
+        if(department_id == ''){
+            $("#role").html('');
+        }else{
+            $.ajax({
+                type:'get',
+                url:'index.php?m=user&a=getpositionlist&id='+department_id,
+                async:false,
+                success:function(data){
+                    console.log(data)
+                    options = '';
+                    if(data.data){
+                        $.each(data.data, function(k, v){
+                           options += '<option value="'+v.position_id+'">'+v.name+'</option>';
+//                             options += '<option value="'+v.name+'">'+v.name+'</option>';
+                        });
+                    }
+                    $("#role").html(options);
+                },
+                dataType:'json'
+            });
+        }
+    }
+    $('#role').click(
+        function(){
+            department_id = $('#department').val();
+            if(department_id == ''){
+                alert("{:L('SELECT_DEPARTMENT_FIRST')}");
+            }
+        }
+    );
+
+$("#dialog-weixin").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 600,
+	Height: 600,
+	position: ["center",100]
+});
+
+
+$(function(){
+	$("#weixin").click(function(){
+		$('#dialog-weixin').dialog('open');
+		$('#dialog-weixin').load('{:U("user/weixin")}');
+	});
+	
+	$("#department option[value='{$staff['department']}']").prop("selected", true);
+	$("#role option[value='{$staff['position']}']").prop("selected", true);
+<if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if>
+  $("#dialog-file").dialog({
+    autoOpen: false,
+    modal: true,
+    width: width,
+    maxHeigh: 400,
+    position: ["center",100]
+  });
+	$(".add_file").click(function(){
+		$('#dialog-file').dialog('open');
+		$('#dialog-file').load('{:U("file/add","r=RFileStaff&module=staff&id=" . $staff["id"])}');
+	});
+	$( "#dialog" ).dialog({
+		autoOpen: false,
+		show: {
+		  effect: "blind",
+		  duration: 10
+		},
+		hide: {
+		  effect: "explode",
+		  duration: 10
+		}
+	});
+});
+</script>
+<script type="text/javascript">
+
+function check_submit(){
+ var mark = false;
+ $(".required").each(function(){
+  if($(this).prev().val()){
+    if($(this).prev().attr("name")=="telephone"){
+	mark = check_phone();
+	if(!mark){
+		return false;
+	}
+   }
+   if($(this).prev().attr("name")=="email"){
+	mark = check_email();
+	if(!mark){
+		return false;
+	}
+   }
+  }else{
+   var empty_elem = $(this).prev();
+   var param={
+    'obj' : empty_elem,
+    'title' : "错误提示",
+    'content' : "<span style='color:rgb(255,0,0);margin-left:100px;'>"+$(this).parent().prev().html()+"必须填写</span>",
+    'action' : function(){
+        this.obj[0].focus();
+    },
+   }
+   Dialog(param);
+   window.scrollBy(0,-50);
+   mark = false;
+   return false;
+  }
+ });
+ return mark;
+}
+function Dialog(param){
+ param.action();
+ $("#dialog_tips").dialog({
+  autoOpen: false,
+  modal: true,
+  width: 400,
+  maxHeight: 800,
+  position: ["center",100],
+  title:param.title,
+  dialogClass: 'alert',
+  buttons:{
+   '{:L("OK")}':function(){
+    $(this).dialog('close');
+   },
+   '{:L("CANCEL")}':function(){
+    $(this).dialog('close');
+   }
+  }
+ });
+ $('#dialog_tips').dialog('open');
+ $("#dialog_tips").html('');
+ $("#dialog_tips").append(param.content);
+}
+function check_phone(){
+	var r,re;
+	var s = $("input[name = 'telephone']").val();
+	re=/^1[34758][0-9]{9}$/;
+	r = s.match(re);
+	if(!r){
+		alert("手机号码格式不对！");
+		return false;
+	}else{
+		return true;
+	}
+}
+function check_email(){
+	var r,re;
+	var s = $("input[name = 'email']").val();
+	re=/^[_\.0-9a-z-]+@([0-9a-zA-Z][0-9a-zA-Z_-]+\.)+[a-zA-Z]{2,4}$/;
+	r = s.match(re);
+	if(!r){
+		alert("邮箱格式不对！");
+		return false;
+	}else{
+		return true;
+	}
+}
+</script>
+<include file="Public:footer" />	

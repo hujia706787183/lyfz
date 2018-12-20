@@ -1,0 +1,1323 @@
+<script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+<link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+<!--设置产品信息-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">产品信息</h4>
+            </div>
+            <div class="modal-body">
+                <div id="echoButton"></div>
+                <br/>
+                <form id="product_info_form"></form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="save_product_info">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--查询账户-->
+<div class="modal fade" id="getCustomerAccount" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">客户信息</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="order_product_id">
+                <div class="form-group">
+                    <label>短信账号：</label>
+                    <input type="text" class="form-control" id="account" readonly>
+                </div>
+                <div class="form-group">
+                    <label>密码：</label>
+                    <input type="text" class="form-control" id="password" readonly>
+                </div>
+                <div class="form-group">
+                    <label>企业(影楼)名称：</label>
+                    <input type="text" class="form-control" id="customerName" readonly>
+                </div>
+                <div class="form-group">
+                    <label> 店 名：</label>
+                    <input type="text" class="form-control" id="shopName" readonly>
+                </div>
+                <div class="form-group">
+                    <label>短信签名<span style="color: red">*</span>：</label>
+                    <input type="text" class="form-control" name="signature" readonly>
+                </div>
+                <div class="form-group">
+                    <label>已发条数：</label>
+                    <input type="text" class="form-control" id="beenSentCount" readonly>
+                </div>
+                <div class="form-group">
+                    <label>剩余条数：</label>
+                    <input type="text" class="form-control" id="smsBalances" readonly>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!--<button type="button" class="btn btn-primary" id="save_product_info">保存</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+<!--充值-->
+<div class="modal fade" id="smsRecharge" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">客户信息</h4>
+            </div>
+            <div class="modal-body">
+                <form id="smsRechargeForm">
+                    <input type="hidden" name="order_product_id">
+                    <div class="form-group">
+                        <label>短信账号：</label>
+                        <input type="text" class="form-control" name="account" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>企业(影楼)名称：</label>
+                        <input type="text" class="form-control" name="customerName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label> 店 名：</label>
+                        <input type="text" class="form-control" name="shopName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>短信签名<span style="color: red">*</span>：</label>
+                        <input type="text" class="form-control" name="signature" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label> 短信单价(元/条)：</label>
+                        <input type="text" class="form-control" id="unit_price" name="unit_price" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label> 实际充值单价(元/条)：</label>
+                        <input type="text" class="form-control" id="practical_price" name="practical_price" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>充值金额：</label>
+                        <input type="text" class="form-control" id="recharge_money"  name="money">
+                    </div>
+                    <div class="form-group">
+                        <label>充值条数：</label>
+                        <input type="text" class="form-control" id="recharge_count" name="rechargeCount">
+                    </div>
+                    <div class="form-group">
+                        <label>负责人：</label>
+                        <select id="owner_role_id" name="owner_role_id" class="form-control selectpicker" data-live-search="true">
+
+                        </select>&nbsp;
+                    </div>
+                    <div class="form-group">
+                        <label>备注说明：</label>
+                        <input type="text" class="form-control" id="smsRechargeFormRemarks" name="remarks">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="save_smsRechargeForm">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--短信账户添加或修改-->
+<div class="modal fade" id="customerSmsAccount" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width:700px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">客户信息</h4>
+            </div>
+            <div class="modal-body">
+                <form id="customerSmsAccountForm" class="form-horizontal">
+                    <input type="hidden" name="order_product_id">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">短信账号：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="account" placeholder="创建账号时，账号系统生成" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">账号密码：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="password" placeholder="密码为空时 系统自动设为666666">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">企业名称<span style="color: red">*</span>：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="customerName" placeholder="企业名不能为空">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">门店名称<span style="color: red">*</span>：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="shopName" placeholder="门店名称不能为空">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">短信签名<span style="color: red">*</span>：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="signature" value="【】" placeholder="短信签名不能为空 签名格式为“【安徒生童话】">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">加密狗域名：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="domainName" placeholder="铂金版帐号不能为空，将用此域名验证是否为正版">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">短信发送通道：</label>
+                        <div class="col-sm-8">
+                             <select name="smsinterface" id="smsinterface" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">铂金版有效期：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="validDateRuns" onClick="WdatePicker()"  placeholder="一般新添加客户 为 1 年有效期">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">是否永久有效：</label>
+                        <div class="col-sm-8">
+                            <div class="form-control">
+                                <input type="radio"  name="permanentRegister" value="1">是&nbsp;&nbsp;&nbsp;
+                                <input type="radio"  name="permanentRegister" value="0" checked>否&nbsp;&nbsp;&nbsp;
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">性别：</label>
+                        <div class="col-sm-8">
+                            <div class="form-control">
+                                <input type="radio"  name="sex" value="男">男&nbsp;&nbsp;&nbsp;
+                                <input type="radio"  name="sex" value="女">女&nbsp;&nbsp;&nbsp;
+                                <input type="radio"  name="sex" value="保密" checked>保密
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">联系人：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="contactperson">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">手机：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="telephone">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">QQ：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="qq">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="display: block;">地址：</label>
+                        <div class="col-sm-8">
+                             <input type="text" class="form-control" name="address">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="remarks">
+                        </div>
+                    </div>
+                    <div class="form-group" id="present_div">
+                        <label class="col-sm-2 control-label">赠送条数：</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="present">
+                        </div>
+                    </div>
+                    <script>
+                        $.get("/api.php/message/smsChannel", function(response) {
+                            for(var index=0; index < response.data.length; index++){
+                                $("#smsinterface").append("<option value="+response.data[index]+">"+response.data[index]+"</option>");
+                            }
+                        });
+                    </script>
+                </form >
+            </div>
+            <div class="modal-footer" >
+                <div class="col-sm-offset-1 col-sm-10">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="save_customerSmsAccountForm">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--短信充值记录-->
+<div class="modal fade" id="rechargeRecord" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width: 760px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">短信充值记录</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!--<button type="button" class="btn btn-primary" id="save_product_info">保存</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+<!--删除短信账号-->
+<div class="modal fade" id="deleteCustomer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">确定删除该账号吗？</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="order_product_id">
+                <div class="form-group">
+                    <label>短信账号：</label>
+                    <input type="text" class="form-control" id="delete_account" name="account" readonly>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="save_deleteCustomer">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--查询-->
+<div class="modal fade" id="query" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">产品信息</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="express_company">快递公司：</label>
+                    <input type="text" class="form-control" name="express_company">
+                </div>
+                <div class="form-group">
+                    <label for="express_number">快递单号：</label>
+                    <input type="text" class="form-control" name="express_number">
+                </div>
+                <div class="form-group">
+                    <label style="display: block;" for="address">地址：</label>
+                    <input type="text" class="form-control" name="address"  style="width: 570px">
+                </div>
+                <div class="form-group">
+                    <label for="content">产品：</label>
+                    <input type="text" class="form-control" name="content" style="width: 570px">
+                </div>
+                <div class="form-group">
+                    <label for="receiver">收件人：</label>
+                    <input type="text" class="form-control" name="receiver" style="width: 570px">
+                </div>
+                <div class="form-group">
+                    <label for="receiver">收件人电话：</label>
+                    <input type="text" class="form-control" name="telephone" style="width: 570px">
+                </div>
+                <div class="form-group">
+                    <label for="sender">发件人：</label>
+                    <input type="text" class="form-control" name="sender"  style="width: 570px">
+                </div>
+                <div class="form-group">
+                    <label for="content">客户备注：</label>
+                    <input type="text" class="form-control" name="description" style="width: 570px" readonly>
+                </div>
+                <div class="form-group" style="display: none;">
+                    <label for="content">订单备注：</label>
+                    <input type="text" class="form-control" name="order_description" style="width: 570px" readonly>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <!--<button type="button" class="btn btn-primary" id="save_deliverGoods">确定</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+<!--发货-->
+<div class="modal fade" id="deliverGoods" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">发货</h4>
+            </div>
+            <div class="modal-body">
+                <form id="deliverGoodsForm" method="post" action="{:U('customer/express')}">
+                    <input type="hidden" name="order_product_id" id="order_product_id">
+                    <input type="hidden" name="customer_id" id="customer_id">
+                    <div class="form-group">
+                        <label for="express_company">快递公司：</label>
+                        <!--<input type="text" class="form-control" id="express_company" name="express_company">-->
+                        <select name="express_company" class="form-control" id="express_company">
+                            <option value=""></option>
+                            <option value="百世汇通">百世汇通</option>
+                            <option value="申通">申通</option>
+                            <option value="顺丰">顺丰</option>
+                            <option value="天天">天天</option>
+                            <option value="圆通">圆通</option>
+                            <option value="韵达">韵达</option>
+                            <option value="中通">中通</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="express_number">快递单号：</label>
+                        <input type="text" class="form-control" id="express_number" name="express_number">
+                    </div>
+                    <div class="form-group">
+                        <label style="display: block;" for="address">地址：</label>
+                        <input type="text" class="form-control" name="address" id="address" style="width: 570px">
+                        <!--<input type="hidden" id="Address" name="Address">-->
+                        <!--<select name="state" id="state" class="form-control" style="width:120px;display:inline;"></select>&nbsp;-->
+                        <!--<select name="city" id="city"  class="form-control" style="width:120px;display:inline;"></select>&nbsp;-->
+                        <!--<select name="area" id="area"  class="form-control" style="width:120px;display:inline;"></select>&nbsp;-->
+                        <!--<input type="text" id="street"  class="form-control" style="width:190px;display:inline;" name="search" placeholder='街道信息' class="input-large">&nbsp;&nbsp;-->
+                        <!--<script>new PCAS("state","city","area","","","");</script>-->
+                    </div>
+                    <div class="form-group">
+                        <label for="content">产品：</label>
+                        <input type="text" class="form-control" id="content" name="content" style="width: 570px">
+                    </div>
+                    <div class="form-group">
+                        <label for="receiver">收件人：</label>
+                        <input type="text" class="form-control" id="receiver" name="receiver" style="width: 570px">
+                    </div>
+                    <div class="form-group">
+                        <label for="receiver">收件人电话：</label>
+                        <input type="text" class="form-control" name="telephone" style="width: 570px">
+                    </div>
+                    <div class="form-group">
+                        <label for="sender">发件人：</label>
+                        <input type="text" class="form-control" id="sender" name="sender" value="{$Think.session.name}" style="width: 570px">
+                    </div>
+                    <div class="form-group">
+                        <label for="content">客户备注：</label>
+                        <input type="text" class="form-control" id="description" name="description" style="width: 570px" readonly>
+                    </div>
+                    <div class="form-group" style="display: none;">
+                        <label for="content">订单备注：</label>
+                        <input type="text" class="form-control" name="order_description" style="width: 570px" readonly>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="save_deliverGoods">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--服务费-->
+<div class="modal fade" id="serviceCharge" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">客户信息</h4>
+            </div>
+            <div class="modal-body">
+                <form id="serviceChargeForm">
+                    <input type="hidden" name="order_product_id">
+                    <div class="form-group">
+                        <label> 产品名：</label>
+                        <input type="text" class="form-control" name="product_name" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label> 客户名：</label>
+                        <input type="text" class="form-control" name="contacts_name" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label> 联系电话：</label>
+                        <input type="text" class="form-control" name="contacts_telephone" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label> 订单备注：</label>
+                        <input type="text" class="form-control" name="order_description" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>负责人：</label>
+                        <select id="service_owner_role_id" name="owner_role_id" class="form-control selectpicker" data-live-search="true"></select>&nbsp;
+                    </div>
+                    <div class="form-group">
+                        <label> 订单标题：</label>
+                        <input type="text" class="form-control" name="name" value="服务费">
+                    </div>
+                    <div class="form-group">
+                        <label> 服务时间：</label>
+                        <select name="service_time" class="form-control">
+                            <option value="1">1年</option>
+                            <option value="2">2年</option>
+                            <option value="3">3年</option>
+                            <option value="4">4年</option>
+                            <option value="5">5年</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label> 服务费：</label>
+                        <input type="text" class="form-control" data-service-fee="" name="service_fee">
+                    </div>
+                    <div class="form-group">
+                        <label> 下单描述：</label>
+                        <input type="text" class="form-control" name="order_describe">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="save_serviceChargeForm">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--更换铂金版-->
+<div class="modal fade" id="changePlatinum" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">设置产品</h4>
+            </div>
+            <div class="modal-body">
+                <form id="changePlatinumForm">
+                    <input type="hidden" name="order_product_id">
+                    <div class="form-group">
+                        <label for="change_product_id">产品名：</label>
+                        <select name="product_id" class="form-control" id="change_product_id"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>更换后软件名：</label>
+                        <input type="text" class="form-control" name="product_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="change_product_id">更换备注：</label>
+                        <input type="text" class="form-control" name="change_description">
+                    </div>
+                </form >
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="save_changePlatinum">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--营销软件注册/授权-->
+<div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">客户信息</h4>
+            </div>
+            <div class="modal-body">
+                <form id="sellRegisterForm">
+                    <input type="hidden" name="order_product_id">
+                    <input type="hidden" name="customer_id">
+                    <div class="form-group">
+                        <label>商户id：</label>
+                        <input type="text" class="form-control" name="id" placeholder="创建账号时，账号系统生成" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>账号密码：</label>
+                        <input type="text" class="form-control" name="password" placeholder="请输入6到32位的数字和字母组合的密码">
+                    </div>
+                    <div class="form-group">
+                        <label>手机号码<span style="color: red">*</span>：</label>
+                        <input type="text" class="form-control" name="phone_no">
+                    </div>
+                    <div class="form-group">
+                        <label>客户名<span style="color: red">*</span>：</label>
+                        <input type="text" class="form-control" name="nickname">
+                    </div>
+                    <div class="form-group">
+                        <label>公司名称(举办方名称)<span style="color: red">*</span>：</label>
+                        <input type="text" class="form-control" name="company_name">
+                    </div>
+                    <div class="form-group">
+                        <b style="color: red">*说明：使用次数为-1表示无限次数</b>
+                    </div>
+                    <div class="form-inline">
+                        <label for="module_id">模块：</label>
+                        <select id="module_id" class="form-control" style="width:20%;">
+                            <option value="all">全部</option>
+                            <option value="0">团购活动</option>
+                            <option value="1">拼团活动</option>
+                            <option value="2">砍价活动</option>
+                            <option value="3">投票活动</option>
+                            <option value="4">秒杀</option>
+                            <option value="5">裂变红包</option>
+                            <option value="51">幸福直播秀</option>
+                        </select>
+                        <label for="valid_date">有效期：</label>
+                        <input type="text" class="form-control" id="valid_date" onClick="WdatePicker({minDate:'%y-%M-%d}'})" value="{:date('Y-m-d', time()+365*24*3600)}" style="width: 20%;">
+                        <label for="times">使用次数：</label>
+                        <input type="number" class="form-control" id="times" value="-1" style="width: 20%">
+                        <button class="btn btn-info" type="button" id="auth-module">添加</button>
+                    </div>
+                    <div id="auth-form" class="form-inline"></div>
+                </form >
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="save_sellRegisterForm">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--设置product_id 由于之前的一些老产品没有归属哪一类产品，让用户自己调整-->
+<div class="modal fade" id="setProductId" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">设置产品</h4>
+            </div>
+            <div class="modal-body">
+                <form id="setProductIdForm">
+                    <input type="hidden" name="order_product_id">
+                    <div class="form-group">
+                        <label for="category_id">产品类别：</label>
+                        <select name="category_id" class="form-control" id="category_id"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="product_id">产品名：</label>
+                        <select name="product_id" class="form-control" id="product_id"></select>
+                    </div>
+                </form >
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="save_setProductIdForm">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--删除订单产品-->
+<div class="modal fade" id="deleteOrderProduct" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">确定删除该订单产品吗？</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="order_product_id">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="save_deleteOrderProduct">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdn.bootcss.com/lodash.js/4.17.5/lodash.min.js"></script>
+<script src="/Public/js/libs/http.js"></script>
+<script>
+    $.get('/api.php/user/getRoleList').then(function (response) {
+        var options = '';
+        $.each(response.data, function (k, v) {
+            options += '<option value="'+ v.role_id +'">'+ v.username + '  (' + v.department_name+ '-' + v.position_name +')</option> '
+        });
+        $("#owner_role_id").html(options);
+        $('#owner_role_id').selectpicker('refresh');
+    });
+
+    $(document).on("show.bs.modal", ".modal", function(){
+        $(this).draggable();
+        $(this).css("overflow-y", "scroll");
+        // 防止出现滚动条，出现的话，你会把滚动条一起拖着走的
+    });
+    $(function () {
+        // var modules = ['团购活动', '拼团活动', '砍价活动', '投票活动', '秒杀', '裂变红包', '幸福直播秀'];
+        var modules = {0:'团购活动', 1:'拼团活动', 2:'砍价活动', 3:'投票活动', 4:'秒杀', 5:'裂变红包', 51:'幸福直播秀'};
+        $('#save_deliverGoods').on('click', function () {
+            $("#deliverGoodsForm").submit();
+        });
+        $('#recharge_money').bind('input propertychange', function() {
+            $('#recharge_count').val(Math.ceil($(this).val()/$('#unit_price').val()));
+            $('#practical_price').val('');
+        });
+        $('#recharge_count').bind('input propertychange', function() {
+            $('#practical_price').val(Math.ceil($('#recharge_money').val()/$(this).val()*10000)/10000);
+        });
+        
+        $('#auth-module').on('click', function () {
+            var module_id = $('#module_id').val();
+            var module_name = $('#module_id option:selected').html();
+            var valid_date = $('#valid_date').val();
+            var times = $('#times').val();
+            if (module_id == 'all'){
+                $('#auth-form').html('');
+                for (var module_id in modules){
+                    $('#auth-form').append('<div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                        '<input type="hidden" class="form-control" name="auth['+ module_id +'][module_id]" value="'+ module_id+'" readonly>-' +
+                        '<input type="text" class="form-control" style="width:20%;" value="'+ modules[module_id] +'" readonly>-' +
+                        '<input type="text" class="form-control" style="width:20%;" value="'+ valid_date +'" name="auth['+ module_id +'][valid_date]" readonly>-' +
+                        '<input type="text" class="form-control" style="width:20%;" value="'+ times +'" name="auth['+ module_id +'][times]" readonly>-' +
+                        '<button class="btn btn-danger" type="button" onclick="javascript: $(this).parent().remove();">删除</button>' +
+                        '</div>');
+                }
+            }else {
+                var isUse = $('#auth-form input:hidden[name="auth['+ module_id +'][module_id]"]').val();
+                if (isUse !== undefined){
+                    //不等于undefined时说明之前已经选过了
+                    $('#auth-form input:hidden[name="auth['+ module_id +'][module_id]"]').parent().remove();
+                }
+                $('#auth-form').append('<div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '<input type="hidden" class="form-control" name="auth['+ module_id +'][module_id]" value="'+ module_id+'" readonly>-' +
+                    '<input type="text" class="form-control" style="width:20%;" value="'+ module_name +'" readonly>-' +
+                    '<input type="text" class="form-control" style="width:20%;" value="'+ valid_date +'" name="auth['+ module_id +'][valid_date]" readonly>-' +
+                    '<input type="text" class="form-control" style="width:20%;" value="'+ times +'" name="auth['+ module_id +'][times]" readonly>-' +
+                    '<button class="btn btn-danger" type="button" onclick="javascript: $(this).parent().remove();">删除</button>' +
+                    '</div>');
+            }
+        });
+
+        $('#save_sellRegisterForm').on('click', function () {
+            var sellRegisterForm = $('#sellRegisterForm').serialize();
+            console.log(sellRegisterForm);
+            $.post('/api.php/product/sellingRegister', sellRegisterForm, function (response) {
+                console.log(response);
+                if (response.code==0) {
+                    var order_product_id = $("#register input:hidden[name='order_product_id']").val();
+                    var customer_id = $("#register input:hidden[name='customer_id']").val();
+                    var savePluginSelling = {order_product_id: order_product_id, customer_id: customer_id, merchant_id: response.data.id};
+                    $.post('/api.php/product/savePluginSelling', savePluginSelling, function (info) {
+                        console.log(info);
+                        if(info.code==0){
+                            alert('注册成功');
+                        }
+                        window.location.reload();
+                    });
+                }else {
+                    alert(response.msg);
+                    window.location.reload();
+                }
+            });
+        });
+
+        $('#save_product_info').on('click', function(){
+            var form = $('#product_info_form').serialize();
+            $.post('/api.php/product/setOrderProductInfo', form).then(function(response){
+                alert('保存成功');
+                $('#myModal').modal('hide');
+                location.reload();
+            });
+        });
+
+        //添加短信充值订单
+        $('#save_smsRechargeForm').on('click', function () {
+            var smsRechageForm = $('#smsRechargeForm').serialize();
+            $.post('/api.php/message/smsRecharge', smsRechageForm, function (data) {
+                console.log(data);
+                if (data.code == 0){
+                    alert('添加短信充值订单成功');
+                    window.location.reload();
+                }else {
+                    alert('添加短信充值订单失败');
+                }
+                $('#smsRecharge').modal('hide');
+            });
+        });
+        //添加或修改
+        $('#save_customerSmsAccountForm').on('click', function () {
+            var customerSmsAccountForm = $('#customerSmsAccountForm').serialize();
+            //如果是注册时account为空
+            var account = $('#customerSmsAccount input:text[name="account"]').val();
+            var present = $('#customerSmsAccount input:text[name="present"]').val();
+            var order_product_id = $("input:hidden[name='order_product_id']").val();
+            $.post('/api.php/message/customerSmsAccount', customerSmsAccountForm, function (response) {
+                if (response.code == 0 && response.data.code == 200){
+                    var message_account = response.data.data.account;
+                    var message_account_password = response.data.data.password;
+                    $.post('/api.php/product/setOrderProductInfo',
+                        {order_product_id: order_product_id, message_account: message_account, message_account_password: message_account_password},function (data) {
+                            if (!account) $.post('/api.php/message/recharge',{account: message_account, money: 0, rechargeCount: present, remarks:'注册赠送'});
+                            alert('添加或修改用户成功');
+                            window.location.reload();
+                    });
+                }else {
+                    alert(response.data.msg);
+                }
+                $('#customerSmsAccount').modal('hide');
+            });
+        });
+        //删除用户
+        $('#save_deleteCustomer').on('click', function () {
+            var delete_account = $('#delete_account').val();
+            $.get('/api.php/message/deleteCustomer', {accountList: delete_account}, function (response) {
+                // console.log(response);
+                if (response.code == 0 && response.data.code == 200){
+                    alert('删除用户成功');
+                }else {
+                    alert('删除用户失败');
+                }
+                $('#deleteCustomer').modal('hide');
+            });
+        });
+
+        //自动更新服务费
+        $('#serviceChargeForm select[name="service_time"]').on('change', function () {
+            var base_service_fee = $("#serviceChargeForm input:text[name='service_fee']").data('service-fee');
+            var service_fee = $(this).val() * base_service_fee;
+            $("#serviceChargeForm input:text[name='service_fee']").val(service_fee);
+        });
+        // 添加服务费订单
+        $('#save_serviceChargeForm').on('click', function () {
+            var serviceChargeForm = $('#serviceChargeForm').serialize();
+            $.post('/api.php/plugin/PlatinumCreateOrder', serviceChargeForm, function (data) {
+                console.log(data);
+                if (data.code == 0){
+                    alert('添加服务费订单成功');
+                    window.location.reload();
+                }else {
+                    alert('添加服务费订单失败');
+                }
+                $('#smsRecharge').modal('hide');
+            });
+        });
+
+        $('#save_setProductIdForm').on('click', function () {
+            var product_id = $('#setProductIdForm #product_id').val();
+            var order_product_id = $('#setProductIdForm input:hidden[name="order_product_id"]').val();
+            $.get('/api.php/product/setProductId', {product_id: product_id, order_product_id: order_product_id}).then(function (response) {
+                alert(response.info);
+                window.location.reload();
+            });
+        });
+
+        $('#save_deleteOrderProduct').on('click', function () {
+            var order_product_id = $('#deleteOrderProduct input:hidden[name="order_product_id"]').val();
+            $.get('/api.php/product/deleteOrderProduct', {order_product_id: order_product_id}).then(function (response) {
+                alert(response.info);
+                window.location.reload()
+            });
+        });
+
+        //更换后软件名自动更换
+        $('#changePlatinum select[name="product_id"]').on('change', function () {
+            var product_name = $("select[name='product_id']:eq(0) :selected").text()
+            $('#changePlatinum input:text[name="product_name"]').val(product_name)
+        });
+
+        //更换后保存
+        $('#save_changePlatinum').on('click', function () {
+            var changePlatinumForm = $('#changePlatinumForm').serialize();
+            $.post('/api.php/product/change_platinum', changePlatinumForm, function (data) {
+                alert(data.info);
+                window.location.reload();
+                $('#changePlatinum').modal('hide');
+            });
+        });
+    });
+
+    function getFormatDate(timestamp) {
+        var date = new Date(timestamp);
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        return  date.getFullYear() + '-' + month + '-' + strDate;
+    }
+    // *******************************  ProductMessage  BEGIN ******************************* //
+    /**
+     * 短信账号公共
+     * @param order_product_id
+     * @param message_account
+     */
+    function messageCommon(order_product_id, message_account) {
+        if (0 === message_account){
+            $.ajax({
+                url: "/api.php/customer/details",
+                type: "get",
+                data: {order_product_id: order_product_id},
+                success: function (response) {
+                    if (response.code == 0) {
+                        $("#customerSmsAccountForm input:text[name='customerName']").val(response.data.customer_details.customer_name);
+                        $("#customerSmsAccountForm input:text[name='shopName']").val(response.data.customer_details.customer_name);
+                        $("#customerSmsAccountForm input:text[name='contactperson']").val(response.data.customer_details.contacts_name);
+                        $("#customerSmsAccountForm input:text[name='telephone']").val(response.data.customer_details.contacts_telephone);
+                        $("#customerSmsAccountForm input:text[name='qq']").val(response.data.customer_details.qq_no);
+                        $("#customerSmsAccountForm input:text[name='address']").val(response.data.customer_details.address);
+                    } else {
+                        $("#customerSmsAccountForm input:text[name='customerName']").val('');
+                        $("#customerSmsAccountForm input:text[name='shopName']").val('');
+                        $("#customerSmsAccountForm input:text[name='contactperson']").val('');
+                        $("#customerSmsAccountForm input:text[name='telephone']").val('');
+                        $("#customerSmsAccountForm input:text[name='qq']").val('');
+                        $("#customerSmsAccountForm input:text[name='address']").val('');
+                    }
+                    $("input:hidden[name='order_product_id']").val(order_product_id);
+                },
+                error: function () {
+                    console.log("错误");
+                }
+            });
+        }else {
+            $.ajax({
+                url: "/api.php/message/getCustomerAccount",
+                type: "get",
+                data: {account: message_account},
+                success: function (response) {
+                    console.log(response)
+                    if(response.code == 0 && response.data.code==200){
+                        _.forEach(response.data.data, function(value, key){
+                            $("input:text[name="+key+"]").val(value);
+                            $("#"+key).val(value);
+                        });
+                        $("input:radio[name='Sex']").val(response.data.data.sex);
+                        $("#smsRechargeFormRemarks").val("CRM充值");
+                    }else{
+                        alert(response.data.msg)
+                        $("#account").val("");
+                        $("#password").val("");
+                        $("#beenSentCount").val("");
+                        $("#smsBalances").val("");//
+                        $("#smsRechargeFormRemarks").val("");
+                        $("input:text").val("");
+
+
+                        $("input:radio[name='Sex']").val("保密");
+                        $("#smsinterface").val("智能选择");
+                    }
+                    $("input:hidden[name='order_product_id']").val(order_product_id);
+                },
+                error: function(){
+                    console.log("错误");
+                }
+            });
+        }
+        $.get("/api.php/message/smsPrice",function(response){
+            $("input:text[name=\"unit_price\"]").val(response.data.data);
+        });
+    }
+
+    /**
+     * 查询
+     * @param order_product_id
+     * @param message_account
+     */
+    function getCustomerAccount(order_product_id, message_account) {
+        messageCommon(order_product_id, message_account);
+        $("#getCustomerAccount").modal("show");
+    }
+
+    /**
+     * 充值
+     * @param order_product_id
+     * @param message_account
+     */
+    function smsRecharge(order_product_id, message_account) {
+
+        messageCommon(order_product_id, message_account);
+        $.get('/api.php/product/get_order_product_owner',{order_product_id:order_product_id}).then(function (response) {
+            var owner_role = response.data
+            $("#owner_role_id").selectpicker({
+                noneSelectedText : '<option value="'+ owner_role.role_id +'">'+ owner_role.username + '  (' + owner_role.department_name+ '-' + owner_role.position_name +')</option>'
+            });
+        });
+        $.get('/api.php/user/getRoleList').then(function (response) {
+            var options = '';
+            $.each(response.data, function (k, v) {
+                options += '<option value="'+ v.role_id +'">'+ v.username + '  (' + v.department_name+ '-' + v.position_name +')</option> '
+            });
+            $("#owner_role_id").html(options);
+            $('#owner_role_id').selectpicker('refresh');
+        });
+        $("#smsRecharge").modal("show");
+    }
+
+    /**
+     * 添加/修改
+     * @param order_product_id
+     * @param message_account
+     */
+    function customerSmsAccount(order_product_id, message_account) {
+        messageCommon(order_product_id, message_account);
+        if (message_account) {
+            $('#present_div input:text[name="present"]').val(0);
+            $('#present_div').hide();
+        }else {
+            $('#present_div input:text[name="present"]').val(20);
+            $('#present_div').show();
+        }
+        $("#customerSmsAccount").modal("show");
+    }
+
+    function renderRecharList(order_product_id, message_account, page) {
+        page = page || 1
+        $('#rechargeRecord .modal-body *').remove()
+        $.ajax({
+            url: "/api.php/message/getRechargeRecord",
+            type: "post",
+            data: {QueryCondition:"account="+message_account, OrderStr:"CreatedDate desc", PageSize:10, PageIndex:page},
+            success: function (response) {
+                console.log(response);
+                var totalCount = response.data.data.totalCount;
+
+                var recordTable = '<table class="table table-hover table-bordered" id="rechargeRecordTable"><tr>' +
+                    '                        <th>编号</th>' +
+                    '                        <th>短信账号</th>' +
+                    '                        <th>单价</th>' +
+                    '                        <th>实际单价</th>' +
+                    '                        <th>充值条数</th>' +
+                    '                        <th>充值时间</th>' +
+                    '                        <th>充值人</th>' +
+                    '                        <th>备注</th>' +
+                    '                    </tr>';
+                if(response.code == 0){
+                    _.forEach(response.data.data.list, function(rechargeRecord, key){
+                        recordTable += '<tr>' +
+                            '<td>'+ (Number(key) + 1) +'</td>' +
+                            '<td>'+ rechargeRecord.account +'</td>' +
+                            '<td>'+ rechargeRecord.price +'</td>' +
+                            '<td>'+ rechargeRecord.realPrice +'</td>' +
+                            '<td>'+ rechargeRecord.rechargeCount +'</td>' +
+                            '<td>'+ rechargeRecord.rechargeDate +'</td>' +
+                            '<td>'+ rechargeRecord.rechargePerson +'</td>' +
+                            '<td>'+ rechargeRecord.remarks+'</td></tr>';
+                    });
+                    recordTable += '</table>'
+                    $next = $('<div>共'+ response.data.data.totalCount +'条&nbsp;  第'+ page +'页&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-default btn-sm" id="previous">上一页</button><button class="btn btn-default btn-sm" id="next">下一页</button></div>')
+                    $next.on('click', '#next', function (){
+                        if (page < Math.ceil(totalCount/10)){
+                            $('#next').attr("disabled", false);
+                            renderRecharList(order_product_id, message_account, page + 1)
+                        }else {
+                            $('#next').attr("disabled", true);
+                        }
+                    })
+
+                    $next.on('click', '#previous', function (){
+                        if (page > 1) {
+                            $('#previous').attr("disabled", false);
+                            renderRecharList(order_product_id, message_account, page - 1)
+                        }else {
+                            $('#previous').attr("disabled", true);
+                        }
+                    })
+                    $('#rechargeRecord .modal-body').append(recordTable).append($next);
+                }
+            },
+            error: function(){
+                console.log("错误");
+            }
+        });
+    }
+
+    function rechargeRecord(order_product_id, message_account) {
+        renderRecharList(order_product_id, message_account)
+        $("#rechargeRecord").modal("show");
+    }
+
+    // *******************************  ProductMessage END ******************************* //
+
+
+    // *******************************  ProductPlatinum  BEGIN ******************************* //
+
+    /**
+     * 产品公共 与 硬件产品共用
+     * @param order_product_id
+     */
+    function platinumCommon(order_product_id){
+        $.ajax({
+            url: "/api.php/product/getProduct",
+            type: "get",
+            data: {order_product_id: order_product_id},
+            success: function (response) {
+                $("input:text[name='order_description']").parent().hide();
+                $("input:text[name='order_description']").val('');
+                if(response.code == 0){
+                    $("input:text[name=\"address\"]").val(response.data.address);
+                    $("input:text[name=\"content\"]").val(response.data.product_name);
+                    $("input:text[name=\"receiver\"]").val(response.data.contacts_name);
+                    $("input:hidden[name=\"customer_id\"]").val(response.data.customer_id);
+                    $("input:hidden[name=\"order_product_id\"]").val(response.data.order_product_id);
+                    $("input:text[name=\"express_company\"]").val(response.data.express_company);
+                    $("select[name=\"express_company\"]").val(response.data.express_company);
+                    $("input:text[name=\"express_number\"]").val(response.data.express_number);
+                    $("input:text[name=\"telephone\"]").val(response.data.contacts_telephone);
+                    $("input:text[name=\"description\"]").val(response.data.description);
+                    if(response.data.sender)
+                        $("input:text[name=\"sender\"]").val(response.data.sender);
+                    else
+                        $("input:text[name=\"sender\"]").val("{$Think.session.name}");
+                    if (response.data.order_description){
+                        $("input:text[name='order_description']").parent().show();
+                        $("input:text[name=\"order_description\"]").val(response.data.order_description);
+                    }
+                }else{
+                    $("input:text[name=\"address\"]").val("");
+                    $("input:text[name=\"content\"]").val("");
+                    $("input:text[name=\"receiver\"]").val("");
+                    $("input:hidden[name=\"customer_id\"]").val("");
+                    $("input:hidden[name=\"order_product_id\"]").val("");
+                    $("input:text[name=\"express_company\"]").val("");
+                    $("input:text[name=\"express_number\"]").val("");
+                    $("input:text[name=\"sender\"]").val("");
+                    $("input:text[name=\"telephone\"]").val("");
+                    $("input:text[name=\"description\"]").val("");
+                }
+
+            },
+            error: function(){
+                console.log("错误");
+            }
+        });
+    }
+
+    /**
+     * 查询
+     * @param order_product_id
+     */
+    function query(order_product_id) {
+        platinumCommon(order_product_id);
+        $("#query").modal("show");
+    }
+
+    /**
+     * 发货
+     * @param order_product_id
+     */
+    function deliverGoods(order_product_id) {
+        platinumCommon(order_product_id);
+        $("#deliverGoods").modal("show");
+    }
+
+    /**
+     * 服务费
+     * @param order_product_id
+     */
+    function serviceCharge(order_product_id) {
+        $.ajax({
+            url: "/api.php/product/getProduct",
+            type: "get",
+            data: {order_product_id: order_product_id},
+            success: function (response) {
+                console.log(response);
+                if(response.code == 0){
+                    $("input:text[name='product_name']").val(response.data.product_name);
+                    $("input:text[name='contacts_name']").val(response.data.contacts_name);
+                    $("input:text[name='contacts_telephone']").val(response.data.contacts_telephone);
+                    $("input:text[name='order_description']").val(response.data.order_description);
+                    if (('extra_info' in response.data) && (response.data.extra_info) && ('service_fee' in response.data.extra_info)){
+                        $("input:text[name='service_fee']").val(response.data.extra_info.service_fee);
+                        $("input:text[name='service_fee']").attr('data-service-fee', response.data.extra_info.service_fee);
+                    }else {
+                        $("input:text[name='service_fee']").val('');
+                    }
+                }else{
+                    $("input:text[name='product_name']").val('');
+                    $("input:text[name='contacts_name']").val('');
+                    $("input:text[name='contacts_telephone']").val('');
+                    $("input:text[name='order_description']").val('');
+                    $("input:text[name='service_fee']").val('');
+                }
+                $("input:hidden[name='order_product_id']").val(order_product_id);
+            },
+
+            error: function(){
+                console.log("错误");
+            }
+        });
+       $.get('/api.php/product/get_order_product_owner',{order_product_id:order_product_id}).then(function (response) {
+            var owner_role = response.data
+            $("#serv ice_owner_role_id").selectpicker({
+                noneSelectedText : '<option value="'+ owner_role.role_id +'">'+ owner_role.username + '  (' + owner_role.department_name+ '-' + owner_role.position_name +')</option>'
+            });
+        });
+        $.get('/api.php/user/getRoleList').then(function (response) {
+            console.log(response)
+            var options = '';
+            $.each(response.data, function (k, v) {
+                options += '<option value="'+ v.role_id +'">'+ v.username + '  (' + v.department_name+ '-' + v.position_name +')</option> '
+            });
+            $("#service_owner_role_id").html(options);
+            $('#service_owner_role_id').selectpicker('refresh');
+        });
+        $("#serviceCharge").modal("show");
+    }
+    // *******************************  ProductPlatinum  END  ******************************* //
+
+    
+
+    // *******************************  ProductSelling  BEGIN ******************************* //
+
+    /**
+     * 营销软件注册
+     * 如果点击注册有值时，说明已经注册了
+     * 修改的话，最好到授权里面修改
+     * @param order_product_id
+     * @param customer_id
+     */
+    var flag = true;
+    function register(order_product_id, customer_id) {
+        $.post("/api.php/product/getMerchantDetail", {order_product_id: order_product_id}, function(response) {
+            if (response.code == 0 && !(response.data instanceof Array)) {
+                $("#register input:text[name='id']").val(response.data.id);
+                $("#register input:text[name='phone_no']").val(response.data.phone_no);
+                $("#register input:text[name='nickname']").val(response.data.nickname);
+                $("#register input:text[name='company_name']").val(response.data.company_name);
+                $("#register input:text[name='password']").val(response.data.password);
+                var response_auth = response.data.auth
+                for (var auth of response_auth) {
+                    var indate = (auth.valid_date + auth.createtime) * 1000;
+                    var merchat = '';
+                    switch (auth.module_id) {
+                        case 0:
+                            merchat = '团购活动';
+                            break;
+                        case 1:
+                            merchat = '拼团活动';
+                            break;
+                        case 2:
+                            merchat = '砍价活动';
+                            break;
+                        case 3:
+                            merchat = '投票活动';
+                            break;
+                        case 4:
+                            merchat = '秒杀';
+                            break;
+                        case 5:
+                            merchat = '裂变红包';
+                            break;
+                        case 51:
+                            merchat = '幸福直播秀';
+                            break;
+                    }
+                    if (flag) {
+                        $('#auth-form').append('<div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                            '<input type="hidden" class="form-control" name="auth[' + auth.module_id + '][module_id]" value="' + auth.module_id + '" readonly>-' +
+                            '<input type="text" class="form-control" style="width:20%;" value="' + merchat + '" readonly>-' +
+                            '<input type="text" class="form-control" style="width:20%;" value="' + getFormatDate(indate) + '" name="auth[' + auth.module_id + '][valid_date]" readonly>-' +
+                            '<input type="text" class="form-control" style="width:20%;" value="' + auth.times + '" name="auth[' + auth.module_id + '][times]" readonly>-' +
+                            '<button class="btn btn-danger" type="button" onclick="javascript: $(this).parent().remove();">删除</button>' +
+                            '</div>');
+                    }
+                }
+                flag = false;
+            } else {
+                $("#register input:text[name='id']").val("");
+                $("#auth-form").html('');
+                $.ajax({
+                    url: "/api.php/customer/details",
+                    type: "get",
+                    data: {customer_id: customer_id},
+                    success: function (response) {
+                        var customer_details = response.data.customer_details;
+                        if (response.code == 0) {
+                            $("#register input:text[name='phone_no']").val(customer_details.contacts_telephone);
+                            $("#register input:text[name='nickname']").val(customer_details.contacts_name);
+                            $("#register input:text[name='company_name']").val(customer_details.customer_name);
+                        } else {
+                            $("#register input:text[name='phone_no']").val("");
+                            $("#register input:text[name='nickname']").val("");
+                            $("#register input:text[name='company_name']").val("");
+                        }
+                    },
+                    error: function () {
+                        console.log("错误");
+                    }
+                });
+            }
+        });
+
+        $("#register input:hidden[name='order_product_id']").val(order_product_id);
+        $("#register input:hidden[name='customer_id']").val(customer_id);
+        $("#register").modal("show");
+        $("#register").on("hide.bs.modal", function(){
+            flag = true;
+            $('#auth-form').html('');
+        });
+    }
+    // *******************************  ProductSelling  END ******************************* //
+
+    /**
+     * 设置产品id
+     * @param order_product_id
+     */
+    function setProductId(order_product_id){
+        $("#setProductIdForm input:hidden[name='order_product_id']").val(order_product_id);
+        $("#category_id").html('');
+        $("#product_id").html('');
+        http.get('/api.php/product/getCategories').then(function(response){
+            var options = '<option value="">--请选择产品类别--</option>';
+            $.each(response.categories, function (k, v) {
+                options += '<option value="'+ v.category_id +'">'+ v.name +'</option> '
+            });
+            $("#category_id").html(options);
+        });
+        $("#category_id").on('click',function(){
+            var category_id = $(this).val();
+            http.get('/api.php/product/getlist', {category_id: category_id}).then(function(response){
+                console.log(response);
+                // var options = '<option value="">--请选择产品--</option>';
+                var options = '';
+                $.each(response.product_list, function (k, v) {
+                    options += '<option value="'+ v.product_id +'">'+ v.name +'</option> '
+                });
+                $("#product_id").html(options);
+            });
+        });
+        $("#setProductId").modal("show");
+    }
+
+    /**
+     * 删除订单产品
+     * @param order_product_id
+     */
+    function deleteOrderProduct(order_product_id) {
+        $("#deleteOrderProduct input:hidden[name='order_product_id']").val(order_product_id);
+        $("#deleteOrderProduct").modal("show");
+    }
+
+    /**
+     * 更换铂金版
+     * @param order_product_id
+     */
+    function changePlatinum(order_product_id){
+        $("#changePlatinumForm input:hidden[name='order_product_id']").val(order_product_id);
+        $("#change_product_id").html('');
+        http.get('/api.php/product/getlist', {category_id: 1}).then(function(response){
+            console.log(response);
+            var options = '<option value="">--请选择产品--</option>';
+            // var options = '';
+            $.each(response.product_list, function (k, v) {
+                options += '<option value="'+ v.product_id +'">'+ v.name +'</option> '
+            });
+            $("#change_product_id").html(options);
+        });
+        $("#changePlatinum").modal("show");
+    }
+
+</script>

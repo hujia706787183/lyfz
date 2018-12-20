@@ -1,0 +1,72 @@
+html, body, .page, #main {
+    height: 100%;
+}
+
+body {
+    background-color: #f8f8f8;
+    margin: 0;
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header {
+    padding: 20px;
+}
+
+.page-header-title {
+    font-size: 24px;
+    margin: 23px 0px; 
+}
+
+.page-header-desc {
+    font-size: 13px;
+    color: #8a8a8a;
+}
+
+.copyright {
+    color: #9a9a9a;
+    text-align: center;
+    font-size: 14px;
+}
+
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: all 1s linear;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+
+.fade-leave, .fade-enter-to {
+    opacity: 1;
+}
+
+.cell-box, .card {
+    padding: 20px 10px;
+    background-color: #ffffff;
+    margin-top: 20px;
+    box-shadow: 0 0 18px #ccc;
+}
+
+.card-body {
+    padding: 20px 0px;
+}
+
+.tips {
+    color: #9a9a9a;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 22px;
+}

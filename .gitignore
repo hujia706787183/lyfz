@@ -1,0 +1,7 @@
+App/Runtime
+App/Conf/db.php
+App/Conf/config.php
+Uploads/
+.vscode
+/vendor/
+.idea/

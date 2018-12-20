@@ -1,0 +1,148 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<div class="container">
+	<div class="page-header" style="border:none; font-size:14px;">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="{:U('index')}"><img src="__PUBLIC__/img/shangji.png"/>&nbsp; {:L('Submit_the_door')}</a></li>
+			<li><a href="{:U('scheduling')}"><img src="__PUBLIC__/img/task_checked2.png"/> &nbsp; {:L('Scheduling')}</a></li>
+			<li><a href="{:U('theDoorServer')}"><img src="__PUBLIC__/img/tongji.png"/> &nbsp; {:L('door_to_door')}</a></li>
+			<li><a href="{:U('visit')}"><img src="__PUBLIC__/img/contacts_icon.png"/> &nbsp; {:L('Return_visit')}</a></li>
+			<li><a href="{:U('verify')}"><img src="__PUBLIC__/img/task_checked2.png"/>  {:L('RETURN_VERIFY')}</a></li>
+			<li><a href="{:U('aboveStatistics')}"><img src="__PUBLIC__/img/shangji.png"/> &nbsp; {:L('door_of_statistical')}</a></li>
+		</ul>
+	</div>
+
+	<include file="Public:alert" />
+	<p class="view"><b>{:L('VIEW_NAV')}</b>
+		<img src=" __PUBLIC__/img/by_owner.png"/> <a href="{:U('index', 'status=-1')}" <if condition="$_GET['status'] eq -1">class="active"</if>>{:L('ALL')}</a> |
+		<a href="{:U('me','viewOptions=me')}" <if condition="$_GET['viewOptions'] eq 'me'">class="active"</if>>{:L('I_submitted')}</a> |
+		<a href="{:U('under','viewOptions=subordinate')}" <if condition="$_GET['viewOptions'] eq 'subordinate'">class="active"</if>>{:L('Subordinate_submitted')}</a> |
+		<a href="{:U('index','status=5')}" <if condition="$_GET['status'] eq 5">class="active"</if>>未安排</a> |
+		<a href="{:U('remore','chaoshi=2')}" <if condition="$_GET['chaoshi'] eq 2">class="active"</if>>{:L('Not_arrange_overtime')}</a> |
+		<a href="{:U('index','status=1')}" <if condition="$_GET['status'] eq 1">class="active"</if>>已安排</a> |
+		<a href="{:U('index','status=2')}" <if condition="$_GET['status'] eq 2">class="active"</if>>已联系</a> |
+		<a href="{:U('index','status=3')}" <if condition="$_GET['status'] eq 3">class="active"</if>>培训中</a> |
+		<a href="{:U('index','status=4')}" <if condition="$_GET['status'] eq 4">class="active"</if>>培训结束</a> |
+	</p>
+	<div class="row">
+		<div class="span12">
+			<ul class="nav pull-left">
+				<li class="pull-left">
+				<form class="form-inline" action="{:U('search','c=1')}" method="post">
+					<ul class="nav pull-left">
+						<li class="pull-left">
+							<select style="width:auto" name="key">
+								<option class="text" value="customer_name" <if condition="$key eq 'customer_name'">selected</if>>{:L('The_name_of_the_studio')}</option>
+								<option class="text" value="contacts_name" <if condition="$key eq 'contacts_name'">selected</if>>{:L('First_name')}</option>
+								<option class="text" value="contacts_telephone" <if condition="$key eq 'contacts_phone'">selected</if>>{:L('First_number')}</option>
+								<option class="text" value="operator_name" <if condition="$key eq 'teacher_name'">selected</if>>{:L('Go_door_teacher')}</option>
+								<option class="text" value="saleman" <if condition="$key eq 'sale_people_name'">selected</if>>{:L('SALESMAN')}</option>
+								<option class="text" value="submitter" <if condition="$key eq 'submitter'">selected</if>>{:L('Saleman')}</option>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li id="searchContent" class="pull-left">
+							<input type="text" class="input-medium search-query" name="search" value="{$search}"/>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left">
+							<button type="submit" class="btn"> <img src="__PUBLIC__/img/search.png"/>   {:L('SEARCH')}</button>
+						</li>
+					</ul>
+				</form>
+				</li>
+			</ul>
+            
+			<div class="pull-right">
+				<a class="btn btn-primary" href="{:U('addHomeDemand')}"><i class="icon-plus"></i>&nbsp; {:L('Add_the_door_needs')}</a>&nbsp;
+			</div>
+		</div>
+		<div class="span12">
+			<!--<table class="table table-hover table-striped table_thead_fixed">-->
+			<table class="table table-hover table-striped" style="table-layout:fixed;">
+				<notempty name="list">
+					<thead>
+						<tr id="childNodes_num" style="white-space:nowrap;">
+                            <th width="30px">{:L('List')}</th>
+                            <th style="width:80px">{:L('Submit_date')}</th>
+							<th style="width:200px">{:L('The_name_of_the_studio')}</th>
+                            <th style="width:50px">{:L('customer_name')}</th>
+							<th>{:L('Telephone')}</th>
+							<th>{:L('Reason_for_training')}</th>
+							<!--<th>{:L('Customer_need')}</th>-->
+							<th>{:L('Training_status')}</th>
+							<!--<th>{:L('Dispatch_note')}</th>-->
+							<th>{:L('training_teacher')}</th>
+							<!--<th>{:L('Satisfaction')}</th>-->
+							<th>{:L('Saleman')}</th>
+							<th>{:L('Operation')}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<volist name="list" id="vo">
+						<tr style="white-space:nowrap;">
+                            <th>{$i}</th>
+                            <td>
+                                {:date('Y-m-d',strtotime($vo['addtime']))}
+                            </td>
+                            <td style="width:200px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;" title="{$vo.customer_name}">
+                                <a href="{:U('customer/view')}&id={$vo.customer_id}">{$vo.customer_name}</a>
+                            </td>
+                            <td style="width:100px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">
+                                <if condition="$vo.contacts_name neq ''">{$vo.contacts_name}<else/>暂无</if>
+                            </td>
+                            <td style="width:150px;" title="{$vo.contacts_telephone}">
+                                <if condition="$vo.contacts_telephone neq ''">{$vo.contacts_telephone}<else/>暂无</if>
+                            </td>
+                            <td style="width:150px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">
+                                <switch name="vo['type']">
+	                                <case value="1">{:L('first_the_door')}</case>
+	                                <case value="2">{:L('second_the_door')}</case>
+	                                <case value="3">{:L('third_the_door')}</case>
+	                                <case value="4">{:L('more_the_door')}</case>
+	                            </switch>
+                            </td>
+
+                            <td style="width:150px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">
+                                <if condition="$vo.status neq ''">
+	                            	<switch name="vo['status']">
+	                                	<case value="5">{:L('nonprogrammable')}</case>
+	                                	<case value="1">{:L('I_arrangements')}</case>
+	                                	<case value="2">{:L('teacher_has_contact')}</case>
+	                                	<case value="3">{:L('in_training')}</case>
+	                                	<case value="4">{:L('training_over')}</case>
+	                            	</switch>
+                             	<else/>{:L('not_available')}
+                             	</if>
+                            </td>
+
+                            <td style="width:150px;">
+                                {$vo.operator_name}
+                            </td>
+
+							<td style="width:150px;">
+								{$vo.submitter}
+							</td>
+							<td style="width:200px;">
+								<a href="{:U('remoteServiceView',array('id'=>$vo['id']))}">{:L('examine')}</a>	|
+								<a href="{:U('update',array('id'=>$vo['id']))}">{:L('compile')}</a>	|
+								<a href="{:U('delete',array('id'=>$vo['id']))}">{:L('delete')}</a>
+							</td>											
+						</tr> 
+						</volist>
+					</tbody>
+				<else/>
+					<tr>
+						<td>----{:L('no_data')}----</td>
+					</tr>
+				</notempty>
+			</table>
+            <b><center>{$page}</center></b>
+			<include file="Public:listrows" />
+		</div>
+	</div>
+</div>
+<div class="hide" id="dialog-role-info" title="{:L('EMPLOYEE_INFORMATION')}">loading...</div>
+<div class="hide" id="dialog-advance" title="{:L('ADVANCE_INFORMATION')}">loading...</div>
+<script type="text/javascript">
+
+</script>
+<include file="Public:footer" />
